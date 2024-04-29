@@ -8,7 +8,7 @@ function App() {
   const { move } = usePiece();
 
   return (
-    <div className='flex grow h-96 max-w-96'>
+    <div className='flex flex-col grow h-96 max-w-96'>
       <Board gameBoard={board} />
     </div>
   );
