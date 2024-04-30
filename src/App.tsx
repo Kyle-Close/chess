@@ -1,15 +1,13 @@
+import { MovePiece } from './components/MovePiece';
 import { Board } from './components/board';
-import { Pieces } from './enums/Pieces';
-import { usePiece } from './hooks/Piece';
-import { useGameBoard } from './hooks/game_board';
 
 function App() {
-  const { board, setBoard } = useGameBoard();
-  const { move } = usePiece();
-
   return (
-    <div className='flex flex-col grow h-96 max-w-96'>
-      <Board gameBoard={board} />
+    <div className='flex grow gap-8 justify-center'>
+      <div className='flex grow h-96 max-w-96'>
+        <Board />
+      </div>
+      <MovePiece />
     </div>
   );
 }

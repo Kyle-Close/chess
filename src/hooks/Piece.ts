@@ -1,14 +1,12 @@
+import { useContext } from 'react';
 import { Pieces } from '../enums/Pieces';
+import { BoardContext } from '../context/board/BoardContext';
 
 export function usePiece() {
-  const move = (
-    setGameBoard: React.Dispatch<React.SetStateAction<Pieces[]>>,
-    piece: Pieces,
-    startIndex: number,
-    endIndex: number
-  ) => {
-    setGameBoard((prevGameBoard) => {
-      const copy = [...prevGameBoard];
+  const { setBoard } = useContext(BoardContext);
+  const move = (piece: Pieces, startIndex: number, endIndex: number) => {
+    setBoard((prevBoard) => {
+      const copy = [...prevBoard];
       copy[startIndex] = Pieces.EMPTY;
       copy[endIndex] = piece;
       return copy;

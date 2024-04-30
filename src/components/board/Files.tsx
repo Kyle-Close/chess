@@ -3,7 +3,9 @@ export function Files() {
   const files: React.ReactNode[] = [];
   for (let i = 0; i < 8; i++) {
     files.push(
-      <div className='flex justify-center items-center'>{fileMap[i]}</div>
+      <div key={i} className='flex justify-center items-center'>
+        {fileMap[i]}
+      </div>
     );
   }
 
