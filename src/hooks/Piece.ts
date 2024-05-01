@@ -1,24 +1,24 @@
 import { useContext } from 'react';
-import { Pieces } from '../enums/Pieces';
 import { BoardContext } from '../context/board/BoardContext';
+import { Piece } from '../context/board/InitialState';
 
 export function usePiece() {
   const { setBoard } = useContext(BoardContext);
-  const move = (piece: Pieces, startIndex: number, endIndex: number) => {
+  const move = (piece: Piece, startIndex: number, endIndex: number) => {
     setBoard((prevBoard) => {
       const copy = [...prevBoard];
-      copy[startIndex] = Pieces.EMPTY;
+      copy[startIndex] = null;
       copy[endIndex] = piece;
       return copy;
     });
   };
 
-  const isWhite = (piece: Pieces) => {
-    return piece < 7;
+  const isWhite = (piece: Piece) => {
+    return piece.type < 7;
   };
 
-  const isEmpty = (piece: Pieces) => {
-    return piece === Pieces.EMPTY;
+  const isEmpty = (piece: Piece) => {
+    return piece === null;
   };
 
   return {

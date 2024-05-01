@@ -1,11 +1,12 @@
-import { Pieces } from '../../enums/Pieces';
+import { Piece } from '../../context/board/InitialState';
+import { PieceType } from '../../enums/PieceType';
 
-export function getPieceAbbreviation(piece: Pieces) {
-  if (piece === Pieces.PAWN_BL || piece === Pieces.PAWN_WH) return 'P';
-  else if (piece === Pieces.ROOK_BL || piece === Pieces.ROOK_WH) return 'R';
-  else if (piece === Pieces.KNIGHT_BL || piece === Pieces.KNIGHT_WH) return 'N';
-  else if (piece === Pieces.BISHOP_BL || piece === Pieces.BISHOP_WH) return 'B';
-  else if (piece === Pieces.QUEEN_BL || piece === Pieces.QUEEN_WH) return 'Q';
-  else if (piece === Pieces.KING_BL || piece === Pieces.KING_WH) return 'K';
-  else return '';
+export function getPieceAbbreviation(piece: Piece | null) {
+  if (piece === null) return '';
+  else if (piece.type === PieceType.PAWN) return 'P';
+  else if (piece.type === PieceType.ROOK) return 'R';
+  else if (piece.type === PieceType.KNIGHT) return 'N';
+  else if (piece.type === PieceType.BISHOP) return 'B';
+  else if (piece.type === PieceType.QUEEN) return 'Q';
+  else if (piece.type === PieceType.KING) return 'K';
 }

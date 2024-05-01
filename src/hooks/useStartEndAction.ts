@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
-import { Pieces } from '../enums/Pieces';
 import { validatePieceMove } from '../helpers/validatePieceMove';
 
 export function useStartEndAction<T, U>(
@@ -17,7 +16,7 @@ export function useStartEndAction<T, U>(
 
   const setPosition = (index: number) => {
     const piece = getPieceAtPosition(index);
-    if (startPos === null && piece === Pieces.EMPTY) return;
+    if (startPos === null && !piece) return; // Clicked an empty square as starting pos. Return
 
     if (startPos === null) setStartPos(index);
     else if (startPos === index) return;

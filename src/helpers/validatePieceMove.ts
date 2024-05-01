@@ -1,12 +1,10 @@
-import { Pieces } from '../enums/Pieces';
+import { Piece } from '../context/board/InitialState';
+import { PieceType } from '../enums/PieceType';
 
-export function validatePieceMove(currentSelectedPiece: Pieces | null) {
+export function validatePieceMove(currentSelectedPiece: Piece | null) {
   if (currentSelectedPiece === null) return;
 
-  if (
-    currentSelectedPiece === Pieces.PAWN_WH ||
-    currentSelectedPiece === Pieces.PAWN_BL
-  ) {
+  if (currentSelectedPiece.type === PieceType.PAWN) {
     console.log('Moving pawn: ', currentSelectedPiece);
   }
 

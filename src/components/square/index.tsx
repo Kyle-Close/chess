@@ -1,9 +1,10 @@
-import { Pieces } from '../../enums/Pieces';
+import { Piece } from '../../context/board/InitialState';
+import { PieceColor } from '../../enums/PieceColor';
 import { usePiece } from '../../hooks/Piece';
 import { getPieceAbbreviation } from '../board/helpers';
 
 interface SquareProps {
-  currentPiece: Pieces;
+  currentPiece: Piece | null;
   index: number;
   handleSquareClicked: (index: number) => void;
   isStartPos: boolean;
@@ -15,12 +16,13 @@ export function Square({
   handleSquareClicked,
   isStartPos,
 }: SquareProps) {
-  const { isWhite, isEmpty } = usePiece();
   const classes = ['flex', 'justify-center', 'items-center', 'bg-zinc-500'];
 
-  if (!isWhite(currentPiece)) classes.push('text-black');
+  if (currentPiece && currentPiece.color === PieceColor.BLACK)
+    classes.push('text-black');
+
   if (isStartPos) classes.push('bg-green-200');
-  else if (isEmpty(currentPiece)) classes.push('text-amber-100');
+  else if (currentPiece === null) classes.push('text-amber-100');
 
   const handleClick = () => {
     handleSquareClicked(index);

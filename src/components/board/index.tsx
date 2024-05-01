@@ -12,7 +12,7 @@ export function Board() {
 
   const { setPosition, startPos } = useStartEndAction((start, end) => {
     const piece = getPieceAtPosition(start);
-    move(piece, start, end);
+    if (piece) move(piece, start, end);
   });
 
   const handleSquareClicked = (index: number) => {
