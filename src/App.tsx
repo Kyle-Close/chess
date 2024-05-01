@@ -1,4 +1,3 @@
-import { MovePiece } from './components/MovePiece';
 import { Board } from './components/board';
 
 function App() {
@@ -7,7 +6,6 @@ function App() {
       <div className='flex grow h-96 max-w-96'>
         <Board />
       </div>
-      <MovePiece />
     </div>
   );
 }

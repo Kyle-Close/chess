@@ -4,11 +4,16 @@ import { Ranks } from './Ranks';
 import { BoardContext } from '../../context/board/BoardContext';
 import { Square } from '../square';
 import { useStartEndAction } from '../../hooks/useStartEndAction';
+import { usePiece } from '../../hooks/Piece';
 
 export function Board() {
-  const { board } = useContext(BoardContext);
+  const { board, getPieceAtPosition } = useContext(BoardContext);
+  const { move } = usePiece();
+
   const { setPosition, startPos } = useStartEndAction((start, end) => {
-    console.log(start, end);
+    //console.log(start, end);
+    const piece = getPieceAtPosition(start);
+    move(piece, start, end);
   });
 
   const handleSquareClicked = (index: number) => {
