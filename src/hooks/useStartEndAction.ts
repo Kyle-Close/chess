@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function useStartEndAction<T, U>(
   callbackFn: (startPos: number, endPos: number) => U
 ) {
-  const [startPos, setStartPos] = useState<number | null>();
-  const [endPos, setEndPos] = useState<number | null>();
+  const [startPos, setStartPos] = useState<number | null>(null);
+  const [endPos, setEndPos] = useState<number | null>(null);
 
   const clear = () => {
     setStartPos(null);
@@ -12,11 +12,27 @@ export function useStartEndAction<T, U>(
   };
 
   const setPosition = (index: number) => {
-    if (!startPos) setStartPos(index);
+    if (startPos === null) setStartPos(index);
+    else if (startPos === index) return;
     else setEndPos(index);
   };
 
-  if (startPos && endPos) callbackFn(startPos, endPos);
+  if (startPos !== null && endPos !== null) {
+    callbackFn(startPos, endPos);
+    clear();
+  }
 
-  return { clear, setPosition };
+  useEffect(() => {
+    const handleScreenClick = (e: MouseEvent) => {
+      e.preventDefault();
+      clear();
+    };
+
+    document.addEventListener('contextmenu', (e) => handleScreenClick(e));
+    return () => {
+      document.removeEventListener('contextmenu', handleScreenClick);
+    };
+  }, []);
+
+  return { clear, setPosition, startPos };
 }
