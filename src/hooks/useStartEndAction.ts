@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { Pieces } from '../enums/Pieces';
+import { validatePieceMove } from '../helpers/validatePieceMove';
 
 export function useStartEndAction<T, U>(
-  callbackFn: (startPos: number, endPos: number) => U
+  callbackFn?: (startPos: number, endPos: number) => U
 ) {
   const { getPieceAtPosition } = useContext(BoardContext);
   const [startPos, setStartPos] = useState<number | null>(null);
@@ -23,8 +24,15 @@ export function useStartEndAction<T, U>(
     else setEndPos(index);
   };
 
+  function getCurrentSelectedPiece() {
+    if (startPos === null) return null;
+    return getPieceAtPosition(startPos);
+  }
+
   useEffect(() => {
-    if (startPos !== null && endPos !== null) {
+    if (startPos !== null && endPos === null)
+      validatePieceMove(getCurrentSelectedPiece());
+    if (startPos !== null && endPos !== null && callbackFn) {
       callbackFn(startPos, endPos);
       clear();
     }

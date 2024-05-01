@@ -11,7 +11,6 @@ export function Board() {
   const { move } = usePiece();
 
   const { setPosition, startPos } = useStartEndAction((start, end) => {
-    //console.log(start, end);
     const piece = getPieceAtPosition(start);
     move(piece, start, end);
   });
