@@ -1,10 +1,16 @@
-export function PawnMoveValidation(
-  currentIndex: number,
-  isWhite: boolean,
-  isFirstMove: boolean
-) {
-  // input: current index, isWhite, isFirstMove (indicates if this pawn has moved before)
-  // output: list of valid indexes to move to, if no valid spaces then return null
+import { Piece } from '../../../context/board/InitialState';
+import { PieceColor } from '../../../enums/PieceColor';
 
-  return null;
+export function PawnMoveValidation(piece: Piece, currentIndex: number) {
+  const validIndexes: number[] = [];
+
+  if (!piece.hasMoved) {
+    if (piece.color === PieceColor.WHITE) validIndexes.push(currentIndex + 16);
+    else validIndexes.push(currentIndex - 16);
+  }
+
+  if (piece.color === PieceColor.WHITE) validIndexes.push(currentIndex + 8);
+  else validIndexes.push(currentIndex - 8);
+
+  return validIndexes;
 }

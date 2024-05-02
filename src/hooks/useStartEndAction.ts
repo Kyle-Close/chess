@@ -30,7 +30,7 @@ export function useStartEndAction<T, U>(
 
   useEffect(() => {
     if (startPos !== null && endPos === null)
-      validatePieceMove(getCurrentSelectedPiece());
+      validatePieceMove(getCurrentSelectedPiece(), startPos);
     if (startPos !== null && endPos !== null && callbackFn) {
       callbackFn(startPos, endPos);
       clear();
