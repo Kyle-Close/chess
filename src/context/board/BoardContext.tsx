@@ -9,6 +9,7 @@ interface BoardContext {
   board: BoardState;
   setBoard: React.Dispatch<React.SetStateAction<BoardState>>;
   getPieceAtPosition: (index: number) => Piece | null;
+  clearIsValidSquares: () => void;
 }
 
 export const BoardContext = createContext<BoardContext>({
@@ -17,17 +18,30 @@ export const BoardContext = createContext<BoardContext>({
   getPieceAtPosition: () => {
     return undefined as any;
   },
+  clearIsValidSquares: () => {},
 });
 
 export function BoardProvider({ children }: BoardProviderProps) {
   const [board, setBoard] = useState<BoardState>(initialBoardState);
 
   const getPieceAtPosition = (index: number) => {
-    return board[index];
+    return board[index].piece;
+  };
+
+  const clearIsValidSquares = () => {
+    setBoard((prevBoard) => {
+      const copy = [...prevBoard];
+      copy.forEach((square) => {
+        square.isValidMove = false;
+      });
+      return copy;
+    });
   };
 
   return (
-    <BoardContext.Provider value={{ board, setBoard, getPieceAtPosition }}>
+    <BoardContext.Provider
+      value={{ board, setBoard, getPieceAtPosition, clearIsValidSquares }}
+    >
       {children}
     </BoardContext.Provider>
   );

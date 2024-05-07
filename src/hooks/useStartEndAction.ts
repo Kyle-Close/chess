@@ -5,7 +5,8 @@ import { validatePieceMove } from '../helpers/validatePieceMove';
 export function useStartEndAction<T, U>(
   callbackFn?: (startPos: number, endPos: number) => U
 ) {
-  const { getPieceAtPosition } = useContext(BoardContext);
+  const { getPieceAtPosition, setBoard, clearIsValidSquares } =
+    useContext(BoardContext);
   const [startPos, setStartPos] = useState<number | null>(null);
   const [endPos, setEndPos] = useState<number | null>(null);
 
@@ -29,9 +30,23 @@ export function useStartEndAction<T, U>(
   }
 
   useEffect(() => {
-    if (startPos !== null && endPos === null)
-      validatePieceMove(getCurrentSelectedPiece(), startPos);
-    if (startPos !== null && endPos !== null && callbackFn) {
+    if (startPos === null) clearIsValidSquares();
+    if (startPos !== null && endPos === null) {
+      const currentPiece = getCurrentSelectedPiece();
+      if (currentPiece) {
+        const validMoves = validatePieceMove(currentPiece, startPos);
+        if (validMoves) {
+          setBoard((prevBoard) => {
+            const copy = [...prevBoard];
+            validMoves.forEach((index) => {
+              copy[index].isValidMove = true;
+            });
+            return copy;
+          });
+        }
+        console.log(validMoves);
+      }
+    } else if (startPos !== null && endPos !== null && callbackFn) {
       callbackFn(startPos, endPos);
       clear();
     }

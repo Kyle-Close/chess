@@ -5,75 +5,178 @@ import { PieceType } from '../../enums/PieceType';
 
 export interface Piece {
   type: PieceType;
-  color: PieceColor;
-  hasMoved: boolean;
+  color: PieceColor | null;
+  hasMoved: boolean | null;
 }
 
-export type BoardState = (Piece | null)[];
+export interface Square {
+  piece: Piece | null;
+  isValidMove: boolean;
+}
+
+export type BoardState = Square[];
 
 export const initialBoardState: BoardState = [
-  { type: PieceType.ROOK, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.KNIGHT, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.BISHOP, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.QUEEN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.KING, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.BISHOP, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.KNIGHT, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.ROOK, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  null,
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.ROOK, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.KNIGHT, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.BISHOP, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.QUEEN, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.KING, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.BISHOP, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.KNIGHT, color: PieceColor.BLACK, hasMoved: false },
-  { type: PieceType.ROOK, color: PieceColor.BLACK, hasMoved: false },
+  {
+    piece: { type: PieceType.ROOK, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.KNIGHT, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.BISHOP, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.QUEEN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.KING, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.BISHOP, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.KNIGHT, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.ROOK, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.WHITE, hasMoved: false },
+    isValidMove: false,
+  },
+
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+  { piece: null, isValidMove: false },
+
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.PAWN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.ROOK, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.KNIGHT, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.BISHOP, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.QUEEN, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.KING, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.BISHOP, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.KNIGHT, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
+  {
+    piece: { type: PieceType.ROOK, color: PieceColor.BLACK, hasMoved: false },
+    isValidMove: false,
+  },
 ];

@@ -24,15 +24,16 @@ export function Board() {
       <Ranks />
       <div className='flex flex-col grow relative'>
         <div className='grid grid-cols-8 grid-rows-8 grow gap-1'>
-          {board.map((currentPiece, key) => {
+          {board.map((square, key) => {
             const isStart = startPos === key;
             return (
               <Square
-                currentPiece={currentPiece}
+                currentPiece={square.piece}
                 index={key}
                 key={key}
                 handleSquareClicked={handleSquareClicked}
                 isStartPos={isStart}
+                isValidMove={square.isValidMove}
               />
             );
           })}

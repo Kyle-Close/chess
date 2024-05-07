@@ -1,17 +1,19 @@
 import { Piece } from '../context/board/InitialState';
 import { PieceType } from '../enums/PieceType';
+import { combineArrays } from './generic/CombineArrays';
 import { PawnMoveValidation } from './pieces/pawn/moveValidation';
 
-export function validatePieceMove(
-  currentSelectedPiece: Piece | null,
-  currentIndex: number
-) {
-  if (currentSelectedPiece === null) return;
+export function validatePieceMove(piece: Piece, currentIndex: number) {
+  if (piece === null) return;
+  let validMoves: number[] = [];
 
-  if (currentSelectedPiece.type === PieceType.PAWN) {
-    const validMoves = PawnMoveValidation(currentSelectedPiece, currentIndex);
+  if (piece.type === PieceType.PAWN) {
+    validMoves = combineArrays(
+      validMoves,
+      PawnMoveValidation(piece, currentIndex)
+    );
     console.log('valid pawn moves: ', validMoves);
   }
 
-  return {};
+  return validMoves;
 }

@@ -5,10 +5,11 @@ import { Piece } from '../context/board/InitialState';
 export function usePiece() {
   const { setBoard } = useContext(BoardContext);
   const move = (piece: Piece, startIndex: number, endIndex: number) => {
+    piece.hasMoved = true;
     setBoard((prevBoard) => {
       const copy = [...prevBoard];
-      copy[startIndex] = null;
-      copy[endIndex] = piece;
+      copy[startIndex] = { piece: null, isValidMove: false };
+      copy[endIndex] = { piece, isValidMove: false };
       return copy;
     });
   };
