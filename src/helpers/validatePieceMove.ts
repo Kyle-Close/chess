@@ -1,7 +1,7 @@
 import { Piece } from '../context/board/InitialState';
 import { PieceType } from '../enums/PieceType';
-import { combineArrays } from './generic/CombineArrays';
 import { PawnMoveValidation } from './pieces/pawn/moveValidation';
+import { combineArrays } from './generic/combineArrays';
 
 export function validatePieceMove(piece: Piece, currentIndex: number) {
   if (piece === null) return;

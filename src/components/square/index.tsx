@@ -1,5 +1,6 @@
 import { Piece } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
+import { useSquare } from '../../hooks/useSquare';
 import { getPieceAbbreviation } from '../board/helpers';
 
 interface SquareProps {
@@ -17,18 +18,12 @@ export function Square({
   isStartPos,
   isValidMove,
 }: SquareProps) {
-  const classes = ['flex', 'justify-center', 'items-center'];
-
-  if (currentPiece && currentPiece.color === PieceColor.BLACK)
-    classes.push('text-black');
-
-  if (isStartPos) classes.push('bg-green-300');
-  else classes.push('bg-zinc-500');
-
-  const handleClick = () => {
-    handleSquareClicked(index);
-  };
-
+  const { handleClick, classes } = useSquare(
+    index,
+    currentPiece,
+    isStartPos,
+    handleSquareClicked
+  );
   return (
     <div onClick={handleClick} className={classes.join(' ')}>
       {getPieceAbbreviation(currentPiece)}

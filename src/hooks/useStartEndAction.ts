@@ -29,32 +29,34 @@ export function useStartEndAction<T, U>(
     return getPieceAtPosition(startPos);
   }
 
+  function handleShowValidMoves(startPos: number) {
+    const currentPiece = getCurrentSelectedPiece();
+    if (currentPiece) {
+      const validMoves = validatePieceMove(currentPiece, startPos);
+      if (validMoves) {
+        setBoard((prevBoard) => {
+          const copy = [...prevBoard];
+          validMoves.forEach((index) => {
+            copy[index].isValidMove = true;
+          });
+          return copy;
+        });
+      }
+    }
+  }
+
   useEffect(() => {
     if (startPos === null) clearIsValidSquares();
-    if (startPos !== null && endPos === null) {
-      const currentPiece = getCurrentSelectedPiece();
-      if (currentPiece) {
-        const validMoves = validatePieceMove(currentPiece, startPos);
-        if (validMoves) {
-          setBoard((prevBoard) => {
-            const copy = [...prevBoard];
-            validMoves.forEach((index) => {
-              copy[index].isValidMove = true;
-            });
-            return copy;
-          });
-        }
-        console.log(validMoves);
-      }
-    } else if (startPos !== null && endPos !== null && callbackFn) {
+    else if (startPos !== null && endPos === null)
+      handleShowValidMoves(startPos);
+    else if (startPos !== null && endPos !== null && callbackFn) {
       callbackFn(startPos, endPos);
       clear();
     }
-  }, [startPos, endPos, callbackFn]);
+  }, [startPos, endPos]);
 
   useEffect(() => {
     const handleScreenClick = (e: MouseEvent) => {
-      e.preventDefault();
       clear();
     };
 
