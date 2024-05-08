@@ -1,0 +1,33 @@
+import { useContext, useRef } from 'react';
+import { BoardContext } from '../context/board/BoardContext';
+import { usePiece } from './Piece';
+import { useStartEndAction } from './useStartEndAction';
+
+export function useBoard() {
+  const { board, getPieceAtPosition, clearIsValidSquares } =
+    useContext(BoardContext);
+  const { move } = usePiece();
+
+  const { setPosition, startPos } = useStartEndAction((start, end) => {
+    const piece = getPieceAtPosition(start);
+    if (piece) move(piece, start, end);
+  });
+
+  const handleSquareClicked = (index: number) => {
+    setPosition(index);
+  };
+
+  const handleRightClickOnBoard = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    clearIsValidSquares();
+  };
+
+  return {
+    board,
+    startPos,
+    handleSquareClicked,
+    handleRightClickOnBoard,
+  };
+}
