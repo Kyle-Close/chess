@@ -66,5 +66,5 @@ export function useStartEndAction<T, U>(
     };
   }, []);
 
-  return { clear, setPosition, startPos };
+  return { clear, setPosition, startPos, setStartPos };
 }

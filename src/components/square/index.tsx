@@ -1,5 +1,4 @@
 import { Piece } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
 import { useSquare } from '../../hooks/useSquare';
 import { getPieceAbbreviation } from '../board/helpers';
 

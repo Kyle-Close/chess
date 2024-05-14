@@ -8,10 +8,12 @@ export function useBoard() {
     useContext(BoardContext);
   const { move } = usePiece();
 
-  const { setPosition, startPos } = useStartEndAction((start, end) => {
-    const piece = getPieceAtPosition(start);
-    if (piece) move(piece, start, end);
-  });
+  const { setPosition, startPos, setStartPos } = useStartEndAction(
+    (start, end) => {
+      const piece = getPieceAtPosition(start);
+      if (piece) move(piece, start, end);
+    }
+  );
 
   const handleSquareClicked = (index: number) => {
     setPosition(index);
@@ -20,7 +22,7 @@ export function useBoard() {
   const handleRightClickOnBoard = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
-    e.preventDefault();
+    setStartPos(null);
     clearIsValidSquares();
   };
 
