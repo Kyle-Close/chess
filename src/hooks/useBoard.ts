@@ -13,7 +13,7 @@ export function useBoard() {
     useStartEndAction();
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
-    const validMoves = validatePieceMove(piece, startPos);
+    const validMoves = validatePieceMove(board, piece, startPos);
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.includes(endPos)) return;
 
@@ -23,7 +23,7 @@ export function useBoard() {
   function handleShowValidMoves(startPos: number) {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
-      const validMoves = validatePieceMove(currentPiece, startPos);
+      const validMoves = validatePieceMove(board, currentPiece, startPos);
       if (validMoves) {
         setBoard((prevBoard) => {
           const copy = [...prevBoard];
