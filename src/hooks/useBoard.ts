@@ -1,19 +1,31 @@
-import { useContext, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { usePiece } from './usePiece';
 import { useStartEndAction } from './useStartEndAction';
+import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 
 export function useBoard() {
-  const { board, getPieceAtPosition, clearIsValidSquares } =
+  const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
     useContext(BoardContext);
   const { move } = usePiece();
+  const { setPosition, startPos, endPos, setStartPos, clear } =
+    useStartEndAction();
 
-  const { setPosition, startPos, setStartPos } = useStartEndAction(
-    (start, end) => {
-      const piece = getPieceAtPosition(start);
-      if (piece) move(piece, start, end);
+  function handleShowValidMoves(startPos: number) {
+    const currentPiece = getPieceAtPosition(startPos);
+    if (currentPiece) {
+      const validMoves = validatePieceMove(currentPiece, startPos);
+      if (validMoves) {
+        setBoard((prevBoard) => {
+          const copy = [...prevBoard];
+          validMoves.forEach((index) => {
+            copy[index].isValidMove = true;
+          });
+          return copy;
+        });
+      }
     }
-  );
+  }
 
   const handleSquareClicked = (index: number) => {
     setPosition(index);
@@ -25,6 +37,17 @@ export function useBoard() {
     setStartPos(null);
     clearIsValidSquares();
   };
+
+  useEffect(() => {
+    if (startPos === null) clearIsValidSquares();
+    else if (startPos !== null && endPos === null)
+      handleShowValidMoves(startPos);
+    else if (startPos !== null && endPos !== null) {
+      const piece = getPieceAtPosition(startPos);
+      if (piece) move(piece, startPos, endPos);
+      clear();
+    }
+  }, [startPos, endPos]);
 
   return {
     board,

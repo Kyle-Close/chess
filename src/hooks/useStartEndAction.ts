@@ -1,12 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
-import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 
-export function useStartEndAction<T, U>(
-  callbackFn?: (startPos: number, endPos: number) => U
-) {
-  const { getPieceAtPosition, setBoard, clearIsValidSquares } =
-    useContext(BoardContext);
+export function useStartEndAction() {
+  const { getPieceAtPosition } = useContext(BoardContext);
   const [startPos, setStartPos] = useState<number | null>(null);
   const [endPos, setEndPos] = useState<number | null>(null);
 
@@ -24,37 +20,6 @@ export function useStartEndAction<T, U>(
     else setEndPos(index);
   };
 
-  function getCurrentSelectedPiece() {
-    if (startPos === null) return null;
-    return getPieceAtPosition(startPos);
-  }
-
-  function handleShowValidMoves(startPos: number) {
-    const currentPiece = getCurrentSelectedPiece();
-    if (currentPiece) {
-      const validMoves = validatePieceMove(currentPiece, startPos);
-      if (validMoves) {
-        setBoard((prevBoard) => {
-          const copy = [...prevBoard];
-          validMoves.forEach((index) => {
-            copy[index].isValidMove = true;
-          });
-          return copy;
-        });
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (startPos === null) clearIsValidSquares();
-    else if (startPos !== null && endPos === null)
-      handleShowValidMoves(startPos);
-    else if (startPos !== null && endPos !== null && callbackFn) {
-      callbackFn(startPos, endPos);
-      clear();
-    }
-  }, [startPos, endPos]);
-
   useEffect(() => {
     const handleScreenClick = (e: MouseEvent) => {
       clear();
@@ -66,5 +31,5 @@ export function useStartEndAction<T, U>(
     };
   }, []);
 
-  return { clear, setPosition, startPos, setStartPos };
+  return { clear, setPosition, startPos, endPos, setStartPos };
 }
