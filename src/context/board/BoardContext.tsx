@@ -38,8 +38,6 @@ export function BoardProvider({ children }: BoardProviderProps) {
     });
   };
 
-  const clearHighlightedSquares = () => {};
-
   return (
     <BoardContext.Provider
       value={{ board, setBoard, getPieceAtPosition, clearIsValidSquares }}
