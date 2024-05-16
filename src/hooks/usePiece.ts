@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { Piece } from '../context/board/InitialState';
+import { PieceColor } from '../enums/PieceColor';
 
 export function usePiece() {
   const { setBoard } = useContext(BoardContext);
@@ -15,16 +16,11 @@ export function usePiece() {
   };
 
   const isWhite = (piece: Piece) => {
-    return piece.type < 7;
-  };
-
-  const isEmpty = (piece: Piece) => {
-    return piece === null;
+    return piece.color === PieceColor.WHITE;
   };
 
   return {
     move,
     isWhite,
-    isEmpty,
   };
 }

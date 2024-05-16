@@ -1,6 +1,6 @@
 import { useContext, useRef } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
-import { usePiece } from './Piece';
+import { usePiece } from './usePiece';
 import { useStartEndAction } from './useStartEndAction';
 
 export function useBoard() {

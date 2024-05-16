@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
-import { validatePieceMove } from '../helpers/validatePieceMove';
+import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 
 export function useStartEndAction<T, U>(
   callbackFn?: (startPos: number, endPos: number) => U

@@ -1,7 +1,7 @@
 import { Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 
-export function PawnMoveValidation(piece: Piece, currentIndex: number) {
+export function pawnMoveValidation(piece: Piece, currentIndex: number) {
   const validIndexes: number[] = [];
 
   if (!piece.hasMoved) {
