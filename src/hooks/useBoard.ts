@@ -3,6 +3,7 @@ import { BoardContext } from '../context/board/BoardContext';
 import { usePiece } from './usePiece';
 import { useStartEndAction } from './useStartEndAction';
 import { validatePieceMove } from '../helpers/validations/validatePieceMove';
+import { Piece } from '../context/board/InitialState';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -10,6 +11,14 @@ export function useBoard() {
   const { move } = usePiece();
   const { setPosition, startPos, endPos, setStartPos, clear } =
     useStartEndAction();
+
+  function tryMove(piece: Piece, startPos: number, endPos: number) {
+    const validMoves = validatePieceMove(piece, startPos);
+    if (!validMoves || validMoves.length === 0) return;
+    if (!validMoves.includes(endPos)) return;
+
+    move(piece, startPos, endPos);
+  }
 
   function handleShowValidMoves(startPos: number) {
     const currentPiece = getPieceAtPosition(startPos);
@@ -44,7 +53,7 @@ export function useBoard() {
       handleShowValidMoves(startPos);
     else if (startPos !== null && endPos !== null) {
       const piece = getPieceAtPosition(startPos);
-      if (piece) move(piece, startPos, endPos);
+      if (piece) tryMove(piece, startPos, endPos);
       clear();
     }
   }, [startPos, endPos]);
