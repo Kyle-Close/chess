@@ -7,24 +7,38 @@ export function pawnMoveValidation(
   currentIndex: number
 ) {
   const validSquares: number[] = [];
+  const isBlockedOneSquareAhead = isPawnBlocked(board, currentIndex, piece, 1);
+  const isBlockedTwoSquaresAhead = isPawnBlocked(board, currentIndex, piece, 2);
+  console.log(isBlockedOneSquareAhead, isBlockedTwoSquaresAhead);
 
-  if (!piece.hasMoved) {
+  if (
+    !piece.hasMoved &&
+    !isBlockedOneSquareAhead &&
+    !isBlockedTwoSquaresAhead
+  ) {
     if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex + 16);
     else validSquares.push(currentIndex - 16);
   }
 
-  if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex + 8);
-  else validSquares.push(currentIndex - 8);
+  if (!isBlockedOneSquareAhead) {
+    if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex + 8);
+    else validSquares.push(currentIndex - 8);
+  }
 
-  return removeBlockedMoves(board, validSquares);
+  return validSquares;
 }
 
-function removeBlockedMoves(board: BoardState, validSquares: number[]) {
-  return validSquares.filter((index) => board[index].piece === null);
-}
-
-function isOtherPieceDirectlyInFront(
+function isPawnBlocked(
   board: BoardState,
   currentIndex: number,
-  piece: Piece
-) {}
+  piece: Piece,
+  squaresAhead: number
+) {
+  if (piece.color === PieceColor.WHITE) {
+    if (board[currentIndex + 8 * squaresAhead].piece !== null) return true;
+    else return false;
+  } else {
+    if (board[currentIndex - 8 * squaresAhead].piece !== null) return true;
+    else return false;
+  }
+}
