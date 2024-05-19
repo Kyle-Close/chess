@@ -7,6 +7,31 @@ export function getPieceFile(currentIndex: number) {
   else if ((currentIndex - 5) % 8 === 0 || currentIndex === 5) return 'f';
   else if ((currentIndex - 6) % 8 === 0 || currentIndex === 6) return 'g';
   else if ((currentIndex - 7) % 8 === 0 || currentIndex === 7) return 'h';
+  else return null;
+}
+
+export type PieceFile = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | null;
+
+export function convertFileToIndex(file: PieceFile) {
+  if (!file) return;
+  switch (file) {
+    case 'a':
+      return 0;
+    case 'b':
+      return 1;
+    case 'c':
+      return 2;
+    case 'd':
+      return 3;
+    case 'e':
+      return 4;
+    case 'f':
+      return 5;
+    case 'g':
+      return 6;
+    case 'h':
+      return 7;
+  }
 }
 
 export function getPieceRank(currentIndex: number) {
