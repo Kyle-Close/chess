@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { getPieceFile } from '../../generic/pieceLocation';
+import { PieceFile, getPieceFile } from '../../generic/pieceLocation';
 
 export function bishopMoveValidation(
   board: BoardState,
@@ -7,32 +7,73 @@ export function bishopMoveValidation(
   currentIndex: number
 ) {
   const validMoves: number[] = [];
-  // Check the 4 directions
-  appendTopLeftDiagonalMoves(board, piece, currentIndex, validMoves);
+
+  // UP and to the LEFT
+  appendDiagonalMoves(
+    board,
+    piece,
+    currentIndex,
+    validMoves,
+    getJumpCount(true, true),
+    getLastFile(true)
+  );
+
+  // DOWN and to the LEFT
+  appendDiagonalMoves(
+    board,
+    piece,
+    currentIndex,
+    validMoves,
+    getJumpCount(false, true),
+    getLastFile(true)
+  );
+
+  // UP and to the RIGHT
+  appendDiagonalMoves(
+    board,
+    piece,
+    currentIndex,
+    validMoves,
+    getJumpCount(true, false),
+    getLastFile(false)
+  );
+
+  // DOWN and to the RIGHT
+  appendDiagonalMoves(
+    board,
+    piece,
+    currentIndex,
+    validMoves,
+    getJumpCount(false, false),
+    getLastFile(false)
+  );
 
   return validMoves;
 }
 
-function appendTopLeftDiagonalMoves(
+function appendDiagonalMoves(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
-  validMoves: number[]
+  validMoves: number[],
+  jumpCount: number,
+  lastFile: PieceFile
 ) {
   let newIndex = currentIndex;
   let pieceFile = getPieceFile(newIndex);
 
-  while (pieceFile !== 'a') {
-    newIndex = newIndex - 9;
-    pieceFile = getPieceFile(newIndex);
-
+  while (pieceFile !== lastFile) {
+    newIndex = newIndex + jumpCount;
     if (newIndex < 0 || newIndex > 63) break;
-    if (pieceFile === 'a') {
+
+    pieceFile = getPieceFile(newIndex);
+    const currentPiece = board[newIndex].piece;
+
+    if (pieceFile === lastFile) {
+      if (currentPiece && currentPiece.color === piece.color) break;
       validMoves.push(newIndex);
       break;
     }
-
-    const currentPiece = board[newIndex].piece;
 
     if (currentPiece !== null) {
       if (currentPiece.color === piece.color) break;
@@ -44,4 +85,19 @@ function appendTopLeftDiagonalMoves(
       validMoves.push(newIndex);
     }
   }
+}
+
+function getJumpCount(isTop: boolean, isLeft: boolean) {
+  if (isLeft) {
+    if (isTop) return -9;
+    else return 7;
+  } else {
+    if (isTop) return -7;
+    else return 9;
+  }
+}
+
+function getLastFile(isLeft: boolean) {
+  if (isLeft) return 'a';
+  else return 'h';
 }
