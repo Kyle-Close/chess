@@ -43,7 +43,7 @@ export function getPieceRank(currentIndex: number) {
   else if (currentIndex >= 40 && currentIndex < 48) return 6;
   else if (currentIndex >= 48 && currentIndex < 56) return 7;
   else if (currentIndex >= 56 && currentIndex < 64) return 8;
-  else return null;
+  else return 1;
 }
 
-export type PieceRank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | null;
+export type PieceRank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
