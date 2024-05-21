@@ -33,7 +33,11 @@ export function rookMoveValidation(
   return validSquares;
 }
 
-function countBackwardsMoves(board: BoardState, piece: Piece, currentIndex: number) {
+export function countBackwardsMoves(
+  board: BoardState,
+  piece: Piece,
+  currentIndex: number
+) {
   let foundPiece = false;
   let count = 0;
 
@@ -52,7 +56,7 @@ function countBackwardsMoves(board: BoardState, piece: Piece, currentIndex: numb
   return count;
 }
 
-function countForwardMoves(board: BoardState, piece: Piece, currentIndex: number) {
+export function countForwardMoves(board: BoardState, piece: Piece, currentIndex: number) {
   let foundPiece = false;
   let count = 0;
 
@@ -69,7 +73,7 @@ function countForwardMoves(board: BoardState, piece: Piece, currentIndex: number
   return count;
 }
 
-function countLeftMoves(
+export function countLeftMoves(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
@@ -93,7 +97,7 @@ function countLeftMoves(
   return count;
 }
 
-function countRightMoves(
+export function countRightMoves(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
@@ -151,7 +155,7 @@ function getMaxIndexOnRank(pieceRank: PieceRank) {
 
 type Direction = 'FORWARD' | 'BACKWARDS' | 'LEFT' | 'RIGHT';
 
-function addValidSquares(
+export function addValidSquares(
   piece: Piece,
   direction: Direction,
   count: number,

@@ -51,7 +51,7 @@ export function bishopMoveValidation(
   return validMoves;
 }
 
-function appendDiagonalMoves(
+export function appendDiagonalMoves(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
@@ -87,7 +87,7 @@ function appendDiagonalMoves(
   }
 }
 
-function getJumpCount(isTop: boolean, isLeft: boolean) {
+export function getJumpCount(isTop: boolean, isLeft: boolean) {
   if (isLeft) {
     if (isTop) return -9;
     else return 7;
@@ -97,7 +97,7 @@ function getJumpCount(isTop: boolean, isLeft: boolean) {
   }
 }
 
-function getLastFile(isLeft: boolean) {
+export function getLastFile(isLeft: boolean) {
   if (isLeft) return 'a';
   else return 'h';
 }
