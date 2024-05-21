@@ -1,6 +1,7 @@
 import { BoardState, Piece } from '../../context/board/InitialState';
 import { PieceType } from '../../enums/PieceType';
 import { bishopMoveValidation } from './pieces/bishopMoveValidation';
+import { kingMoveValidation } from './pieces/kingMoveValidation';
 import { knightMoveValidation } from './pieces/knightMoveValidation';
 import { pawnMoveValidation } from './pieces/pawnMoveValidation';
 import { queenMoveValidation } from './pieces/queenMoveValidation';
@@ -19,4 +20,6 @@ export function validatePieceMove(board: BoardState, piece: Piece, currentIndex:
     return bishopMoveValidation(board, piece, currentIndex);
   else if (piece.type === PieceType.QUEEN)
     return queenMoveValidation(board, piece, currentIndex);
+  else if (piece.type === PieceType.KING)
+    return kingMoveValidation(board, piece, currentIndex);
 }

@@ -56,11 +56,15 @@ function getAllKnightMoves(currentIndex: number, startFile: PieceFile) {
   return result;
 }
 
-function filterOutOfBounds(allSquares: number[]) {
+export function filterOutOfBounds(allSquares: number[]) {
   return allSquares.filter((index) => index >= 0 && index <= 63);
 }
 
-function filterOccupiedSelf(board: BoardState, piece: Piece, validSquares: number[]) {
+export function filterOccupiedSelf(
+  board: BoardState,
+  piece: Piece,
+  validSquares: number[]
+) {
   return validSquares.filter(
     (index) => board[index].piece === null || board[index].piece?.color !== piece.color
   );
