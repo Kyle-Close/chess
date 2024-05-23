@@ -10,6 +10,9 @@ export function pawnMoveValidation(
 ) {
   const validSquares: ValidSquares[] = [];
   const pieceRank = getPieceRank(currentIndex);
+
+  if (isOnLastRank(piece, pieceRank)) return [];
+
   const isBlockedOneSquareAhead = isPawnBlocked(board, currentIndex, piece, 1, pieceRank);
   const isBlockedTwoSquaresAhead = isPawnBlocked(
     board,
@@ -102,4 +105,10 @@ function captureAvailable(
       return { index: currentIndex - 7, piece: board[currentIndex - 7].piece };
     }
   }
+}
+
+function isOnLastRank(piece: Piece, pieceRank: PieceRank) {
+  if (piece.color === PieceColor.WHITE && pieceRank === 8) return true;
+  else if (piece.color === PieceColor.BLACK && pieceRank === 1) return true;
+  else return false;
 }
