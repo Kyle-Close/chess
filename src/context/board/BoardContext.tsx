@@ -33,6 +33,7 @@ export function BoardProvider({ children }: BoardProviderProps) {
       const copy = [...prevBoard];
       copy.forEach((square) => {
         square.isValidMove = false;
+        square.isCapture = false;
       });
       return copy;
     });

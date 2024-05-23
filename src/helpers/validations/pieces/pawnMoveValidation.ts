@@ -1,25 +1,16 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
-import {
-  PieceRank,
-  getPieceFile,
-  getPieceRank,
-} from '../../generic/pieceLocation';
+import { PieceRank, getPieceFile, getPieceRank } from '../../generic/pieceLocation';
+import { ValidSquares } from './kingMoveValidation';
 
 export function pawnMoveValidation(
   board: BoardState,
   piece: Piece,
   currentIndex: number
 ) {
-  const validSquares: number[] = [];
+  const validSquares: ValidSquares[] = [];
   const pieceRank = getPieceRank(currentIndex);
-  const isBlockedOneSquareAhead = isPawnBlocked(
-    board,
-    currentIndex,
-    piece,
-    1,
-    pieceRank
-  );
+  const isBlockedOneSquareAhead = isPawnBlocked(board, currentIndex, piece, 1, pieceRank);
   const isBlockedTwoSquaresAhead = isPawnBlocked(
     board,
     currentIndex,
@@ -27,37 +18,23 @@ export function pawnMoveValidation(
     2,
     pieceRank
   );
-  const captureLeft = captureAvailable(
-    board,
-    currentIndex,
-    piece,
-    true,
-    pieceRank
-  );
-  const captureRight = captureAvailable(
-    board,
-    currentIndex,
-    piece,
-    false,
-    pieceRank
-  );
+  const captureLeft = captureAvailable(board, currentIndex, piece, true, pieceRank);
+  const captureRight = captureAvailable(board, currentIndex, piece, false, pieceRank);
 
-  if (
-    !piece.hasMoved &&
-    !isBlockedOneSquareAhead &&
-    !isBlockedTwoSquaresAhead
-  ) {
-    if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex + 16);
-    else validSquares.push(currentIndex - 16);
+  if (!piece.hasMoved && !isBlockedOneSquareAhead && !isBlockedTwoSquaresAhead) {
+    if (piece.color === PieceColor.WHITE)
+      validSquares.push({ index: currentIndex + 16, isCapture: false });
+    else validSquares.push({ index: currentIndex - 16, isCapture: false });
   }
 
   if (!isBlockedOneSquareAhead) {
-    if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex + 8);
-    else validSquares.push(currentIndex - 8);
+    if (piece.color === PieceColor.WHITE)
+      validSquares.push({ index: currentIndex + 8, isCapture: false });
+    else validSquares.push({ index: currentIndex - 8, isCapture: false });
   }
 
-  if (captureLeft) validSquares.push(captureLeft.index);
-  if (captureRight) validSquares.push(captureRight.index);
+  if (captureLeft) validSquares.push({ index: captureLeft.index, isCapture: true });
+  if (captureRight) validSquares.push({ index: captureRight.index, isCapture: true });
 
   return validSquares;
 }

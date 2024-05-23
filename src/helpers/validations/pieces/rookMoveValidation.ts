@@ -1,13 +1,14 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceRank, getPieceRank } from '../../generic/pieceLocation';
+import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
 export function rookMoveValidation(
   board: BoardState,
   piece: Piece,
   currentIndex: number
 ) {
-  const validSquares: number[] = [];
+  const validSquares: ValidSquares[] = [];
   const pieceRank = getPieceRank(currentIndex);
 
   const squaresCanMoveForward = countForwardMoves(board, piece, currentIndex);
@@ -30,7 +31,7 @@ export function rookMoveValidation(
   if (squaresCanMoveLeft)
     addValidSquares(piece, 'LEFT', squaresCanMoveLeft, currentIndex, validSquares);
 
-  return validSquares;
+  return updateValidSquaresToIncludeCaptures(board, piece, validSquares);
 }
 
 export function countBackwardsMoves(
@@ -39,6 +40,7 @@ export function countBackwardsMoves(
   currentIndex: number
 ) {
   let foundPiece = false;
+  let isCapture = false;
   let count = 0;
 
   while (!foundPiece) {
@@ -47,30 +49,39 @@ export function countBackwardsMoves(
 
     if (board[currentIndex].piece !== null) {
       foundPiece = true;
-      if (board[currentIndex].piece?.color !== piece.color) count += 1;
+      if (board[currentIndex].piece?.color !== piece.color) {
+        count += 1;
+        isCapture = true;
+      }
     } else {
       count += 1;
     }
   }
 
-  return count;
+  return { count, isCapture };
 }
 
 export function countForwardMoves(board: BoardState, piece: Piece, currentIndex: number) {
   let foundPiece = false;
+  let isCapture = false;
   let count = 0;
 
-  while (!foundPiece && currentIndex >= 0 && currentIndex <= 63) {
+  while (!foundPiece) {
     currentIndex = piece.color === PieceColor.WHITE ? currentIndex + 8 : currentIndex - 8; // move up 1 square
+    if (currentIndex < 0 || currentIndex > 63) break;
+
     if (board[currentIndex].piece !== null) {
       foundPiece = true;
-      if (board[currentIndex].piece?.color !== piece.color) count += 1;
+      if (board[currentIndex].piece?.color !== piece.color) {
+        count += 1;
+        isCapture = true;
+      }
     } else {
       count += 1;
     }
   }
 
-  return count;
+  return { count, isCapture };
 }
 
 export function countLeftMoves(
@@ -80,6 +91,7 @@ export function countLeftMoves(
   pieceRank: PieceRank
 ) {
   let foundPiece = false;
+  let isCapture = false;
   let count = 0;
 
   while (!foundPiece && currentIndex >= 0 && currentIndex <= 63) {
@@ -88,13 +100,16 @@ export function countLeftMoves(
 
     if (board[currentIndex].piece !== null) {
       foundPiece = true;
-      if (board[currentIndex].piece?.color !== piece.color) count += 1;
+      if (board[currentIndex].piece?.color !== piece.color) {
+        count += 1;
+        isCapture = true;
+      }
     } else {
       count += 1;
     }
   }
 
-  return count;
+  return { count, isCapture };
 }
 
 export function countRightMoves(
@@ -104,6 +119,7 @@ export function countRightMoves(
   pieceRank: PieceRank
 ) {
   let foundPiece = false;
+  let isCapture = false;
   let count = 0;
 
   while (!foundPiece && currentIndex >= 0 && currentIndex <= 63) {
@@ -112,13 +128,16 @@ export function countRightMoves(
 
     if (board[currentIndex].piece !== null) {
       foundPiece = true;
-      if (board[currentIndex].piece?.color !== piece.color) count += 1;
+      if (board[currentIndex].piece?.color !== piece.color) {
+        count += 1;
+        isCapture = true;
+      }
     } else {
       count += 1;
     }
   }
 
-  return count;
+  return { count, isCapture };
 }
 
 function isOnStartRank(pieceRank: PieceRank, currentIndex: number) {
@@ -158,27 +177,29 @@ type Direction = 'FORWARD' | 'BACKWARDS' | 'LEFT' | 'RIGHT';
 export function addValidSquares(
   piece: Piece,
   direction: Direction,
-  count: number,
+  canSlide: { count: number; isCapture: boolean },
   currentIndex: number,
-  validSquares: number[]
+  validSquares: ValidSquares[]
 ) {
   if (direction === 'FORWARD') {
-    for (let i = 0; i < count; i++) {
-      if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex + 8 * (i + 1));
-      else validSquares.push(currentIndex - 8 * (i + 1));
+    for (let i = 0; i < canSlide.count; i++) {
+      if (piece.color === PieceColor.WHITE)
+        validSquares.push({ index: currentIndex + 8 * (i + 1), isCapture: false });
+      else validSquares.push({ index: currentIndex - 8 * (i + 1), isCapture: false });
     }
   } else if (direction === 'RIGHT') {
-    for (let i = 0; i < count; i++) {
-      validSquares.push(currentIndex + i + 1);
+    for (let i = 0; i < canSlide.count; i++) {
+      validSquares.push({ index: currentIndex + i + 1, isCapture: false });
     }
   } else if (direction === 'BACKWARDS') {
-    for (let i = 0; i < count; i++) {
-      if (piece.color === PieceColor.WHITE) validSquares.push(currentIndex - 8 * (i + 1));
-      else validSquares.push(currentIndex + 8 * (i + 1));
+    for (let i = 0; i < canSlide.count; i++) {
+      if (piece.color === PieceColor.WHITE)
+        validSquares.push({ index: currentIndex - 8 * (i + 1), isCapture: false });
+      else validSquares.push({ index: currentIndex + 8 * (i + 1), isCapture: false });
     }
   } else if (direction === 'LEFT') {
-    for (let i = 0; i < count; i++) {
-      validSquares.push(currentIndex - i - 1);
+    for (let i = 0; i < canSlide.count; i++) {
+      validSquares.push({ index: currentIndex - i - 1, isCapture: false });
     }
   }
 }

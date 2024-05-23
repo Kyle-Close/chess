@@ -4,8 +4,7 @@ import { Square } from '../square';
 import { useBoard } from '../../hooks/useBoard';
 
 export function Board() {
-  const { board, startPos, handleSquareClicked, handleRightClickOnBoard } =
-    useBoard();
+  const { board, startPos, handleSquareClicked, handleRightClickOnBoard } = useBoard();
   return (
     <div onAuxClick={handleRightClickOnBoard} className='flex grow relative'>
       <Ranks />
@@ -21,6 +20,7 @@ export function Board() {
                 handleSquareClicked={handleSquareClicked}
                 isStartPos={isStart}
                 isValidMove={square.isValidMove}
+                isCapture={square.isCapture}
               />
             );
           })}

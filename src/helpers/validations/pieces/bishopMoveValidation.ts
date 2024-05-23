@@ -1,12 +1,13 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceFile, getPieceFile } from '../../generic/pieceLocation';
+import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
 export function bishopMoveValidation(
   board: BoardState,
   piece: Piece,
   currentIndex: number
 ) {
-  const validMoves: number[] = [];
+  const validMoves: ValidSquares[] = [];
 
   // UP and to the LEFT
   appendDiagonalMoves(
@@ -48,14 +49,14 @@ export function bishopMoveValidation(
     getLastFile(false)
   );
 
-  return validMoves;
+  return updateValidSquaresToIncludeCaptures(board, piece, validMoves);
 }
 
 export function appendDiagonalMoves(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
-  validMoves: number[],
+  validSquares: ValidSquares[],
   jumpCount: number,
   lastFile: PieceFile
 ) {
@@ -71,18 +72,18 @@ export function appendDiagonalMoves(
 
     if (pieceFile === lastFile) {
       if (currentPiece && currentPiece.color === piece.color) break;
-      validMoves.push(newIndex);
+      validSquares.push({ index: newIndex, isCapture: false });
       break;
     }
 
     if (currentPiece !== null) {
       if (currentPiece.color === piece.color) break;
       else {
-        validMoves.push(newIndex);
+        validSquares.push({ index: newIndex, isCapture: false });
         break;
       }
     } else {
-      validMoves.push(newIndex);
+      validSquares.push({ index: newIndex, isCapture: false });
     }
   }
 }

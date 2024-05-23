@@ -1,6 +1,8 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { getPieceRank } from '../../generic/pieceLocation';
 import { appendDiagonalMoves, getJumpCount, getLastFile } from './bishopMoveValidation';
+import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { filterOutOfBounds } from './knightMoveValidation';
 import {
   addValidSquares,
   countBackwardsMoves,
@@ -14,7 +16,7 @@ export function queenMoveValidation(
   piece: Piece,
   currentIndex: number
 ) {
-  const validSquares: number[] = [];
+  let validSquares: ValidSquares[] = [];
 
   const pieceRank = getPieceRank(currentIndex);
   const squaresCanMoveForward = countForwardMoves(board, piece, currentIndex);
@@ -77,5 +79,7 @@ export function queenMoveValidation(
     getLastFile(false)
   );
 
-  return validSquares;
+  validSquares = filterOutOfBounds(validSquares);
+
+  return updateValidSquaresToIncludeCaptures(board, piece, validSquares);
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { usePiece } from './usePiece';
 import { useStartEndAction } from './useStartEndAction';
@@ -9,13 +9,12 @@ export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
     useContext(BoardContext);
   const { move } = usePiece();
-  const { setPosition, startPos, endPos, setStartPos, clear } =
-    useStartEndAction();
+  const { setPosition, startPos, endPos, setStartPos, clear } = useStartEndAction();
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
     const validMoves = validatePieceMove(board, piece, startPos);
     if (!validMoves || validMoves.length === 0) return;
-    if (!validMoves.includes(endPos)) return;
+    if (!validMoves.some((move) => move.index === endPos)) return;
 
     move(piece, startPos, endPos);
   }
@@ -27,8 +26,9 @@ export function useBoard() {
       if (validMoves) {
         setBoard((prevBoard) => {
           const copy = [...prevBoard];
-          validMoves.forEach((index) => {
-            copy[index].isValidMove = true;
+          validMoves.forEach((move) => {
+            if (move.isCapture) copy[move.index].isCapture = true;
+            copy[move.index].isValidMove = true;
           });
           return copy;
         });
@@ -40,17 +40,14 @@ export function useBoard() {
     setPosition(index);
   };
 
-  const handleRightClickOnBoard = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const handleRightClickOnBoard = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setStartPos(null);
     clearIsValidSquares();
   };
 
   useEffect(() => {
     if (startPos === null) clearIsValidSquares();
-    else if (startPos !== null && endPos === null)
-      handleShowValidMoves(startPos);
+    else if (startPos !== null && endPos === null) handleShowValidMoves(startPos);
     else if (startPos !== null && endPos !== null) {
       const piece = getPieceAtPosition(startPos);
       if (piece) tryMove(piece, startPos, endPos);
