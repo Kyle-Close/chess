@@ -15,9 +15,12 @@ export interface UsePlayerReturn {
   updateColor: (color: PieceColor) => void;
 }
 
-export function usePlayer(initialName: string): UsePlayerReturn {
+export function usePlayer(
+  initialName: string,
+  initialColor: PieceColor
+): UsePlayerReturn {
   const [name, setName] = useState(initialName);
-  const [color, setColor] = useState<PieceColor>(PieceColor.WHITE);
+  const [color, setColor] = useState<PieceColor>(initialColor);
   const [remainingPieces, setRemainingPieces] =
     useState<PieceType[]>(initialRemainingPieces);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
