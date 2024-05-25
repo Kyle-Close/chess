@@ -9,8 +9,8 @@ export function usePiece() {
     piece.hasMoved = true;
     setBoard((prevBoard) => {
       const copy = [...prevBoard];
-      copy[startIndex] = { piece: null, isValidMove: false };
-      copy[endIndex] = { piece, isValidMove: false };
+      copy[startIndex] = { piece: null, isValidMove: false, isCapture: false };
+      copy[endIndex] = { piece, isValidMove: false, isCapture: false };
       return copy;
     });
   };

@@ -15,8 +15,8 @@ interface GameState {
 }
 
 export const GameState = createContext<GameState>({
-  playerOne: usePlayer(''),
-  playerTwo: usePlayer(''),
+  playerOne: {} as UsePlayerReturn,
+  playerTwo: {} as UsePlayerReturn,
   turn: 1,
   updateTurn: () => {},
   moveHistory: '',
