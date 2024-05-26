@@ -48,7 +48,7 @@ export function usePlayer(
   };
 
   const updatePlayerInCheck = () => {
-    const isCheck = isKingInCheck(board, getKingIndex(board, color));
+    const isCheck = isKingInCheck(board, getKingIndex(board, color), color);
     if (isCheck) setIsInCheck(true);
     else setIsInCheck(false);
   };
