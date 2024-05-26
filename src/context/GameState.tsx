@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { UsePlayerReturn, usePlayer } from '../hooks/usePlayer';
 import { PieceColor } from '../enums/PieceColor';
 
@@ -50,6 +50,16 @@ export function GameStateProvider({ children }: GameStateProps) {
   const changeTurn = () => {
     setTurn((prevTurn) => prevTurn + 1);
   };
+
+  useEffect(() => {
+    if (turn % 2 === 0) {
+      playerOne.updatePlayerTurn(false);
+      playerTwo.updatePlayerTurn(true);
+    } else {
+      playerOne.updatePlayerTurn(true);
+      playerTwo.updatePlayerTurn(false);
+    }
+  }, [turn]);
 
   return (
     <GameState.Provider
