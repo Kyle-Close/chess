@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { BoardState, Piece, initialBoardState } from './InitialState';
 
 interface BoardProviderProps {

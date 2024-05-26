@@ -5,6 +5,9 @@ import { useStartEndAction } from './useStartEndAction';
 import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
+import { isInCheck } from '../helpers/board/isInCheck';
+import { getKingIndex } from '../helpers/board/getKingIndex';
+import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -25,6 +28,11 @@ export function useBoard() {
       currentPlayer.enemyPieceCaptured(capturedPiece.type);
     }
     move(piece, startPos, endPos);
+    if (!piece.color) return;
+    const isOpponentInCheck = isInCheck(
+      copyBoardAndUpdate(board, piece, startPos, endPos),
+      getKingIndex(board, piece.color)
+    );
     gameState.changeTurn();
   }
 
@@ -57,8 +65,6 @@ export function useBoard() {
   };
 
   const isClickingValidSquare = (index: number, isFinalClick: boolean) => {
-    // Player should only be able to select their own piece or a blank square.
-    // They can only select enemy piece if it's a capture move
     const piece = getPieceAtPosition(index);
     const currentTurnPlayer = gameState.getCurrentTurnPlayer();
     if ((piece && piece.color === currentTurnPlayer.color) || !piece) return true;
@@ -77,6 +83,13 @@ export function useBoard() {
       clear();
     }
   }, [startPos, endPos]);
+
+  useEffect(() => {
+    const player = gameState.getCurrentTurnPlayer();
+    if (player.color !== null) {
+      const isOpponentInCheck = isInCheck(board, getKingIndex(board, player.color));
+    }
+  }, [board]);
 
   return {
     board,
