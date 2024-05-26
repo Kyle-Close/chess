@@ -5,8 +5,6 @@ import { PieceColor } from '../enums/PieceColor';
 export interface UsePlayerReturn {
   name: string;
   updateName: (name: string) => void;
-  remainingPieces: PieceType[];
-  myPieceCaptured: (pieceType: PieceType) => void;
   capturedPieces: PieceType[];
   enemyPieceCaptured: (pieceType: PieceType) => void;
   isInCheck: boolean;
@@ -21,8 +19,6 @@ export function usePlayer(
 ): UsePlayerReturn {
   const [name, setName] = useState(initialName);
   const [color, setColor] = useState<PieceColor>(initialColor);
-  const [remainingPieces, setRemainingPieces] =
-    useState<PieceType[]>(initialRemainingPieces);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
 
@@ -38,17 +34,6 @@ export function usePlayer(
     setIsInCheck(isCheck);
   };
 
-  const myPieceCaptured = (pieceType: PieceType) => {
-    setRemainingPieces((prevRemainingPieces) => {
-      const res: PieceType[] = [];
-      for (let i = 0; i < prevRemainingPieces.length; i++) {
-        if (pieceType === prevRemainingPieces[i]) break;
-        res.push(prevRemainingPieces[i]);
-      }
-      return res;
-    });
-  };
-
   const enemyPieceCaptured = (pieceType: PieceType) => {
     setCapturedPieces((prevCapturedPieces) => [...prevCapturedPieces, pieceType]);
   };
@@ -56,8 +41,6 @@ export function usePlayer(
   return {
     name,
     updateName,
-    remainingPieces,
-    myPieceCaptured,
     capturedPieces,
     enemyPieceCaptured,
     isInCheck,

@@ -13,7 +13,7 @@ interface GameState {
   updateTurn: (turn: number) => void;
   moveHistory: string;
   updateMoveHistory: (newHistory: string) => void;
-  getCurrentTurnPlayerColor: () => PieceColor;
+  getCurrentTurnPlayer: () => UsePlayerReturn;
   changeTurn: () => void;
 }
 
@@ -24,7 +24,7 @@ export const GameState = createContext<GameState>({
   updateTurn: () => {},
   moveHistory: '',
   updateMoveHistory: () => {},
-  getCurrentTurnPlayerColor: () => PieceColor.WHITE,
+  getCurrentTurnPlayer: () => ({} as UsePlayerReturn),
   changeTurn: () => {},
 });
 
@@ -42,14 +42,13 @@ export function GameStateProvider({ children }: GameStateProps) {
     setMoveHistory(newHistory);
   };
 
-  const getCurrentTurnPlayerColor = () => {
-    if (turn === 1) return playerOne.color;
-    else return playerTwo.color;
+  const getCurrentTurnPlayer = () => {
+    if (turn % 2 !== 0) return playerOne;
+    else return playerTwo;
   };
 
   const changeTurn = () => {
-    if (turn === 1) setTurn(2);
-    else setTurn(1);
+    setTurn((prevTurn) => prevTurn + 1);
   };
 
   return (
@@ -61,7 +60,7 @@ export function GameStateProvider({ children }: GameStateProps) {
         updateTurn,
         moveHistory,
         updateMoveHistory,
-        getCurrentTurnPlayerColor,
+        getCurrentTurnPlayer,
         changeTurn,
       }}
     >

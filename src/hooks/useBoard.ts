@@ -14,11 +14,16 @@ export function useBoard() {
   const { setPosition, startPos, endPos, setStartPos, clear } = useStartEndAction();
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
-    if (gameState.turn === 1) console.log('player 1 turn');
     const validMoves = validatePieceMove(board, piece, startPos);
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.some((move) => move.index === endPos)) return;
 
+    const capturedPiece = getPieceAtPosition(endPos);
+
+    if (capturedPiece) {
+      const currentPlayer = gameState.getCurrentTurnPlayer();
+      currentPlayer.enemyPieceCaptured(capturedPiece.type);
+    }
     move(piece, startPos, endPos);
     gameState.changeTurn();
   }
@@ -55,9 +60,10 @@ export function useBoard() {
     // Player should only be able to select their own piece or a blank square.
     // They can only select enemy piece if it's a capture move
     const piece = getPieceAtPosition(index);
-    const currentPlayerTurnColor = gameState.getCurrentTurnPlayerColor();
-    if ((piece && piece.color === currentPlayerTurnColor) || !piece) return true;
-    else if (piece && piece.color !== currentPlayerTurnColor && isFinalClick) return true;
+    const currentTurnPlayer = gameState.getCurrentTurnPlayer();
+    if ((piece && piece.color === currentTurnPlayer.color) || !piece) return true;
+    else if (piece && piece.color !== currentTurnPlayer.color && isFinalClick)
+      return true;
     else return false;
   };
 
