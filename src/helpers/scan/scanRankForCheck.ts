@@ -1,11 +1,8 @@
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
-import { RankScanResult } from '../scan/scanRank';
+import { ScanResult } from './scanRank';
 
-export function scanRankForCheck(
-  rankScan: RankScanResult[],
-  opponentPieceColor: PieceColor
-) {
+export function scanRankForCheck(rankScan: ScanResult[], opponentPieceColor: PieceColor) {
   let isCheck = false;
 
   // scan left side for unubstructed rook or queen
