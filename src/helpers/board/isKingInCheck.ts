@@ -1,6 +1,7 @@
 import { BoardState } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
 import { scanDiagonal } from '../scan/scanDiagonal';
+import { scanDiagonalForCheck } from '../scan/scanDiagonalForCheck';
 import { scanFile } from '../scan/scanFile';
 import { scanFileForCheck } from '../scan/scanFileForCheck';
 import { scanRank } from '../scan/scanRank';
@@ -22,7 +23,10 @@ export function isKingInCheck(
   if (scanFileForCheck(scannedFile, opponentColor)) isCheck = true;
 
   const scannedDiagonalA = scanDiagonal(board, currentKingIndex, true);
-  console.log(scannedDiagonalA);
+  const scannedDiagonalB = scanDiagonal(board, currentKingIndex, false);
+
+  if (scanDiagonalForCheck(scannedDiagonalA, scannedDiagonalB, opponentColor))
+    isCheck = true;
 
   return isCheck;
 }
