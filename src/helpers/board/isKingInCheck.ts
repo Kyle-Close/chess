@@ -4,6 +4,7 @@ import { scanDiagonal } from '../scan/scanDiagonal';
 import { scanDiagonalForCheck } from '../scan/scanDiagonalForCheck';
 import { scanFile } from '../scan/scanFile';
 import { scanFileForCheck } from '../scan/scanFileForCheck';
+import { scanForKnightCheck } from '../scan/scanForKnightCheck';
 import { scanRank } from '../scan/scanRank';
 import { scanRankForCheck } from '../scan/scanRankForCheck';
 
@@ -12,7 +13,6 @@ export function isKingInCheck(
   currentKingIndex: number,
   color: PieceColor
 ) {
-  // scan the entire board for check on king. check for only WHITE or BLACK (passed in)
   let isCheck = false;
   const opponentColor = color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
 
@@ -27,6 +27,8 @@ export function isKingInCheck(
 
   if (scanDiagonalForCheck(scannedDiagonalA, scannedDiagonalB, opponentColor))
     isCheck = true;
+
+  if (scanForKnightCheck(board, currentKingIndex, opponentColor)) isCheck = true;
 
   return isCheck;
 }
