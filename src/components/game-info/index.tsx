@@ -10,6 +10,10 @@ export function GameInfo() {
   if (isPlayerOneInCheck) playerOneClasses.push('text-red-700');
   if (gameState.turn % 2 !== 0) playerOneClasses.push('font-bold');
 
+  const playerTwoClasses = [];
+  if (isPlayerTwoInCheck) playerTwoClasses.push('text-red-700');
+  if (gameState.turn % 2 === 0) playerTwoClasses.push('font-bold');
+
   return (
     <div className='flex gap-16'>
       <div>
@@ -19,9 +23,7 @@ export function GameInfo() {
         <h6>{gameState.turn}</h6>
       </div>
       <div>
-        <h6 className={gameState.turn % 2 === 0 ? 'font-bold' : ''}>
-          {gameState.playerTwo.name}
-        </h6>
+        <h6 className={playerTwoClasses.join(' ')}>{gameState.playerTwo.name}</h6>
       </div>
     </div>
   );

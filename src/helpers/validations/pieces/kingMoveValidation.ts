@@ -1,4 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
+import { getPieceFile } from '../../generic/pieceLocation';
 import { filterOccupiedSelf, filterOutOfBounds } from './knightMoveValidation';
 
 export interface ValidSquares {
@@ -23,15 +24,21 @@ export function kingMoveValidation(
 
 function appendSurroundingSquares(currentIndex: number) {
   const result: ValidSquares[] = [];
+  const file = getPieceFile(currentIndex);
+
+  if (file !== 'a') {
+    result.push({ index: currentIndex + 7, isCapture: false });
+    result.push({ index: currentIndex - 1, isCapture: false });
+    result.push({ index: currentIndex - 9, isCapture: false });
+  }
+  if (file !== 'h') {
+    result.push({ index: currentIndex - 7, isCapture: false });
+    result.push({ index: currentIndex + 1, isCapture: false });
+    result.push({ index: currentIndex + 9, isCapture: false });
+  }
 
   result.push({ index: currentIndex - 8, isCapture: false });
-  result.push({ index: currentIndex - 7, isCapture: false });
-  result.push({ index: currentIndex + 1, isCapture: false });
-  result.push({ index: currentIndex + 9, isCapture: false });
   result.push({ index: currentIndex + 8, isCapture: false });
-  result.push({ index: currentIndex + 7, isCapture: false });
-  result.push({ index: currentIndex - 1, isCapture: false });
-  result.push({ index: currentIndex - 9, isCapture: false });
 
   return result;
 }
