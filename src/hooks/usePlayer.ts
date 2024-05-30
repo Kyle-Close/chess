@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
-import { BoardState } from '../context/board/InitialState';
+import { BoardState, Piece } from '../context/board/InitialState';
 import { isKingInCheck } from '../helpers/board/isKingInCheck';
 import { getKingIndex } from '../helpers/board/getKingIndex';
 import { BoardContext } from '../context/board/BoardContext';
+import { PieceWithIndex, isCheckmate } from '../helpers/board/isCheckmate';
+import { GameState } from '../context/GameState';
 
 export interface UsePlayerReturn {
   name: string;
@@ -18,6 +20,7 @@ export interface UsePlayerReturn {
   color: PieceColor;
   updateColor: (color: PieceColor) => void;
   updatePlayerInCheck: (board: BoardState) => void;
+  getRemainingPieces: () => Piece[];
 }
 
 export function usePlayer(
@@ -30,6 +33,7 @@ export function usePlayer(
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
   const { board } = useContext(BoardContext);
+  const gameState = useContext(GameState);
 
   const updateName = (name: string) => {
     setName(name);
@@ -57,9 +61,31 @@ export function usePlayer(
     setIsTurn(isTurn);
   };
 
+  const getRemainingPieces = () => {
+    const pieces: PieceWithIndex[] = [];
+
+    board.forEach((square, index) => {
+      const piece = square.piece;
+      if (piece && piece.color === color) pieces.push({ ...piece, index });
+    });
+    return pieces;
+  };
+
   useEffect(() => {
     if (isTurn) updatePlayerInCheck();
+    else updateIsInCheck(false);
   }, [isTurn]);
+
+  useEffect(() => {
+    if (isInCheck) {
+      const kingIndex = getKingIndex(board, color);
+      const kingPiece = board[kingIndex].piece;
+      const remainingPieces = getRemainingPieces();
+      if (!kingPiece) return;
+      if (isCheckmate(board, kingPiece, kingIndex, remainingPieces))
+        gameState.updateWinner(gameState.getCurrentTurnOpponent());
+    }
+  }, [isInCheck]);
 
   return {
     name,
@@ -73,5 +99,6 @@ export function usePlayer(
     color,
     updateColor,
     updatePlayerInCheck,
+    getRemainingPieces,
   };
 }
