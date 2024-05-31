@@ -7,7 +7,6 @@ import { isNumber } from '../generic/isNumber';
 export function buildBoardFromFen(fenPositionString: string) {
   // The fen position string starts with the 8th rank and goes to the first.
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
-  // rnbqkbnr/pppppppp/p6p/8/8/8/PPPPPPPP/RNBQKBNR
 
   const ranks = fenPositionString.split('/');
   if (ranks.length !== 8)
@@ -32,7 +31,6 @@ export function buildBoardFromFen(fenPositionString: string) {
 }
 
 function convertCharToPiece(char: string, index: number): Piece {
-  // Only care if pawn is has moved. check if it's in correct start position.
   switch (char) {
     case 'P':
       return buildPiece(
@@ -48,6 +46,24 @@ function convertCharToPiece(char: string, index: number): Piece {
       );
     case 'R':
       return buildPiece(PieceType.ROOK, PieceColor.WHITE, false);
+    case 'r':
+      return buildPiece(PieceType.ROOK, PieceColor.BLACK, false);
+    case 'N':
+      return buildPiece(PieceType.KNIGHT, PieceColor.WHITE, false);
+    case 'n':
+      return buildPiece(PieceType.KNIGHT, PieceColor.BLACK, false);
+    case 'B':
+      return buildPiece(PieceType.BISHOP, PieceColor.WHITE, false);
+    case 'b':
+      return buildPiece(PieceType.BISHOP, PieceColor.BLACK, false);
+    case 'Q':
+      return buildPiece(PieceType.QUEEN, PieceColor.WHITE, false);
+    case 'q':
+      return buildPiece(PieceType.QUEEN, PieceColor.BLACK, false);
+    case 'K':
+      return buildPiece(PieceType.KING, PieceColor.WHITE, false);
+    case 'k':
+      return buildPiece(PieceType.KING, PieceColor.BLACK, false);
 
     default:
       throw Error(`Character ${char} is not a valid piece.`);

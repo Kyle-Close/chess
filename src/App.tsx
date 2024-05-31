@@ -1,5 +1,6 @@
 import { Board } from './components/board';
 import { GameInfo } from './components/game-info';
+import { SetupGame } from './components/setup';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <div className='flex grow min-h-96 min-w-96 h-96 max-w-96 '>
         <Board />
       </div>
+      <SetupGame />
     </div>
   );
 }
