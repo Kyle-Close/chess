@@ -7,6 +7,7 @@ import { isNumber } from '../generic/isNumber';
 export function buildBoardFromFen(fenPositionString: string) {
   // The fen position string starts with the 8th rank and goes to the first.
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
+  // rnbqkbnr/pppppppp/p6p/8/8/8/PPPPPPPP/RNBQKBNR
 
   const ranks = fenPositionString.split('/');
   if (ranks.length !== 8)
@@ -18,12 +19,16 @@ export function buildBoardFromFen(fenPositionString: string) {
     for (let j = 0; j < ranks[i].length; j++) {
       const char = ranks[i][j];
       if (isNumber(char)) {
-        console.log('something');
+        pushEmptySquares(Number(char), initialBoard);
       } else {
-        const piece = convertCharToPiece(char);
+        const index = (7 - i) * 8 + j;
+        const piece = convertCharToPiece(char, index);
+        initialBoard.push({ piece, isValidMove: false, isCapture: false });
       }
     }
   }
+
+  return initialBoard;
 }
 
 function convertCharToPiece(char: string, index: number): Piece {
@@ -35,6 +40,14 @@ function convertCharToPiece(char: string, index: number): Piece {
         PieceColor.WHITE,
         isPawnInStartPosition(PieceColor.WHITE, index)
       );
+    case 'p':
+      return buildPiece(
+        PieceType.PAWN,
+        PieceColor.BLACK,
+        isPawnInStartPosition(PieceColor.BLACK, index)
+      );
+    case 'R':
+      return buildPiece(PieceType.ROOK, PieceColor.WHITE, false);
 
     default:
       throw Error(`Character ${char} is not a valid piece.`);
@@ -43,4 +56,9 @@ function convertCharToPiece(char: string, index: number): Piece {
 
 function buildPiece(type: PieceType, color: PieceColor, hasMoved: boolean): Piece {
   return { type, color, hasMoved };
+}
+
+function pushEmptySquares(count: number, board: BoardState) {
+  for (let i = 0; i < count; i++)
+    board.push({ piece: null, isCapture: false, isValidMove: false });
 }
