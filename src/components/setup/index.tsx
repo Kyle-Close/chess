@@ -5,7 +5,7 @@ export function SetupGame() {
   const [fenString, setFenString] = useState('');
   const setup = useSetupGame();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setFenString(e.target.value);
   };
 
@@ -19,13 +19,25 @@ export function SetupGame() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>FEN string</label>
-        <input value={fenString} onChange={handleChange} />
-        <button type='submit'>Initialize Board</button>
+    <div className='flex gap-8 max-w-96 mt-6 grow'>
+      <form className='flex flex-col gap-2 grow' onSubmit={handleSubmit}>
+        <textarea
+          className='p-2'
+          cols={4}
+          value={fenString}
+          onChange={handleChange}
+          placeholder='FEN string'
+        />
+        <button className='border-2 py-2 px-4 bg-green-600' type='submit'>
+          Initialize Board
+        </button>
       </form>
-      <button onClick={handleSaveClick}>Save game FEN string</button>
+      <button
+        className='max-h-12 border-2 bg-cyan-500 py-2 px-4'
+        onClick={handleSaveClick}
+      >
+        Log FEN
+      </button>
     </div>
   );
 }

@@ -36,13 +36,13 @@ function convertCharToPiece(char: string, index: number): Piece {
       return buildPiece(
         PieceType.PAWN,
         PieceColor.WHITE,
-        isPawnInStartPosition(PieceColor.WHITE, index)
+        !isPawnInStartPosition(PieceColor.WHITE, index)
       );
     case 'p':
       return buildPiece(
         PieceType.PAWN,
         PieceColor.BLACK,
-        isPawnInStartPosition(PieceColor.BLACK, index)
+        !isPawnInStartPosition(PieceColor.BLACK, index)
       );
     case 'R':
       return buildPiece(PieceType.ROOK, PieceColor.WHITE, false);

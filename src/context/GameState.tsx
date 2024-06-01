@@ -25,7 +25,7 @@ export const GameState = createContext<GameState>({
   playerTwo: {} as UsePlayerReturn,
   winner: null,
   updateWinner: () => {},
-  turn: 1,
+  turn: 0,
   updateTurn: () => {},
   moveHistory: '',
   updateMoveHistory: () => {},
@@ -38,7 +38,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const playerOne = usePlayer('Kyle', PieceColor.WHITE);
   const playerTwo = usePlayer('CPU', PieceColor.BLACK);
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
-  const [turn, setTurn] = useState(1);
+  const [turn, setTurn] = useState(0);
   const [moveHistory, setMoveHistory] = useState('');
 
   const updateWinner = (player: UsePlayerReturn | null) => {
@@ -54,12 +54,12 @@ export function GameStateProvider({ children }: GameStateProps) {
   };
 
   const getCurrentTurnPlayer = () => {
-    if (turn % 2 !== 0) return playerOne;
+    if (turn % 2 === 0) return playerOne;
     else return playerTwo;
   };
 
   const getCurrentTurnOpponent = () => {
-    if (turn % 2 !== 0) return playerTwo;
+    if (turn % 2 === 0) return playerTwo;
     else return playerOne;
   };
 
@@ -68,7 +68,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   };
 
   useEffect(() => {
-    if (turn % 2 === 0) {
+    if (turn % 2 !== 0) {
       playerOne.updatePlayerTurn(false);
       playerTwo.updatePlayerTurn(true);
     } else {
@@ -78,7 +78,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   }, [turn]);
 
   useEffect(() => {
-    if (winner) {
+    if (winner !== null) {
       console.log(`Game over! ${winner.name} has won.`);
     }
   }, [winner]);

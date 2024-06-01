@@ -5,9 +5,6 @@ import { useStartEndAction } from './useStartEndAction';
 import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
-import { isKingInCheck } from '../helpers/board/isKingInCheck';
-import { getKingIndex } from '../helpers/board/getKingIndex';
-import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =

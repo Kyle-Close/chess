@@ -4,7 +4,6 @@ import { BoardContext } from '../context/board/BoardContext';
 import { buildBoardFromFen } from '../helpers/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/game-setup/parseFenString';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
-import { PieceColor } from '../enums/PieceColor';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
@@ -15,12 +14,18 @@ export function useSetupGame() {
     const initialBoard = buildBoardFromFen(fenSegments.initialPositions);
 
     initializeBoard(initialBoard);
-
-    console.log('FEN Board: \n', initialBoard);
+    gameState.updateTurn(Number(fenSegments.halfMoves));
   }
 
   function buildFenFromGame() {
-    const fenString = buildFenStringFromGame(board, PieceColor.WHITE, '-', '-', 0, 1);
+    const currentPlayer = gameState.getCurrentTurnPlayer();
+    const fenString = buildFenStringFromGame(
+      board,
+      currentPlayer.color,
+      '-',
+      '-',
+      gameState.turn
+    );
     console.log(fenString);
   }
 

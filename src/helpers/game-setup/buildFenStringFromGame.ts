@@ -7,12 +7,13 @@ export function buildFenStringFromGame(
   activeColor: PieceColor,
   castlingAvailability: string,
   enPassantTargetSquare: string,
-  halfMoves: number,
-  fullMoves: number
+  turns: number
 ) {
   const piecePlacementString = buildPiecePlacementString(board);
+  const color = activeColor === PieceColor.WHITE ? 'w' : 'b';
+  const fullTurns = Math.floor(turns / 2);
 
-  return `${piecePlacementString} ${activeColor} ${castlingAvailability} ${enPassantTargetSquare} ${halfMoves} ${fullMoves}`;
+  return `${piecePlacementString} ${color} ${castlingAvailability} ${enPassantTargetSquare} ${turns} ${fullTurns}`;
 }
 
 function buildPiecePlacementString(board: BoardState) {
