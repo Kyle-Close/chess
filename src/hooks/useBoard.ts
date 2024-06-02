@@ -19,17 +19,20 @@ export function useBoard() {
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.some((move) => move.index === endPos)) return;
 
+    const currentPlayer = gameState.getCurrentTurnPlayer();
     const capturedPiece = getPieceAtPosition(endPos);
 
     if (capturedPiece) {
-      const currentPlayer = gameState.getCurrentTurnPlayer();
       currentPlayer.enemyPieceCaptured(capturedPiece.type);
     }
 
     gameState.changeTurn();
+
     const opponent = gameState.getCurrentTurnOpponent();
     const updatedBoard = copyBoardAndUpdate(board, piece, startPos, endPos);
-    opponent.executeTurn(updatedBoard, gameState);
+
+    if (opponent.checkForCheckmate(updatedBoard)) gameState.updateWinner(currentPlayer);
+
     move(piece, startPos, endPos);
   }
 

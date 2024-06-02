@@ -19,6 +19,8 @@ export function scanFileForCheck(rankScan: ScanResult[], opponentPieceColor: Pie
       isCheck = true;
   }
 
+  if (isCheck) return true;
+
   // scan right side for unubstructed rook or queen
   for (let i = 7; i >= 0; i--) {
     if (rankScan[i]?.color !== opponentPieceColor && rankScan[i]?.type === PieceType.KING)

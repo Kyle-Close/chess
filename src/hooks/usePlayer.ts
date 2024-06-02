@@ -6,7 +6,6 @@ import { isKingInCheck } from '../helpers/board/isKingInCheck';
 import { getKingIndex } from '../helpers/board/getKingIndex';
 import { BoardContext } from '../context/board/BoardContext';
 import { PieceWithIndex, isCheckmate } from '../helpers/board/isCheckmate';
-import { GameState } from '../context/GameState';
 
 export interface UsePlayerReturn {
   name: string;
@@ -19,9 +18,8 @@ export interface UsePlayerReturn {
   updateIsInCheck: (isCheck: boolean) => void;
   color: PieceColor;
   updateColor: (color: PieceColor) => void;
-  updatePlayerInCheck: (board: BoardState, gameState: GameState) => void;
   getRemainingPieces: () => Piece[];
-  executeTurn: (board: BoardState, gameState: GameState) => void;
+  checkForCheckmate: (board: BoardState) => boolean;
 }
 
 export function usePlayer(
@@ -51,22 +49,19 @@ export function usePlayer(
     setCapturedPieces((prevCapturedPieces) => [...prevCapturedPieces, pieceType]);
   };
 
-  const updatePlayerInCheck = (board: BoardState, gameState: GameState) => {
-    console.log(name);
+  const checkForCheckmate = (board: BoardState) => {
     const isCheck = isKingInCheck(board, getKingIndex(board, color), color);
-    if (isCheck) {
-      const kingIndex = getKingIndex(board, color);
-      const kingPiece = board[kingIndex].piece;
-      const remainingPieces = getRemainingPieces();
-      if (kingPiece) {
-        if (isCheckmate(board, kingPiece, kingIndex, remainingPieces)) {
-          const winner = gameState.getCurrentTurnOpponent();
-          console.log(winner);
-          gameState.updateWinner(winner);
-        }
-      }
-      setIsInCheck(true);
-    }
+
+    if (!isCheck) return false;
+
+    const kingIndex = getKingIndex(board, color);
+    const kingPiece = board[kingIndex].piece;
+    const remainingPieces = getRemainingPieces();
+
+    if (!kingPiece) return false;
+
+    if (isCheckmate(board, kingPiece, kingIndex, remainingPieces)) return true;
+    else return false;
   };
 
   const updatePlayerTurn = (isTurn: boolean) => {
@@ -83,11 +78,6 @@ export function usePlayer(
     return pieces;
   };
 
-  const executeTurn = (board: BoardState, gameState: GameState) => {
-    updatePlayerInCheck(board, gameState);
-    setIsTurn(false);
-  };
-
   return {
     name,
     isTurn,
@@ -99,8 +89,7 @@ export function usePlayer(
     updateIsInCheck,
     color,
     updateColor,
-    updatePlayerInCheck,
     getRemainingPieces,
-    executeTurn,
+    checkForCheckmate,
   };
 }
