@@ -6,7 +6,7 @@ interface GameStateProps {
   children: React.ReactNode;
 }
 
-interface GameState {
+export interface GameState {
   playerOne: UsePlayerReturn;
   playerTwo: UsePlayerReturn;
   winner: UsePlayerReturn | null;
@@ -81,7 +81,7 @@ export function GameStateProvider({ children }: GameStateProps) {
     if (winner !== null) {
       console.log(`Game over! ${winner.name} has won.`);
     }
-  }, [winner]);
+  });
 
   return (
     <GameState.Provider

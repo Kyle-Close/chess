@@ -5,6 +5,7 @@ import { useStartEndAction } from './useStartEndAction';
 import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
+import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -26,6 +27,9 @@ export function useBoard() {
     }
 
     gameState.changeTurn();
+    const opponent = gameState.getCurrentTurnOpponent();
+    const updatedBoard = copyBoardAndUpdate(board, piece, startPos, endPos);
+    opponent.executeTurn(updatedBoard, gameState);
     move(piece, startPos, endPos);
   }
 

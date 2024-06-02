@@ -7,10 +7,10 @@ import { GameStateProvider } from './context/GameState.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <GameStateProvider>
-      <BoardProvider>
+    <BoardProvider>
+      <GameStateProvider>
         <App />
-      </BoardProvider>
-    </GameStateProvider>
+      </GameStateProvider>
+    </BoardProvider>
   </React.StrictMode>
 );
