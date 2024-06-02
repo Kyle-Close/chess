@@ -1,4 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
+import { UsePlayerReturn } from '../../../hooks/usePlayer';
 import { getPieceFile } from '../../generic/pieceLocation';
 import { filterOccupiedSelf, filterOutOfBounds } from './knightMoveValidation';
 
@@ -10,7 +11,8 @@ export interface ValidSquares {
 export function kingMoveValidation(
   board: BoardState,
   piece: Piece,
-  currentIndex: number
+  currentIndex: number,
+  player: UsePlayerReturn
 ) {
   let validSquares: ValidSquares[] = [];
 
@@ -18,6 +20,9 @@ export function kingMoveValidation(
   validSquares = filterOutOfBounds(validSquares);
   validSquares = filterOccupiedSelf(board, piece, validSquares);
   validSquares = updateValidSquaresToIncludeCaptures(board, piece, validSquares);
+
+  const castleRights = player.castleRights;
+  console.log(castleRights);
 
   return validSquares;
 }

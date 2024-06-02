@@ -1,5 +1,6 @@
 import { BoardState, Piece } from '../../context/board/InitialState';
 import { PieceType } from '../../enums/PieceType';
+import { UsePlayerReturn } from '../../hooks/usePlayer';
 import { filterCheckMoves } from './filterCheckMoves';
 import { bishopMoveValidation } from './pieces/bishopMoveValidation';
 import { ValidSquares, kingMoveValidation } from './pieces/kingMoveValidation';
@@ -8,7 +9,12 @@ import { pawnMoveValidation } from './pieces/pawnMoveValidation';
 import { queenMoveValidation } from './pieces/queenMoveValidation';
 import { rookMoveValidation } from './pieces/rookMoveValidation';
 
-export function validatePieceMove(board: BoardState, piece: Piece, currentIndex: number) {
+export function validatePieceMove(
+  board: BoardState,
+  piece: Piece,
+  currentIndex: number,
+  player: UsePlayerReturn
+) {
   if (piece === null) return;
   const pieceType = piece.type;
   let validMoves: ValidSquares[] = [];
@@ -24,7 +30,7 @@ export function validatePieceMove(board: BoardState, piece: Piece, currentIndex:
   else if (pieceType === PieceType.QUEEN)
     validMoves = queenMoveValidation(board, piece, currentIndex);
   else if (pieceType === PieceType.KING)
-    validMoves = kingMoveValidation(board, piece, currentIndex);
+    validMoves = kingMoveValidation(board, piece, currentIndex, player);
 
   validMoves = filterCheckMoves(validMoves, board, piece, currentIndex);
 

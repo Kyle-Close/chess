@@ -6,9 +6,9 @@ import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
 import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
-import { getSquareNotation } from '../helpers/board/getSquareNotation';
 import { buildChessNotation } from '../helpers/move/buildChessNotation';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
+import { UsePlayerReturn } from './usePlayer';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -17,8 +17,13 @@ export function useBoard() {
   const { move } = usePiece();
   const { setPosition, startPos, endPos, setStartPos, clear } = useStartEndAction();
 
-  function tryMove(piece: Piece, startPos: number, endPos: number) {
-    const validMoves = validatePieceMove(board, piece, startPos);
+  function tryMove(
+    piece: Piece,
+    startPos: number,
+    endPos: number,
+    player: UsePlayerReturn
+  ) {
+    const validMoves = validatePieceMove(board, piece, startPos, player);
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.some((move) => move.index === endPos)) return;
 
@@ -55,10 +60,10 @@ export function useBoard() {
     move(piece, startPos, endPos);
   }
 
-  function handleShowValidMoves(startPos: number) {
+  function handleShowValidMoves(startPos: number, player: UsePlayerReturn) {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
-      const validMoves = validatePieceMove(board, currentPiece, startPos);
+      const validMoves = validatePieceMove(board, currentPiece, startPos, player);
       if (validMoves) {
         setBoard((prevBoard) => {
           const copy = [...prevBoard];
@@ -95,10 +100,11 @@ export function useBoard() {
   useEffect(() => {
     if (startPos === null) clearIsValidSquares();
     else if (startPos !== null && endPos === null) {
-      if (isClickingValidSquare(startPos, true)) handleShowValidMoves(startPos);
+      if (isClickingValidSquare(startPos, true))
+        handleShowValidMoves(startPos, gameState.getCurrentTurnPlayer());
     } else if (startPos !== null && endPos !== null) {
       const piece = getPieceAtPosition(startPos);
-      if (piece) tryMove(piece, startPos, endPos);
+      if (piece) tryMove(piece, startPos, endPos, gameState.getCurrentTurnPlayer());
       clear();
     }
   }, [startPos, endPos]);

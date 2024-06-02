@@ -6,6 +6,7 @@ import { isKingInCheck } from '../helpers/board/isKingInCheck';
 import { getKingIndex } from '../helpers/board/getKingIndex';
 import { BoardContext } from '../context/board/BoardContext';
 import { PieceWithIndex, isCheckmate } from '../helpers/board/isCheckmate';
+import { CastleRights, useCastleRights } from './useCastleRights';
 
 export interface UsePlayerReturn {
   name: string;
@@ -20,6 +21,7 @@ export interface UsePlayerReturn {
   updateColor: (color: PieceColor) => void;
   getRemainingPieces: () => Piece[];
   checkForCheckmate: (board: BoardState) => boolean;
+  castleRights: CastleRights;
 }
 
 export function usePlayer(
@@ -32,6 +34,7 @@ export function usePlayer(
   const [color, setColor] = useState<PieceColor>(initialColor);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
+  const { castleRights } = useCastleRights(color);
 
   const updateName = (name: string) => {
     setName(name);
@@ -91,5 +94,6 @@ export function usePlayer(
     updateColor,
     getRemainingPieces,
     checkForCheckmate,
+    castleRights,
   };
 }
