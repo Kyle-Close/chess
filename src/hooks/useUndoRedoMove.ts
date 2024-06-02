@@ -12,7 +12,8 @@ export function useUndoRedoMove() {
       const lastMove = moveHistory[moveHistory.length - 2];
       if (!lastMove) return;
 
-      gameState.popMoveHistory();
+      const popped = gameState.popMoveHistory();
+      gameState.pushToMoveHistoryRedo(popped);
       setupFromFEN(lastMove.fenString);
     }
   };
@@ -21,10 +22,11 @@ export function useUndoRedoMove() {
     const redoMoveHistory = gameState.moveHistoryRedo;
     if (redoMoveHistory.length > 0) {
       const lastRedo = redoMoveHistory[redoMoveHistory.length - 1];
-      if (lastRedo) {
-        gameState.pushToMoveHistory(lastRedo);
-        setupFromFEN(lastRedo.fenString);
-      }
+      if (!lastRedo) return;
+
+      gameState.popMoveHistoryRedo();
+      gameState.pushToMoveHistory(lastRedo);
+      setupFromFEN(lastRedo.fenString);
     }
   };
 
