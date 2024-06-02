@@ -73,6 +73,16 @@ export function GameStateProvider({ children }: GameStateProps) {
     });
   };
 
+  const popMoveHistoryRedo = () => {
+    setMoveHistoryRedo((prevMoveHistoryRedo) => {
+      const copy = [...prevMoveHistoryRedo];
+      const pop = copy.pop();
+      if (!pop) return [...prevMoveHistoryRedo];
+      pushToMoveHistoryRedo(pop);
+      return copy;
+    });
+  };
+
   const getCurrentTurnPlayer = () => {
     if (turn % 2 === 0) return playerOne;
     else return playerTwo;

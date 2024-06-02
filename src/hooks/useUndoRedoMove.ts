@@ -20,7 +20,7 @@ export function useUndoRedoMove() {
   const redo = () => {
     const redoMoveHistory = gameState.moveHistoryRedo;
     if (redoMoveHistory.length > 0) {
-      const lastRedo = redoMoveHistory.pop();
+      const lastRedo = redoMoveHistory[redoMoveHistory.length - 1];
       if (lastRedo) {
         gameState.pushToMoveHistory(lastRedo);
         setupFromFEN(lastRedo.fenString);
