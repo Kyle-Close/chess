@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useSetupGame } from '../../hooks/useSetupGame';
+import { UndoButton } from './undoButton';
+import { RedoButton } from './RedoButton';
 
 export function SetupGame() {
   const [fenString, setFenString] = useState('');
@@ -38,6 +40,8 @@ export function SetupGame() {
       >
         Log FEN
       </button>
+      <UndoButton />
+      <RedoButton />
     </div>
   );
 }

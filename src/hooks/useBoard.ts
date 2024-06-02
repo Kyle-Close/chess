@@ -38,8 +38,9 @@ export function useBoard() {
       currentPlayer.color,
       '-',
       '-',
-      gameState.turn
+      gameState.turn + 1
     );
+
     const chessNotation = buildChessNotation(
       board,
       piece,
@@ -47,6 +48,7 @@ export function useBoard() {
       endPos,
       opponent.color
     );
+
     gameState.pushToMoveHistory({ fenString, chessNotation });
     if (opponent.checkForCheckmate(updatedBoard)) gameState.updateWinner(currentPlayer);
 

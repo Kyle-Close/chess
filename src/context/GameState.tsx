@@ -19,6 +19,8 @@ export interface GameState {
   getCurrentTurnOpponent: () => UsePlayerReturn;
   changeTurn: () => void;
   pushToMoveHistory: (move: MoveHistory) => void;
+  popMoveHistory: () => void;
+  moveHistoryRedo: MoveHistory[];
 }
 
 export const GameState = createContext<GameState>({
@@ -33,6 +35,8 @@ export const GameState = createContext<GameState>({
   getCurrentTurnOpponent: () => ({} as UsePlayerReturn),
   changeTurn: () => {},
   pushToMoveHistory: () => {},
+  popMoveHistory: () => {},
+  moveHistoryRedo: [] as MoveHistory[],
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
@@ -41,6 +45,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
   const [turn, setTurn] = useState(0);
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([]);
+  const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
 
   const updateWinner = (player: UsePlayerReturn | null) => {
     setWinner(player);
@@ -52,6 +57,20 @@ export function GameStateProvider({ children }: GameStateProps) {
 
   const pushToMoveHistory = (move: MoveHistory) => {
     setMoveHistory((prevMoveHistory) => [...prevMoveHistory, move]);
+  };
+
+  const pushToMoveHistoryRedo = (move: MoveHistory) => {
+    setMoveHistoryRedo((prev) => [...prev, move]);
+  };
+
+  const popMoveHistory = () => {
+    setMoveHistory((prevMoveHistory) => {
+      const copy = [...prevMoveHistory];
+      const pop = copy.pop();
+      if (!pop) return [...prevMoveHistory];
+      pushToMoveHistoryRedo(pop);
+      return copy;
+    });
   };
 
   const getCurrentTurnPlayer = () => {
@@ -95,9 +114,11 @@ export function GameStateProvider({ children }: GameStateProps) {
         updateTurn,
         moveHistory,
         pushToMoveHistory,
+        popMoveHistory,
         getCurrentTurnPlayer,
         getCurrentTurnOpponent,
         changeTurn,
+        moveHistoryRedo,
       }}
     >
       {children}
