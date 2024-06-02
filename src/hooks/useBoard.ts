@@ -6,6 +6,9 @@ import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
 import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
+import { getSquareNotation } from '../helpers/board/getSquareNotation';
+import { buildChessNotation } from '../helpers/move/buildChessNotation';
+import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -30,7 +33,21 @@ export function useBoard() {
 
     const opponent = gameState.getCurrentTurnOpponent();
     const updatedBoard = copyBoardAndUpdate(board, piece, startPos, endPos);
-
+    const fenString = buildFenStringFromGame(
+      updatedBoard,
+      currentPlayer.color,
+      '-',
+      '-',
+      gameState.turn
+    );
+    const chessNotation = buildChessNotation(
+      board,
+      piece,
+      startPos,
+      endPos,
+      opponent.color
+    );
+    gameState.pushToMoveHistory({ fenString, chessNotation });
     if (opponent.checkForCheckmate(updatedBoard)) gameState.updateWinner(currentPlayer);
 
     move(piece, startPos, endPos);

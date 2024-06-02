@@ -8,11 +8,11 @@ export function GameInfo() {
 
   const playerOneClasses = [];
   if (isPlayerOneInCheck) playerOneClasses.push('text-red-700');
-  if (gameState.turn % 2 !== 0) playerOneClasses.push('font-bold');
+  if (gameState.turn % 2 === 0) playerOneClasses.push('font-bold');
 
   const playerTwoClasses = [];
   if (isPlayerTwoInCheck) playerTwoClasses.push('text-red-700');
-  if (gameState.turn % 2 === 0) playerTwoClasses.push('font-bold');
+  if (gameState.turn % 2 !== 0) playerTwoClasses.push('font-bold');
 
   return (
     <div className='flex gap-16'>

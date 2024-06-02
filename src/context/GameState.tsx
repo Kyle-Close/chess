@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { UsePlayerReturn, usePlayer } from '../hooks/usePlayer';
 import { PieceColor } from '../enums/PieceColor';
+import { MoveHistory } from './types/MoveHistory';
 
 interface GameStateProps {
   children: React.ReactNode;
@@ -13,11 +14,11 @@ export interface GameState {
   updateWinner: (player: UsePlayerReturn | null) => void;
   turn: number;
   updateTurn: (turn: number) => void;
-  moveHistory: string;
-  updateMoveHistory: (newHistory: string) => void;
+  moveHistory: MoveHistory[];
   getCurrentTurnPlayer: () => UsePlayerReturn;
   getCurrentTurnOpponent: () => UsePlayerReturn;
   changeTurn: () => void;
+  pushToMoveHistory: (move: MoveHistory) => void;
 }
 
 export const GameState = createContext<GameState>({
@@ -27,11 +28,11 @@ export const GameState = createContext<GameState>({
   updateWinner: () => {},
   turn: 0,
   updateTurn: () => {},
-  moveHistory: '',
-  updateMoveHistory: () => {},
+  moveHistory: {} as MoveHistory[],
   getCurrentTurnPlayer: () => ({} as UsePlayerReturn),
   getCurrentTurnOpponent: () => ({} as UsePlayerReturn),
   changeTurn: () => {},
+  pushToMoveHistory: () => {},
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
@@ -39,7 +40,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const playerTwo = usePlayer('CPU', PieceColor.BLACK);
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
   const [turn, setTurn] = useState(0);
-  const [moveHistory, setMoveHistory] = useState('');
+  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([]);
 
   const updateWinner = (player: UsePlayerReturn | null) => {
     setWinner(player);
@@ -49,8 +50,8 @@ export function GameStateProvider({ children }: GameStateProps) {
     setTurn(turn);
   };
 
-  const updateMoveHistory = (newHistory: string) => {
-    setMoveHistory(newHistory);
+  const pushToMoveHistory = (move: MoveHistory) => {
+    setMoveHistory((prevMoveHistory) => [...prevMoveHistory, move]);
   };
 
   const getCurrentTurnPlayer = () => {
@@ -93,7 +94,7 @@ export function GameStateProvider({ children }: GameStateProps) {
         turn,
         updateTurn,
         moveHistory,
-        updateMoveHistory,
+        pushToMoveHistory,
         getCurrentTurnPlayer,
         getCurrentTurnOpponent,
         changeTurn,

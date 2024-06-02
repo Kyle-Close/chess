@@ -7,10 +7,10 @@ export function getPieceFile(currentIndex: number) {
   else if ((currentIndex - 5) % 8 === 0 || currentIndex === 5) return 'f';
   else if ((currentIndex - 6) % 8 === 0 || currentIndex === 6) return 'g';
   else if ((currentIndex - 7) % 8 === 0 || currentIndex === 7) return 'h';
-  else return null;
+  else throw Error('Index out of bounds');
 }
 
-export type PieceFile = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | null;
+export type PieceFile = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h';
 
 export function convertFileToIndex(file: PieceFile) {
   if (!file) return;
