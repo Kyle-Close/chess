@@ -8,7 +8,8 @@ import { GameState } from '../context/GameState';
 import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
 import { buildChessNotation } from '../helpers/move/buildChessNotation';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
-import { UsePlayerReturn } from './usePlayer';
+import { PieceType } from '../enums/PieceType';
+import { PieceColor } from '../enums/PieceColor';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -17,13 +18,8 @@ export function useBoard() {
   const { move } = usePiece();
   const { setPosition, startPos, endPos, setStartPos, clear } = useStartEndAction();
 
-  function tryMove(
-    piece: Piece,
-    startPos: number,
-    endPos: number,
-    player: UsePlayerReturn
-  ) {
-    const validMoves = validatePieceMove(board, piece, startPos, player);
+  function tryMove(piece: Piece, startPos: number, endPos: number) {
+    const validMoves = validatePieceMove(board, piece, startPos);
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.some((move) => move.index === endPos)) return;
 
@@ -60,10 +56,26 @@ export function useBoard() {
     move(piece, startPos, endPos);
   }
 
-  function handleShowValidMoves(startPos: number, player: UsePlayerReturn) {
+  function handleShowValidMoves(startPos: number) {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
-      const validMoves = validatePieceMove(board, currentPiece, startPos, player);
+      const validMoves = validatePieceMove(board, currentPiece, startPos);
+      if (currentPiece.type === PieceType.KING) {
+        // append here
+        const player = gameState.getCurrentTurnPlayer();
+        const castleRights = player.castleRights;
+        if (player.color === PieceColor.WHITE) {
+          if (castleRights.canCastleKingSide)
+            validMoves?.push({ index: 6, isCapture: false });
+          if (castleRights.canCastleQueenSide)
+            validMoves?.push({ index: 2, isCapture: false });
+        } else {
+          if (castleRights.canCastleKingSide)
+            validMoves?.push({ index: 62, isCapture: false });
+          if (castleRights.canCastleQueenSide)
+            validMoves?.push({ index: 58, isCapture: false });
+        }
+      }
       if (validMoves) {
         setBoard((prevBoard) => {
           const copy = [...prevBoard];
@@ -100,11 +112,10 @@ export function useBoard() {
   useEffect(() => {
     if (startPos === null) clearIsValidSquares();
     else if (startPos !== null && endPos === null) {
-      if (isClickingValidSquare(startPos, true))
-        handleShowValidMoves(startPos, gameState.getCurrentTurnPlayer());
+      if (isClickingValidSquare(startPos, true)) handleShowValidMoves(startPos);
     } else if (startPos !== null && endPos !== null) {
       const piece = getPieceAtPosition(startPos);
-      if (piece) tryMove(piece, startPos, endPos, gameState.getCurrentTurnPlayer());
+      if (piece) tryMove(piece, startPos, endPos);
       clear();
     }
   }, [startPos, endPos]);

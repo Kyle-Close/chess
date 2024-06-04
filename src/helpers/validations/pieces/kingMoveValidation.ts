@@ -11,8 +11,7 @@ export interface ValidSquares {
 export function kingMoveValidation(
   board: BoardState,
   piece: Piece,
-  currentIndex: number,
-  player: UsePlayerReturn
+  currentIndex: number
 ) {
   let validSquares: ValidSquares[] = [];
 
@@ -20,9 +19,6 @@ export function kingMoveValidation(
   validSquares = filterOutOfBounds(validSquares);
   validSquares = filterOccupiedSelf(board, piece, validSquares);
   validSquares = updateValidSquaresToIncludeCaptures(board, piece, validSquares);
-
-  const castleRights = player.castleRights;
-  console.log(castleRights);
 
   return validSquares;
 }

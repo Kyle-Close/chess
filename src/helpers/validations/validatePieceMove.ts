@@ -9,12 +9,7 @@ import { pawnMoveValidation } from './pieces/pawnMoveValidation';
 import { queenMoveValidation } from './pieces/queenMoveValidation';
 import { rookMoveValidation } from './pieces/rookMoveValidation';
 
-export function validatePieceMove(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number,
-  player: UsePlayerReturn
-) {
+export function validatePieceMove(board: BoardState, piece: Piece, currentIndex: number) {
   if (piece === null) return;
   const pieceType = piece.type;
   let validMoves: ValidSquares[] = [];
@@ -30,7 +25,7 @@ export function validatePieceMove(
   else if (pieceType === PieceType.QUEEN)
     validMoves = queenMoveValidation(board, piece, currentIndex);
   else if (pieceType === PieceType.KING)
-    validMoves = kingMoveValidation(board, piece, currentIndex, player);
+    validMoves = kingMoveValidation(board, piece, currentIndex);
 
   validMoves = filterCheckMoves(validMoves, board, piece, currentIndex);
 

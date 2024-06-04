@@ -2,7 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { PieceColor } from '../enums/PieceColor';
 import { getKingIndex } from '../helpers/board/getKingIndex';
-import { BoardState } from '../context/board/InitialState';
+import { BoardState, Piece } from '../context/board/InitialState';
+import { validatePieceMove } from '../helpers/validations/validatePieceMove';
+import { PieceWithIndex } from '../helpers/board/isCheckmate';
 
 export interface CastleRights {
   canCastleQueenSide: boolean;
@@ -47,7 +49,35 @@ function getCastleRights(board: BoardState, color: PieceColor) {
   if (isQueenSidePathObstructed) isQueenSide = false;
   if (isKingSidePathObstructed) isKingSide = false;
 
+  const isQueenSideAttacked = getIsQueenSideAttacked(
+    board,
+    queenSideSquaresAlongPath,
+    color
+  );
+
   return { canCastleQueenSide: isQueenSide, canCastleKingSide: isKingSide };
+}
+
+function getIsQueenSideAttacked(
+  board: BoardState,
+  pathSquares: number[],
+  color: PieceColor
+) {
+  // get all opponent pieces
+  // run validations on all of them to see what squares they can go to.
+  // if any of the above 'attack' squares are in the list of pathSquares then true
+  // otherwise false
+  const opponentPieces: PieceWithIndex[] = [];
+
+  board.forEach((square, index) => {
+    const piece = square.piece;
+    if (!piece) return;
+    else if (piece.color !== color) opponentPieces.push({ ...piece, index });
+  });
+
+  const isAttacked = opponentPieces.some((piece) => {
+    //const attackingSquares = validatePieceMove(board, piece);
+  });
 }
 
 function isPathObstructed(board: BoardState, squaresAlongPath: number[]) {
