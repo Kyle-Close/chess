@@ -19,11 +19,13 @@ export function useBoard() {
   const { setPosition, startPos, endPos, setStartPos, clear } = useStartEndAction();
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
-    const validMoves = validatePieceMove(board, piece, startPos);
+    const currentPlayer = gameState.getCurrentTurnPlayer();
+    const castleRights = currentPlayer.castleRights;
+
+    const validMoves = validatePieceMove(board, piece, startPos, castleRights);
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.some((move) => move.index === endPos)) return;
 
-    const currentPlayer = gameState.getCurrentTurnPlayer();
     const capturedPiece = getPieceAtPosition(endPos);
 
     if (capturedPiece) {
@@ -54,6 +56,11 @@ export function useBoard() {
     if (opponent.checkForCheckmate(updatedBoard)) gameState.updateWinner(currentPlayer);
 
     move(piece, startPos, endPos);
+    // if piece == king
+    // . call fn that checks if it's moved more than 1 square over
+    // . if yes, then move rook too
+
+    // TODO - if castle was done - move rook to position
   }
 
   function handleShowValidMoves(startPos: number) {
