@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { PieceColor } from '../enums/PieceColor';
 import { getKingIndex } from '../helpers/board/getKingIndex';
-import { BoardState, Piece } from '../context/board/InitialState';
-import { validatePieceMove } from '../helpers/validations/validatePieceMove';
+import { BoardState } from '../context/board/InitialState';
 import { PieceWithIndex } from '../helpers/board/isCheckmate';
+import { scanAttackingSquares } from '../helpers/scan/scanAttackingSquares';
 
 export interface CastleRights {
   canCastleQueenSide: boolean;
@@ -54,6 +54,13 @@ function getCastleRights(board: BoardState, color: PieceColor) {
     queenSideSquaresAlongPath,
     color
   );
+  const isKingSideAttacked = getIsKingSideAttacked(
+    board,
+    kingSideSquaresAlongPath,
+    color
+  );
+
+  console.log('is queenside attacked: ', isQueenSideAttacked);
 
   return { canCastleQueenSide: isQueenSide, canCastleKingSide: isKingSide };
 }
@@ -63,21 +70,10 @@ function getIsQueenSideAttacked(
   pathSquares: number[],
   color: PieceColor
 ) {
-  // get all opponent pieces
-  // run validations on all of them to see what squares they can go to.
-  // if any of the above 'attack' squares are in the list of pathSquares then true
-  // otherwise false
-  const opponentPieces: PieceWithIndex[] = [];
+  const opponentColor = color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+  const attackedIndexes = scanAttackingSquares(board, opponentColor);
 
-  board.forEach((square, index) => {
-    const piece = square.piece;
-    if (!piece) return;
-    else if (piece.color !== color) opponentPieces.push({ ...piece, index });
-  });
-
-  const isAttacked = opponentPieces.some((piece) => {
-    //const attackingSquares = validatePieceMove(board, piece);
-  });
+  return pathSquares.some((square) => attackedIndexes.includes(square));
 }
 
 function isPathObstructed(board: BoardState, squaresAlongPath: number[]) {

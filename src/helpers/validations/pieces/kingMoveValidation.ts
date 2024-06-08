@@ -1,5 +1,4 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { UsePlayerReturn } from '../../../hooks/usePlayer';
 import { getPieceFile } from '../../generic/pieceLocation';
 import { filterOccupiedSelf, filterOutOfBounds } from './knightMoveValidation';
 
