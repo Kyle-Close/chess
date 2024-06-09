@@ -1,12 +1,14 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
+import { getPawnAttackingIndexes } from '../../board/getPawnAttackingIndexes';
 import { PieceRank, getPieceFile, getPieceRank } from '../../generic/pieceLocation';
 import { ValidSquares } from './kingMoveValidation';
 
 export function pawnMoveValidation(
   board: BoardState,
   piece: Piece,
-  currentIndex: number
+  currentIndex: number,
+  enPassantTargetSquare?: number | null
 ) {
   const validSquares: ValidSquares[] = [];
   const pieceRank = getPieceRank(currentIndex);
@@ -38,6 +40,14 @@ export function pawnMoveValidation(
 
   if (captureLeft) validSquares.push({ index: captureLeft.index, isCapture: true });
   if (captureRight) validSquares.push({ index: captureRight.index, isCapture: true });
+
+  if (
+    enPassantTargetSquare &&
+    piece.color !== null &&
+    isEnpassantCapturePossible(piece.color, currentIndex, enPassantTargetSquare)
+  ) {
+    validSquares.push({ index: enPassantTargetSquare, isCapture: true });
+  }
 
   return validSquares;
 }
@@ -110,5 +120,15 @@ function captureAvailable(
 function isOnLastRank(piece: Piece, pieceRank: PieceRank) {
   if (piece.color === PieceColor.WHITE && pieceRank === 8) return true;
   else if (piece.color === PieceColor.BLACK && pieceRank === 1) return true;
+  else return false;
+}
+
+export function isEnpassantCapturePossible(
+  color: PieceColor,
+  currentPos: number,
+  target: number
+) {
+  const attackingSquares = getPawnAttackingIndexes(currentPos, color);
+  if (attackingSquares.includes(target)) return true;
   else return false;
 }

@@ -2,7 +2,6 @@ import { BoardState, Piece } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
 import { CastleRights } from '../../hooks/useCastleRights';
-import { UsePlayerReturn } from '../../hooks/usePlayer';
 import { filterCheckMoves } from './filterCheckMoves';
 import { bishopMoveValidation } from './pieces/bishopMoveValidation';
 import { ValidSquares, kingMoveValidation } from './pieces/kingMoveValidation';
@@ -15,7 +14,8 @@ export function validatePieceMove(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
-  castleRights?: CastleRights
+  castleRights?: CastleRights,
+  enPassantTargetSquare?: number | null
 ) {
   if (piece === null) return;
   const pieceType = piece.type;
@@ -24,7 +24,7 @@ export function validatePieceMove(
   let validMoves: ValidSquares[] = [];
 
   if (pieceType === PieceType.PAWN)
-    validMoves = pawnMoveValidation(board, piece, currentIndex);
+    validMoves = pawnMoveValidation(board, piece, currentIndex, enPassantTargetSquare);
   else if (pieceType === PieceType.ROOK)
     validMoves = rookMoveValidation(board, piece, currentIndex);
   else if (pieceType === PieceType.KNIGHT)

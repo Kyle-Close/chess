@@ -27,7 +27,13 @@ export function useBoard() {
     const currentPlayer = gameState.getCurrentTurnPlayer();
     const castleRights = currentPlayer.castleRights;
 
-    const validMoves = validatePieceMove(board, piece, startPos, castleRights);
+    const validMoves = validatePieceMove(
+      board,
+      piece,
+      startPos,
+      castleRights,
+      gameState.enPassantSquare
+    );
     if (!validMoves || validMoves.length === 0) return;
     if (!validMoves.some((move) => move.index === endPos)) return;
 
@@ -73,6 +79,11 @@ export function useBoard() {
     }
 
     // Handle en passant logic
+    if (piece.type === PieceType.PAWN && endPos === gameState.enPassantSquare) {
+      // capture enemy piece
+      if (piece.color && currentPlayer.color === PieceColor.WHITE) {
+      }
+    }
     if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPos, endPos)) {
       const currentRank = getPieceRank(startPos);
       const enPassantRank = (
@@ -86,7 +97,13 @@ export function useBoard() {
   function handleShowValidMoves(startPos: number) {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
-      const validMoves = validatePieceMove(board, currentPiece, startPos);
+      const validMoves = validatePieceMove(
+        board,
+        currentPiece,
+        startPos,
+        undefined,
+        gameState.enPassantSquare
+      );
       if (currentPiece.type === PieceType.KING) {
         // append here
         const player = gameState.getCurrentTurnPlayer();
