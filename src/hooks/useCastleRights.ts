@@ -49,27 +49,29 @@ function getCastleRights(board: BoardState, color: PieceColor) {
   if (isQueenSidePathObstructed) isQueenSide = false;
   if (isKingSidePathObstructed) isKingSide = false;
 
-  const isQueenSideAttacked = getIsQueenSideAttacked(
+  const isQueenSideAttacked = checkIfPathIsAttacked(
     board,
     queenSideSquaresAlongPath,
     color
   );
-  const isKingSideAttacked = getIsKingSideAttacked(
+  const isKingSideAttacked = checkIfPathIsAttacked(
     board,
     kingSideSquaresAlongPath,
     color
   );
 
-  console.log('is queenside attacked: ', isQueenSideAttacked);
+  if (isQueenSideAttacked) isQueenSide = false;
+  if (isKingSideAttacked) isKingSide = false;
 
   return { canCastleQueenSide: isQueenSide, canCastleKingSide: isKingSide };
 }
 
-function getIsQueenSideAttacked(
+function checkIfPathIsAttacked(
   board: BoardState,
   pathSquares: number[],
   color: PieceColor
 ) {
+  // Checks if any of the passed in squares are being attacked by opponent
   const opponentColor = color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
   const attackedIndexes = scanAttackingSquares(board, opponentColor);
 

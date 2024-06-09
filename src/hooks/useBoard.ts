@@ -10,6 +10,8 @@ import { buildChessNotation } from '../helpers/move/buildChessNotation';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
+import { isMoveCastle } from '../helpers/move/isMoveCastle';
+import { getCastleRookStartEndPosition } from '../helpers/board/getCastleRookStartEndPosition';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -56,11 +58,15 @@ export function useBoard() {
     if (opponent.checkForCheckmate(updatedBoard)) gameState.updateWinner(currentPlayer);
 
     move(piece, startPos, endPos);
-    // if piece == king
-    // . call fn that checks if it's moved more than 1 square over
-    // . if yes, then move rook too
 
-    // TODO - if castle was done - move rook to position
+    const isCastle = isMoveCastle(piece, startPos, endPos);
+    if (isCastle) {
+      const rookStartEnd = getCastleRookStartEndPosition(endPos);
+      if (rookStartEnd) {
+        const rook = getPieceAtPosition(rookStartEnd.start);
+        if (rook) move(rook, rookStartEnd.start, rookStartEnd.end);
+      }
+    }
   }
 
   function handleShowValidMoves(startPos: number) {
