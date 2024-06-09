@@ -12,6 +12,9 @@ import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { isMoveCastle } from '../helpers/move/isMoveCastle';
 import { getCastleRookStartEndPosition } from '../helpers/board/getCastleRookStartEndPosition';
+import { isPawnAdvancingTwoSquares } from '../helpers/move/isPawnAdvancingTwoSquares';
+import { getSquareIndexByRankAndFile } from '../helpers/board/getSquareIndexByRankAndFile';
+import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceLocation';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -59,6 +62,7 @@ export function useBoard() {
 
     move(piece, startPos, endPos);
 
+    // Handle castle logic
     const isCastle = isMoveCastle(piece, startPos, endPos);
     if (isCastle) {
       const rookStartEnd = getCastleRookStartEndPosition(endPos);
@@ -67,6 +71,16 @@ export function useBoard() {
         if (rook) move(rook, rookStartEnd.start, rookStartEnd.end);
       }
     }
+
+    // Handle en passant logic
+    if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPos, endPos)) {
+      const currentRank = getPieceRank(startPos);
+      const enPassantRank = (
+        currentPlayer.color === PieceColor.WHITE ? currentRank + 1 : currentRank - 1
+      ) as PieceRank;
+      const file = getPieceFile(startPos);
+      gameState.updateEnPassantSquare(getSquareIndexByRankAndFile(enPassantRank, file));
+    } else gameState.clearEnPassantSquare();
   }
 
   function handleShowValidMoves(startPos: number) {

@@ -23,6 +23,9 @@ export interface GameState {
   moveHistoryRedo: MoveHistory[];
   pushToMoveHistoryRedo: (move: MoveHistory) => void;
   popMoveHistoryRedo: () => MoveHistory;
+  enPassantSquare: null | number;
+  clearEnPassantSquare: () => void;
+  updateEnPassantSquare: (index: number) => void;
 }
 
 export const GameState = createContext<GameState>({
@@ -41,6 +44,9 @@ export const GameState = createContext<GameState>({
   moveHistoryRedo: [] as MoveHistory[],
   pushToMoveHistoryRedo: () => {},
   popMoveHistoryRedo: () => ({} as MoveHistory),
+  enPassantSquare: null,
+  clearEnPassantSquare: () => {},
+  updateEnPassantSquare: () => {},
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
@@ -50,6 +56,15 @@ export function GameStateProvider({ children }: GameStateProps) {
   const [turn, setTurn] = useState(0);
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([]);
   const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
+  const [enPassantSquare, setEnpassantSquare] = useState<null | number>(null);
+
+  const clearEnPassantSquare = () => {
+    setEnpassantSquare(null);
+  };
+
+  const updateEnPassantSquare = (index: number) => {
+    setEnpassantSquare(index);
+  };
 
   const updateWinner = (player: UsePlayerReturn | null) => {
     setWinner(player);
@@ -137,6 +152,9 @@ export function GameStateProvider({ children }: GameStateProps) {
         moveHistoryRedo,
         pushToMoveHistoryRedo,
         popMoveHistoryRedo,
+        enPassantSquare,
+        updateEnPassantSquare,
+        clearEnPassantSquare,
       }}
     >
       {children}
