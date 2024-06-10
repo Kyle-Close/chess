@@ -5,6 +5,9 @@ import {
   kingMoveValidation,
 } from '../validations/pieces/kingMoveValidation';
 import { validatePieceMove } from '../validations/validatePieceMove';
+import { copyBoardAndUpdate } from './copyBoardAndUpdate';
+import { getKingIndex } from './getKingIndex';
+import { isKingInCheck } from './isKingInCheck';
 
 export interface PieceWithIndex extends Piece {
   index: number;
@@ -31,9 +34,18 @@ export function isCheckmate(
   if (kingMoves.length === 0) isCheckmate = true;
 
   const canBlock = remainingPlayerPieces.some((piece) => {
+    let isInCheck = true;
     const pieceMoves = validatePieceMove(board, piece, piece.index);
-    if (pieceMoves && pieceMoves.length > 0) return true;
-    else return false;
+    if (!pieceMoves) return;
+
+    pieceMoves.forEach((move) => {
+      const newBoard = copyBoardAndUpdate(board, piece, currentIndex, move.index);
+      if (piece.color === null) return;
+      const kingIndex = getKingIndex(board, piece.color);
+      if (!isKingInCheck(newBoard, kingIndex, piece.color)) isInCheck = false;
+    });
+
+    return !isInCheck;
   });
 
   if (canBlock) isCheckmate = false;

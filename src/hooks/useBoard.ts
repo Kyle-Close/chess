@@ -18,6 +18,8 @@ import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceL
 import { getEnPassantCapturedPieceIndex } from '../helpers/board/getEnPassantCapturedPieceIndex';
 import { ValidSquares } from '../helpers/validations/pieces/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
+import { isMovePawnPromotion } from '../helpers/move/isMovePawnPromotion';
+import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -66,7 +68,10 @@ export function useBoard() {
       chessNotation: buildChessNotation(board, piece, startPos, endPos, opponent.color),
     });
 
-    if (opponent.checkForCheckmate(updatedBoard)) gameState.updateWinner(currentPlayer);
+    if (opponent.checkForCheckmate(updatedBoard)) {
+      console.log('winner');
+      gameState.updateWinner(currentPlayer);
+    }
     move(piece, startPos, endPos);
   }
 
@@ -84,6 +89,7 @@ export function useBoard() {
   }
 
   function handlePawnMoves(piece: Piece, startPos: number, endPos: number) {
+    // Handle capture when en passant executed
     if (endPos === gameState.enPassantSquare && piece.color !== null) {
       const opponentCapturedPawnIndex = getEnPassantCapturedPieceIndex(
         endPos,
@@ -91,6 +97,8 @@ export function useBoard() {
       );
       removePieceFromBoard(opponentCapturedPawnIndex);
     }
+
+    // Set or clear gameState en passant state
     if (isPawnAdvancingTwoSquares(startPos, endPos)) {
       gameState.updateEnPassantSquare(
         getSquareIndexByRankAndFile(
@@ -99,8 +107,19 @@ export function useBoard() {
           getPieceFile(startPos)
         )
       );
-    } else {
-      gameState.clearEnPassantSquare();
+    } else gameState.clearEnPassantSquare();
+
+    // Handle pawn promotion logic
+    if (isMovePawnPromotion(endPos)) {
+      const input = prompt('Promote your pawn');
+      if (!input || piece.color === null) return;
+
+      const newPiece = convertStringToPiece(input, piece.color);
+      setBoard((prevBoard) => {
+        const copy = [...prevBoard];
+        copy[endPos].piece = newPiece;
+        return copy;
+      });
     }
   }
 

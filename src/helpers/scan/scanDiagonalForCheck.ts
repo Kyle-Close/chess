@@ -74,6 +74,8 @@ function scanDiagonalForBishopOrQueenCheck(
     }
   }
 
+  if (isCheck) return true;
+
   // the right array is all the pieces that come after the king
   for (let i = right.length - 1; i >= 0; i--) {
     if (right[i] === null) continue;
