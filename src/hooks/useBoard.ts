@@ -15,6 +15,7 @@ import { getCastleRookStartEndPosition } from '../helpers/board/getCastleRookSta
 import { isPawnAdvancingTwoSquares } from '../helpers/move/isPawnAdvancingTwoSquares';
 import { getSquareIndexByRankAndFile } from '../helpers/board/getSquareIndexByRankAndFile';
 import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceLocation';
+import { getEnPassantCapturedPieceIndex } from '../helpers/board/getEnPassantCapturedPieceIndex';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -80,8 +81,13 @@ export function useBoard() {
 
     // Handle en passant logic
     if (piece.type === PieceType.PAWN && endPos === gameState.enPassantSquare) {
-      // capture enemy piece
-      if (piece.color && currentPlayer.color === PieceColor.WHITE) {
+      if (piece.color !== null) {
+        const opponentCapturedPawnIndex = getEnPassantCapturedPieceIndex(
+          endPos,
+          currentPlayer.color
+        );
+        console.log(opponentCapturedPawnIndex);
+        removePieceFromBoard(opponentCapturedPawnIndex);
       }
     }
     if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPos, endPos)) {
@@ -92,6 +98,14 @@ export function useBoard() {
       const file = getPieceFile(startPos);
       gameState.updateEnPassantSquare(getSquareIndexByRankAndFile(enPassantRank, file));
     } else gameState.clearEnPassantSquare();
+  }
+
+  function removePieceFromBoard(index: number) {
+    setBoard((prevBoard) => {
+      const copy = [...prevBoard];
+      copy[index].piece = null;
+      return copy;
+    });
   }
 
   function handleShowValidMoves(startPos: number) {
@@ -169,5 +183,6 @@ export function useBoard() {
     startPos,
     handleSquareClicked,
     handleRightClickOnBoard,
+    removePieceFromBoard,
   };
 }
