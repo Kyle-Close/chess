@@ -62,7 +62,8 @@ export function useBoard() {
         updatedBoard,
         currentPlayer.color,
         '-',
-        '-',
+        currentPlayer.castleRights,
+        opponent.castleRights,
         gameState.turn + 1
       ),
       chessNotation: buildChessNotation(board, piece, startPos, endPos, opponent.color),

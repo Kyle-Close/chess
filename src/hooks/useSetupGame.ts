@@ -4,6 +4,7 @@ import { BoardContext } from '../context/board/BoardContext';
 import { buildBoardFromFen } from '../helpers/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/game-setup/parseFenString';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
+import { PieceColor } from '../enums/PieceColor';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
@@ -19,11 +20,16 @@ export function useSetupGame() {
 
   function buildFenFromGame() {
     const currentPlayer = gameState.getCurrentTurnPlayer();
+    const opponent = gameState.getCurrentTurnOpponent();
+    const white = currentPlayer.color === PieceColor.WHITE ? currentPlayer : opponent;
+    const black = currentPlayer.color === PieceColor.BLACK ? currentPlayer : opponent;
+
     const fenString = buildFenStringFromGame(
       board,
       currentPlayer.color,
       '-',
-      '-',
+      white.castleRights,
+      black.castleRights,
       gameState.turn
     );
     console.log(fenString);

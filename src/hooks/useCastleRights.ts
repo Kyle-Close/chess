@@ -3,12 +3,16 @@ import { BoardContext } from '../context/board/BoardContext';
 import { PieceColor } from '../enums/PieceColor';
 import { getKingIndex } from '../helpers/board/getKingIndex';
 import { BoardState } from '../context/board/InitialState';
-import { PieceWithIndex } from '../helpers/board/isCheckmate';
 import { scanAttackingSquares } from '../helpers/scan/scanAttackingSquares';
 
 export interface CastleRights {
   canCastleQueenSide: boolean;
   canCastleKingSide: boolean;
+  queenSideIsAvailable: boolean;
+  kingSideIsAvailable: boolean;
+  // the available properties indicate a situation where the king and rook(s)
+  //   have not moved. But the canCastle may not be possible due to a temporary
+  //   situation where castling is not available (e.g. being blocked)
 }
 
 export function useCastleRights(color: PieceColor) {
@@ -24,21 +28,31 @@ export function useCastleRights(color: PieceColor) {
   return { castleRights };
 }
 
-function getCastleRights(board: BoardState, color: PieceColor) {
+function getCastleRights(board: BoardState, color: PieceColor): CastleRights {
   const kingIndex = getKingIndex(board, color);
   const king = board[kingIndex].piece;
 
   if (!king || king.hasMoved)
-    return { canCastleQueenSide: false, canCastleKingSide: false };
+    return {
+      canCastleQueenSide: false,
+      canCastleKingSide: false,
+      queenSideIsAvailable: false,
+      kingSideIsAvailable: false,
+    };
 
-  let isQueenSide = true;
-  let isKingSide = true;
+  let canCastleQueenSide = true;
+  let canCastleKingSide = true;
+  let queenSideIsAvailable = true;
+  let kingSideIsAvailable = true;
 
   const queenSideRook = getQueenSideRookSquare(board, color).piece;
   const kingSideRook = getKingSideRookSquare(board, color).piece;
 
-  if (!queenSideRook || queenSideRook.hasMoved === true) isQueenSide = false;
-  if (!kingSideRook || kingSideRook.hasMoved === true) isKingSide = false;
+  if (!queenSideRook || queenSideRook.hasMoved) queenSideIsAvailable = false;
+  if (!kingSideRook || kingSideRook.hasMoved) kingSideIsAvailable = false;
+
+  if (!queenSideRook || queenSideRook.hasMoved === true) canCastleQueenSide = false;
+  if (!kingSideRook || kingSideRook.hasMoved === true) canCastleKingSide = false;
 
   const queenSideSquaresAlongPath = getQueenSideSquaresAlongPath(color);
   const kingSideSquaresAlongPath = getKingSideSquaresAlongPath(color);
@@ -46,8 +60,8 @@ function getCastleRights(board: BoardState, color: PieceColor) {
   const isQueenSidePathObstructed = isPathObstructed(board, queenSideSquaresAlongPath);
   const isKingSidePathObstructed = isPathObstructed(board, kingSideSquaresAlongPath);
 
-  if (isQueenSidePathObstructed) isQueenSide = false;
-  if (isKingSidePathObstructed) isKingSide = false;
+  if (isQueenSidePathObstructed) canCastleQueenSide = false;
+  if (isKingSidePathObstructed) canCastleKingSide = false;
 
   const isQueenSideAttacked = checkIfPathIsAttacked(
     board,
@@ -60,10 +74,15 @@ function getCastleRights(board: BoardState, color: PieceColor) {
     color
   );
 
-  if (isQueenSideAttacked) isQueenSide = false;
-  if (isKingSideAttacked) isKingSide = false;
+  if (isQueenSideAttacked) canCastleQueenSide = false;
+  if (isKingSideAttacked) canCastleKingSide = false;
 
-  return { canCastleQueenSide: isQueenSide, canCastleKingSide: isKingSide };
+  return {
+    canCastleQueenSide,
+    canCastleKingSide,
+    queenSideIsAvailable,
+    kingSideIsAvailable,
+  };
 }
 
 function checkIfPathIsAttacked(

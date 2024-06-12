@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { BoardState } from '../context/board/InitialState';
@@ -7,7 +7,6 @@ import { getKingIndex } from '../helpers/board/getKingIndex';
 import { isCheckmate } from '../helpers/board/isCheckmate';
 import { CastleRights, useCastleRights } from './useCastleRights';
 import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
-import { BoardContext } from '../context/board/BoardContext';
 
 export interface UsePlayerReturn {
   name: string;
@@ -28,7 +27,6 @@ export function usePlayer(
   initialName: string,
   initialColor: PieceColor
 ): UsePlayerReturn {
-  const { board } = useContext(BoardContext);
   const [name, setName] = useState(initialName);
   const [isTurn, setIsTurn] = useState(false);
   const [color, setColor] = useState<PieceColor>(initialColor);
