@@ -16,6 +16,9 @@ export function useSetupGame() {
 
     initializeBoard(initialBoard);
     gameState.updateTurn(Number(fenSegments.halfMoves));
+
+    // Update player castle rights
+    const; // TO-DO: use the getPlayerCastleRightsFromFen fn I made
   }
 
   function buildFenFromGame() {
