@@ -8,8 +8,8 @@ interface GameStateProps {
 }
 
 export interface GameState {
-  playerOne: UsePlayerReturn;
-  playerTwo: UsePlayerReturn;
+  whitePlayer: UsePlayerReturn;
+  blackPlayer: UsePlayerReturn;
   winner: UsePlayerReturn | null;
   updateWinner: (player: UsePlayerReturn | null) => void;
   turn: number;
@@ -29,8 +29,8 @@ export interface GameState {
 }
 
 export const GameState = createContext<GameState>({
-  playerOne: {} as UsePlayerReturn,
-  playerTwo: {} as UsePlayerReturn,
+  whitePlayer: {} as UsePlayerReturn,
+  blackPlayer: {} as UsePlayerReturn,
   winner: null,
   updateWinner: () => {},
   turn: 0,
@@ -50,8 +50,8 @@ export const GameState = createContext<GameState>({
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  const playerOne = usePlayer('Kyle', PieceColor.WHITE);
-  const playerTwo = usePlayer('CPU', PieceColor.BLACK);
+  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE);
+  const blackPlayer = usePlayer('CPU', PieceColor.BLACK);
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
   const [turn, setTurn] = useState(0);
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([]);
@@ -105,13 +105,13 @@ export function GameStateProvider({ children }: GameStateProps) {
   };
 
   const getCurrentTurnPlayer = () => {
-    if (turn % 2 === 0) return playerOne;
-    else return playerTwo;
+    if (turn % 2 === 0) return whitePlayer;
+    else return blackPlayer;
   };
 
   const getCurrentTurnOpponent = () => {
-    if (turn % 2 === 0) return playerTwo;
-    else return playerOne;
+    if (turn % 2 === 0) return blackPlayer;
+    else return whitePlayer;
   };
 
   const changeTurn = () => {
@@ -120,11 +120,11 @@ export function GameStateProvider({ children }: GameStateProps) {
 
   useEffect(() => {
     if (turn % 2 !== 0) {
-      playerOne.updatePlayerTurn(false);
-      playerTwo.updatePlayerTurn(true);
+      whitePlayer.updatePlayerTurn(false);
+      blackPlayer.updatePlayerTurn(true);
     } else {
-      playerOne.updatePlayerTurn(true);
-      playerTwo.updatePlayerTurn(false);
+      whitePlayer.updatePlayerTurn(true);
+      blackPlayer.updatePlayerTurn(false);
     }
   }, [turn]);
 
@@ -137,8 +137,8 @@ export function GameStateProvider({ children }: GameStateProps) {
   return (
     <GameState.Provider
       value={{
-        playerOne,
-        playerTwo,
+        whitePlayer,
+        blackPlayer,
         winner,
         updateWinner,
         turn,

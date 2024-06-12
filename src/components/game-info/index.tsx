@@ -3,8 +3,8 @@ import { GameState } from '../../context/GameState';
 
 export function GameInfo() {
   const gameState = useContext(GameState);
-  const isPlayerOneInCheck = gameState.playerOne.isInCheck;
-  const isPlayerTwoInCheck = gameState.playerTwo.isInCheck;
+  const isPlayerOneInCheck = gameState.whitePlayer.isInCheck;
+  const isPlayerTwoInCheck = gameState.blackPlayer.isInCheck;
 
   const playerOneClasses = [];
   if (isPlayerOneInCheck) playerOneClasses.push('text-red-700');
@@ -17,13 +17,13 @@ export function GameInfo() {
   return (
     <div className='flex gap-16'>
       <div>
-        <h6 className={playerOneClasses.join(' ')}>{gameState.playerOne.name}</h6>
+        <h6 className={playerOneClasses.join(' ')}>{gameState.whitePlayer.name}</h6>
       </div>
       <div>
         <h6>{gameState.turn}</h6>
       </div>
       <div>
-        <h6 className={playerTwoClasses.join(' ')}>{gameState.playerTwo.name}</h6>
+        <h6 className={playerTwoClasses.join(' ')}>{gameState.blackPlayer.name}</h6>
       </div>
     </div>
   );

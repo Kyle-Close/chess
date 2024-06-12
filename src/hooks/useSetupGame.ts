@@ -5,6 +5,7 @@ import { buildBoardFromFen } from '../helpers/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/game-setup/parseFenString';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
 import { PieceColor } from '../enums/PieceColor';
+import { getPlayerCastleRightsFromFen } from '../helpers/game-setup/getPlayerCastleRightsFromFen';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
@@ -14,11 +15,21 @@ export function useSetupGame() {
     const fenSegments = parseFenString(fenString);
     const initialBoard = buildBoardFromFen(fenSegments.initialPositions);
 
+    // Set up board state.
     initializeBoard(initialBoard);
+
+    // Set game half turns
     gameState.updateTurn(Number(fenSegments.halfMoves));
 
-    // Update player castle rights
-    const; // TO-DO: use the getPlayerCastleRightsFromFen fn I made
+    // Set player castle rights
+    gameState.whitePlayer.castleRights = getPlayerCastleRightsFromFen(
+      fenSegments.castleRights,
+      PieceColor.WHITE
+    );
+    gameState.blackPlayer.castleRights = getPlayerCastleRightsFromFen(
+      fenSegments.castleRights,
+      PieceColor.BLACK
+    );
   }
 
   function buildFenFromGame() {
