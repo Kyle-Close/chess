@@ -24,8 +24,7 @@ export interface GameState {
   pushToMoveHistoryRedo: (move: MoveHistory) => void;
   popMoveHistoryRedo: () => MoveHistory;
   enPassantSquare: null | number;
-  clearEnPassantSquare: () => void;
-  updateEnPassantSquare: (index: number) => void;
+  updateEnPassantSquare: (val: number | null) => void;
 }
 
 export const GameState = createContext<GameState>({
@@ -45,25 +44,26 @@ export const GameState = createContext<GameState>({
   pushToMoveHistoryRedo: () => {},
   popMoveHistoryRedo: () => ({} as MoveHistory),
   enPassantSquare: null,
-  clearEnPassantSquare: () => {},
   updateEnPassantSquare: () => {},
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
+  // TO-DO: implement half turn & full turn logic properly
   const whitePlayer = usePlayer('Kyle', PieceColor.WHITE);
   const blackPlayer = usePlayer('CPU', PieceColor.BLACK);
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
   const [turn, setTurn] = useState(0);
-  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([]);
+  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([
+    {
+      chessNotation: '',
+      fenString: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+    },
+  ]);
   const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
   const [enPassantSquare, setEnpassantSquare] = useState<null | number>(null);
 
-  const clearEnPassantSquare = () => {
-    setEnpassantSquare(null);
-  };
-
-  const updateEnPassantSquare = (index: number) => {
-    setEnpassantSquare(index);
+  const updateEnPassantSquare = (val: number | null) => {
+    setEnpassantSquare(val);
   };
 
   const updateWinner = (player: UsePlayerReturn | null) => {
@@ -154,7 +154,6 @@ export function GameStateProvider({ children }: GameStateProps) {
         popMoveHistoryRedo,
         enPassantSquare,
         updateEnPassantSquare,
-        clearEnPassantSquare,
       }}
     >
       {children}

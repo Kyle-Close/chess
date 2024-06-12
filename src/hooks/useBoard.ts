@@ -20,6 +20,7 @@ import { ValidSquares } from '../helpers/validations/pieces/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
 import { isMovePawnPromotion } from '../helpers/move/isMovePawnPromotion';
 import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
+import { buildEnPassantForFen } from '../helpers/game-setup/buildEnPassantForFen';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -55,13 +56,24 @@ export function useBoard() {
     const currentPlayer = gameState.getCurrentTurnPlayer();
     const opponent = gameState.getCurrentTurnOpponent();
     const updatedBoard = copyBoardAndUpdate(board, piece, startPos, endPos);
+    let enPassantAlgebraicNotation = '-';
+
+    if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPos, endPos)) {
+      const enPassantSquareIndex = getSquareIndexByRankAndFile(
+        (getPieceRank(startPos) +
+          (piece.color === PieceColor.WHITE ? 1 : -1)) as PieceRank,
+        getPieceFile(startPos)
+      );
+
+      enPassantAlgebraicNotation = buildEnPassantForFen(enPassantSquareIndex);
+    }
 
     gameState.changeTurn();
     gameState.pushToMoveHistory({
       fenString: buildFenStringFromGame(
         updatedBoard,
-        currentPlayer.color,
-        '-',
+        opponent.color,
+        enPassantAlgebraicNotation,
         currentPlayer.castleRights,
         opponent.castleRights,
         gameState.turn + 1
@@ -108,7 +120,7 @@ export function useBoard() {
           getPieceFile(startPos)
         )
       );
-    } else gameState.clearEnPassantSquare();
+    } else gameState.updateEnPassantSquare(null);
 
     // Handle pawn promotion logic
     if (isMovePawnPromotion(endPos)) {
