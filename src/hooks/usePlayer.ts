@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
-import { BoardState, Piece } from '../context/board/InitialState';
+import { BoardState } from '../context/board/InitialState';
 import { isKingInCheck } from '../helpers/board/isKingInCheck';
 import { getKingIndex } from '../helpers/board/getKingIndex';
-import { BoardContext } from '../context/board/BoardContext';
-import { PieceWithIndex, isCheckmate } from '../helpers/board/isCheckmate';
+import { isCheckmate } from '../helpers/board/isCheckmate';
 import { CastleRights, useCastleRights } from './useCastleRights';
+import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
+import { BoardContext } from '../context/board/BoardContext';
 
 export interface UsePlayerReturn {
   name: string;
@@ -19,7 +20,6 @@ export interface UsePlayerReturn {
   updateIsInCheck: (isCheck: boolean) => void;
   color: PieceColor;
   updateColor: (color: PieceColor) => void;
-  getRemainingPieces: () => Piece[];
   checkForCheckmate: (board: BoardState) => boolean;
   castleRights: CastleRights;
 }
@@ -59,7 +59,7 @@ export function usePlayer(
 
     const kingIndex = getKingIndex(board, color);
     const kingPiece = board[kingIndex].piece;
-    const remainingPieces = getRemainingPieces();
+    const remainingPieces = getRemainingPiecesByColor(board, color, true);
 
     if (!kingPiece) return false;
 
@@ -69,16 +69,6 @@ export function usePlayer(
 
   const updatePlayerTurn = (isTurn: boolean) => {
     setIsTurn(isTurn);
-  };
-
-  const getRemainingPieces = () => {
-    const pieces: PieceWithIndex[] = [];
-
-    board.forEach((square, index) => {
-      const piece = square.piece;
-      if (piece && piece.color === color) pieces.push({ ...piece, index });
-    });
-    return pieces;
   };
 
   return {
@@ -92,7 +82,6 @@ export function usePlayer(
     updateIsInCheck,
     color,
     updateColor,
-    getRemainingPieces,
     checkForCheckmate,
     castleRights,
   };

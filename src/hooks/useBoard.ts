@@ -69,9 +69,9 @@ export function useBoard() {
     });
 
     if (opponent.checkForCheckmate(updatedBoard)) {
-      console.log('winner');
       gameState.updateWinner(currentPlayer);
     }
+
     move(piece, startPos, endPos);
   }
 
