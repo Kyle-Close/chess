@@ -20,10 +20,14 @@ export function useSetupGame() {
     // Set up board state.
     initializeBoard(initialBoard);
 
-    // Set game half turns
+    // Set turn
+    if (fenSegments.turn === 'w' && !gameState.isWhiteTurn) gameState.toggleTurn();
+    else if (fenSegments.turn === 'b' && gameState.isWhiteTurn) gameState.toggleTurn();
+
+    // Set game half moves
     gameState.move.updateHalfMoves(Number(fenSegments.halfMoves));
 
-    // Ser game full turns
+    // Set game full moves
     gameState.move.updateFullMoves(Number(fenSegments.fullMoves));
 
     // Set player castle rights
