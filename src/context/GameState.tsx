@@ -15,8 +15,8 @@ export interface GameState {
   updateWinner: (player: UsePlayerReturn | null) => void;
   move: UseMoveReturn;
   moveHistory: MoveHistory[];
-  getCurrentTurnPlayer: () => UsePlayerReturn;
-  getCurrentTurnOpponent: () => UsePlayerReturn;
+  isWhiteTurn: boolean;
+  toggleTurn: () => void;
   pushToMoveHistory: (move: MoveHistory) => void;
   popMoveHistory: () => MoveHistory;
   moveHistoryRedo: MoveHistory[];
@@ -33,8 +33,8 @@ export const GameState = createContext<GameState>({
   updateWinner: () => {},
   move: {} as UseMoveReturn,
   moveHistory: {} as MoveHistory[],
-  getCurrentTurnPlayer: () => ({} as UsePlayerReturn),
-  getCurrentTurnOpponent: () => ({} as UsePlayerReturn),
+  isWhiteTurn: true,
+  toggleTurn: () => {},
   pushToMoveHistory: () => {},
   popMoveHistory: () => ({} as MoveHistory),
   moveHistoryRedo: [] as MoveHistory[],
@@ -50,6 +50,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const blackPlayer = usePlayer('CPU', PieceColor.BLACK);
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
   const move = useMove();
+  const [isWhiteTurn, setIsWhiteTurn] = useState(true);
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([
     {
       chessNotation: '',
@@ -97,25 +98,10 @@ export function GameStateProvider({ children }: GameStateProps) {
     return poppedMove;
   };
 
-  const getCurrentTurnPlayer = () => {
-    if (move.totalMoves % 2 === 0) return whitePlayer;
-    else return blackPlayer;
+  const toggleTurn = () => {
+    if (isWhiteTurn) setIsWhiteTurn(false);
+    else setIsWhiteTurn(true);
   };
-
-  const getCurrentTurnOpponent = () => {
-    if (move.totalMoves % 2 === 0) return blackPlayer;
-    else return whitePlayer;
-  };
-
-  useEffect(() => {
-    if (move.totalMoves % 2 !== 0) {
-      whitePlayer.updatePlayerTurn(false);
-      blackPlayer.updatePlayerTurn(true);
-    } else {
-      whitePlayer.updatePlayerTurn(true);
-      blackPlayer.updatePlayerTurn(false);
-    }
-  }, [move.totalMoves]);
 
   useEffect(() => {
     if (winner !== null) {
@@ -134,8 +120,8 @@ export function GameStateProvider({ children }: GameStateProps) {
         moveHistory,
         pushToMoveHistory,
         popMoveHistory,
-        getCurrentTurnPlayer,
-        getCurrentTurnOpponent,
+        isWhiteTurn,
+        toggleTurn,
         moveHistoryRedo,
         pushToMoveHistoryRedo,
         popMoveHistoryRedo,

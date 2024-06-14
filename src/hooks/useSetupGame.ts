@@ -23,6 +23,9 @@ export function useSetupGame() {
     // Set game half turns
     gameState.move.updateHalfMoves(Number(fenSegments.halfMoves));
 
+    // Ser game full turns
+    gameState.move.updateFullMoves(Number(fenSegments.fullMoves));
+
     // Set player castle rights
     gameState.whitePlayer.castleRights = getPlayerCastleRightsFromFen(
       fenSegments.castleRights,
@@ -39,14 +42,15 @@ export function useSetupGame() {
   }
 
   function buildFenFromGame() {
-    const opponent = gameState.getCurrentTurnOpponent();
+    const isWhiteTurn = gameState.isWhiteTurn;
     const white = gameState.whitePlayer;
     const black = gameState.blackPlayer;
+    const waitingPlayer = isWhiteTurn ? white : black;
     const enPassantSquareString = buildEnPassantForFen(gameState.enPassantSquare);
 
     const fenString = buildFenStringFromGame(
       board,
-      opponent.color,
+      waitingPlayer.color,
       enPassantSquareString,
       white.castleRights,
       black.castleRights,

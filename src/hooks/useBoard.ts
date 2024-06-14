@@ -21,6 +21,7 @@ import { UsePlayerReturn } from './usePlayer';
 import { isMovePawnPromotion } from '../helpers/move/isMovePawnPromotion';
 import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
 import { buildEnPassantForFen } from '../helpers/game-setup/buildEnPassantForFen';
+import { isHalfMoveResetCondition } from '../helpers/move/isHalfMoveResetCondition';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -29,8 +30,11 @@ export function useBoard() {
   const { move } = usePiece();
   const startEnd = useStartEndAction();
 
+  const isWhiteTurn = gameState.isWhiteTurn;
+  const currentPlayer = isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
+  const waitingPlayer = isWhiteTurn ? gameState.blackPlayer : gameState.whitePlayer;
+
   function tryMove(piece: Piece, startPos: number, endPos: number) {
-    const currentPlayer = gameState.getCurrentTurnPlayer();
     if (!isValidMove(piece, startPos, endPos)) return;
 
     const capturedPiece = getPieceAtPosition(endPos);
@@ -46,15 +50,13 @@ export function useBoard() {
       board,
       piece,
       startPos,
-      gameState.getCurrentTurnPlayer().castleRights,
+      currentPlayer.castleRights,
       gameState.enPassantSquare
     );
     return validMoves && validMoves.some((move) => move.index === endPos);
   }
 
   function updateGameState(piece: Piece, startPos: number, endPos: number) {
-    const currentPlayer = gameState.getCurrentTurnPlayer();
-    const opponent = gameState.getCurrentTurnOpponent();
     const updatedBoard = copyBoardAndUpdate(board, piece, startPos, endPos);
     let enPassantAlgebraicNotation = '-';
 
@@ -68,30 +70,39 @@ export function useBoard() {
       enPassantAlgebraicNotation = buildEnPassantForFen(enPassantSquareIndex);
     }
 
+    // Update turn
+    gameState.toggleTurn();
+
     // Update game half moves
-    // TO-DO
+    gameState.move.updateHalfMoves('INCREMENT');
+
+    if (isHalfMoveResetCondition(piece, board[endPos].isCapture))
+      gameState.move.updateHalfMoves(0);
 
     // Update game full moves
     if (currentPlayer.color === PieceColor.BLACK)
       gameState.move.updateFullMoves('INCREMENT');
 
-    // Update game total moves
-    gameState.move.updateTotalMoves('INCREMENT');
-
     // Add latest move to game move history
     gameState.pushToMoveHistory({
       fenString: buildFenStringFromGame(
         updatedBoard,
-        opponent.color,
+        waitingPlayer.color,
         enPassantAlgebraicNotation,
         currentPlayer.castleRights,
-        opponent.castleRights,
+        waitingPlayer.castleRights,
         gameState.move
       ),
-      chessNotation: buildChessNotation(board, piece, startPos, endPos, opponent.color),
+      chessNotation: buildChessNotation(
+        board,
+        piece,
+        startPos,
+        endPos,
+        waitingPlayer.color
+      ),
     });
 
-    if (opponent.checkForCheckmate(updatedBoard)) {
+    if (waitingPlayer.checkForCheckmate(updatedBoard)) {
       gameState.updateWinner(currentPlayer);
     }
 
@@ -171,7 +182,7 @@ export function useBoard() {
       gameState.enPassantSquare
     );
     if (piece.type === PieceType.KING && validMoves)
-      addCastleMoves(validMoves, gameState.getCurrentTurnPlayer());
+      addCastleMoves(validMoves, currentPlayer);
     return validMoves;
   }
 
@@ -212,9 +223,8 @@ export function useBoard() {
 
   const isClickingValidSquare = (index: number, isFinalClick: boolean) => {
     const piece = getPieceAtPosition(index);
-    const currentTurnPlayer = gameState.getCurrentTurnPlayer();
-    if ((piece && piece.color === currentTurnPlayer.color) || !piece) return true;
-    if (piece && piece.color !== currentTurnPlayer.color && isFinalClick) return true;
+    if ((piece && piece.color === currentPlayer.color) || !piece) return true;
+    if (piece && piece.color !== currentPlayer.color && isFinalClick) return true;
     return false;
   };
 
