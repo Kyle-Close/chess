@@ -26,8 +26,8 @@ import { isHalfMoveResetCondition } from '../helpers/move/isHalfMoveResetConditi
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
     useContext(BoardContext);
-  const gameState = useContext(GameState);
   const { move } = usePiece();
+  const gameState = useContext(GameState);
   const startEnd = useStartEndAction();
 
   const isWhiteTurn = gameState.isWhiteTurn;
@@ -110,8 +110,12 @@ export function useBoard() {
   }
 
   function handleSpecialMoves(piece: Piece, startPos: number, endPos: number) {
-    if (isMoveCastle(piece, startPos, endPos)) handleCastle(endPos);
-    if (piece.type === PieceType.PAWN) handlePawnMoves(piece, startPos, endPos);
+    if (isMoveCastle(piece, startPos, endPos)) {
+      handleCastle(endPos);
+    }
+    if (piece.type === PieceType.PAWN) {
+      handlePawnMoves(piece, startPos, endPos);
+    }
   }
 
   function handleCastle(endPos: number) {

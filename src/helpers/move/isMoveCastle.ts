@@ -1,8 +1,11 @@
 import { Piece } from '../../context/board/InitialState';
+import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
 
 export function isMoveCastle(piece: Piece, startPos: number, endPos: number) {
   if (piece.type !== PieceType.KING) return false;
+
+  const color = piece.color;
 
   // white king start pos : 4
   //    king side end pos : 6
@@ -12,5 +15,15 @@ export function isMoveCastle(piece: Piece, startPos: number, endPos: number) {
   //    king side end pos : 62
   //    queen side end pos: 58
   const squaresMoved = Math.abs(startPos - endPos);
-  return squaresMoved === 2 ? true : false;
+  if (squaresMoved !== 2) return false;
+
+  if (color === PieceColor.WHITE) {
+    if (endPos === 6) return 'KING_SIDE';
+    else if (endPos === 2) return 'QUEEN_SIDE';
+  } else {
+    if (endPos === 60) return 'KING_SIDE';
+    else if (endPos === 58) return 'QUEEN_SIDE';
+  }
+
+  return false;
 }

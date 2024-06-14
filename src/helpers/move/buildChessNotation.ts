@@ -4,6 +4,7 @@ import { PieceType } from '../../enums/PieceType';
 import { checkIsCapture } from '../board/checkIfCapture';
 import { getSquareNotation } from '../board/getSquareNotation';
 import { getPieceFile } from '../generic/pieceLocation';
+import { isMoveCastle } from './isMoveCastle';
 
 export function buildChessNotation(
   board: BoardState,
@@ -13,25 +14,35 @@ export function buildChessNotation(
   opponentColor: PieceColor
 ) {
   // TO-DO:
+  // - Disambiguous moves (see wiki)
   // - Castling notation
   // - En Passant notation
   // - Check notation
   // - Checkmate notation
   // - special cases (very rare)
   const pieceNotationLetter = convertPieceToNotationLetter(piece);
-  const moveNotation = getSquareNotation(endPos);
-  const isCapture = checkIsCapture(board, endPos, opponentColor);
+  const squareNotation = getSquareNotation(endPos);
 
+  // Handle capture
+  const isCapture = checkIsCapture(board, endPos, opponentColor);
   if (isCapture) {
     if (pieceNotationLetter === 'P') {
-      return getPieceFile(endPos) + 'x' + moveNotation;
+      return getPieceFile(startPos) + 'x' + squareNotation;
     } else {
-      return `${pieceNotationLetter}x${moveNotation}`;
+      return `${pieceNotationLetter}x${squareNotation}`;
     }
   }
 
-  if (pieceNotationLetter === 'P') return moveNotation;
-  else return pieceNotationLetter + moveNotation;
+  // Handle castle
+  const castleMove = isMoveCastle(piece, startPos, endPos);
+  if (castleMove) {
+    if (castleMove === 'KING_SIDE') return 'O-O';
+    else if (castleMove === 'QUEEN_SIDE') return 'O-O-O';
+  }
+
+  // Handle pawn move
+  if (pieceNotationLetter === 'P') return squareNotation;
+  else return pieceNotationLetter + squareNotation;
 }
 
 function convertPieceToNotationLetter(piece: Piece) {
