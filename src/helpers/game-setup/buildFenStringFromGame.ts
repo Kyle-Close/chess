@@ -2,6 +2,7 @@ import { BoardState, Piece } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
 import { CastleRights } from '../../hooks/useCastleRights';
+import { UseMoveReturn } from '../../hooks/useMove';
 import { buildFenCastleSegment } from './buildFenCastleSegment';
 
 export function buildFenStringFromGame(
@@ -10,14 +11,13 @@ export function buildFenStringFromGame(
   enPassantTargetSquare: string,
   whiteCastleRights: CastleRights,
   blackCastleRights: CastleRights,
-  turns: number
+  move: UseMoveReturn
 ) {
   const piecePlacementString = buildPiecePlacementString(board);
   const color = activeColor === PieceColor.WHITE ? 'w' : 'b';
-  const fullTurns = Math.floor(turns / 2);
   const castleSegment = buildFenCastleSegment(whiteCastleRights, blackCastleRights);
 
-  return `${piecePlacementString} ${color} ${castleSegment} ${enPassantTargetSquare} ${turns} ${fullTurns}`;
+  return `${piecePlacementString} ${color} ${castleSegment} ${enPassantTargetSquare} ${move.halfMoves} ${move.fullMoves}`;
 }
 
 function buildPiecePlacementString(board: BoardState) {

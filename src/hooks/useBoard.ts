@@ -68,7 +68,17 @@ export function useBoard() {
       enPassantAlgebraicNotation = buildEnPassantForFen(enPassantSquareIndex);
     }
 
-    gameState.changeTurn();
+    // Update game half moves
+    // TO-DO
+
+    // Update game full moves
+    if (currentPlayer.color === PieceColor.BLACK)
+      gameState.move.updateFullMoves('INCREMENT');
+
+    // Update game total moves
+    gameState.move.updateTotalMoves('INCREMENT');
+
+    // Add latest move to game move history
     gameState.pushToMoveHistory({
       fenString: buildFenStringFromGame(
         updatedBoard,
@@ -76,7 +86,7 @@ export function useBoard() {
         enPassantAlgebraicNotation,
         currentPlayer.castleRights,
         opponent.castleRights,
-        gameState.turn + 1
+        gameState.move
       ),
       chessNotation: buildChessNotation(board, piece, startPos, endPos, opponent.color),
     });

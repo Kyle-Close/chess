@@ -21,7 +21,7 @@ export function useSetupGame() {
     initializeBoard(initialBoard);
 
     // Set game half turns
-    gameState.updateTurn(Number(fenSegments.halfMoves));
+    gameState.move.updateHalfMoves(Number(fenSegments.halfMoves));
 
     // Set player castle rights
     gameState.whitePlayer.castleRights = getPlayerCastleRightsFromFen(
@@ -50,7 +50,7 @@ export function useSetupGame() {
       enPassantSquareString,
       white.castleRights,
       black.castleRights,
-      gameState.turn
+      gameState.move
     );
 
     console.log(fenString);

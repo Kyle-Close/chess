@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import { UsePlayerReturn, usePlayer } from '../hooks/usePlayer';
 import { PieceColor } from '../enums/PieceColor';
 import { MoveHistory } from './types/MoveHistory';
+import { UseMoveReturn, useMove } from '../hooks/useMove';
 
 interface GameStateProps {
   children: React.ReactNode;
@@ -12,12 +13,10 @@ export interface GameState {
   blackPlayer: UsePlayerReturn;
   winner: UsePlayerReturn | null;
   updateWinner: (player: UsePlayerReturn | null) => void;
-  turn: number;
-  updateTurn: (turn: number) => void;
+  move: UseMoveReturn;
   moveHistory: MoveHistory[];
   getCurrentTurnPlayer: () => UsePlayerReturn;
   getCurrentTurnOpponent: () => UsePlayerReturn;
-  changeTurn: () => void;
   pushToMoveHistory: (move: MoveHistory) => void;
   popMoveHistory: () => MoveHistory;
   moveHistoryRedo: MoveHistory[];
@@ -32,12 +31,10 @@ export const GameState = createContext<GameState>({
   blackPlayer: {} as UsePlayerReturn,
   winner: null,
   updateWinner: () => {},
-  turn: 0,
-  updateTurn: () => {},
+  move: {} as UseMoveReturn,
   moveHistory: {} as MoveHistory[],
   getCurrentTurnPlayer: () => ({} as UsePlayerReturn),
   getCurrentTurnOpponent: () => ({} as UsePlayerReturn),
-  changeTurn: () => {},
   pushToMoveHistory: () => {},
   popMoveHistory: () => ({} as MoveHistory),
   moveHistoryRedo: [] as MoveHistory[],
@@ -52,7 +49,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const whitePlayer = usePlayer('Kyle', PieceColor.WHITE);
   const blackPlayer = usePlayer('CPU', PieceColor.BLACK);
   const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
-  const [turn, setTurn] = useState(0);
+  const move = useMove();
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([
     {
       chessNotation: '',
@@ -68,10 +65,6 @@ export function GameStateProvider({ children }: GameStateProps) {
 
   const updateWinner = (player: UsePlayerReturn | null) => {
     setWinner(player);
-  };
-
-  const updateTurn = (turn: number) => {
-    setTurn(turn);
   };
 
   const pushToMoveHistory = (move: MoveHistory) => {
@@ -105,28 +98,24 @@ export function GameStateProvider({ children }: GameStateProps) {
   };
 
   const getCurrentTurnPlayer = () => {
-    if (turn % 2 === 0) return whitePlayer;
+    if (move.totalMoves % 2 === 0) return whitePlayer;
     else return blackPlayer;
   };
 
   const getCurrentTurnOpponent = () => {
-    if (turn % 2 === 0) return blackPlayer;
+    if (move.totalMoves % 2 === 0) return blackPlayer;
     else return whitePlayer;
   };
 
-  const changeTurn = () => {
-    setTurn((prevTurn) => prevTurn + 1);
-  };
-
   useEffect(() => {
-    if (turn % 2 !== 0) {
+    if (move.totalMoves % 2 !== 0) {
       whitePlayer.updatePlayerTurn(false);
       blackPlayer.updatePlayerTurn(true);
     } else {
       whitePlayer.updatePlayerTurn(true);
       blackPlayer.updatePlayerTurn(false);
     }
-  }, [turn]);
+  }, [move.totalMoves]);
 
   useEffect(() => {
     if (winner !== null) {
@@ -141,14 +130,12 @@ export function GameStateProvider({ children }: GameStateProps) {
         blackPlayer,
         winner,
         updateWinner,
-        turn,
-        updateTurn,
+        move: move,
         moveHistory,
         pushToMoveHistory,
         popMoveHistory,
         getCurrentTurnPlayer,
         getCurrentTurnOpponent,
-        changeTurn,
         moveHistoryRedo,
         pushToMoveHistoryRedo,
         popMoveHistoryRedo,
