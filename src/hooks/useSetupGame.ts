@@ -3,15 +3,13 @@ import { GameState } from '../context/GameState';
 import { BoardContext } from '../context/board/BoardContext';
 import { buildBoardFromFen } from '../helpers/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/game-setup/parseFenString';
-import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
 import { PieceColor } from '../enums/PieceColor';
 import { getPlayerCastleRightsFromFen } from '../helpers/game-setup/getPlayerCastleRightsFromFen';
-import { buildEnPassantForFen } from '../helpers/game-setup/buildEnPassantForFen';
 import { getEnPassantTargetSquareFromFen } from '../helpers/game-setup/getEnPassantTargetSquareFromFen';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
-  const { board, initializeBoard } = useContext(BoardContext);
+  const { initializeBoard } = useContext(BoardContext);
 
   function setupFromFEN(fenString: string) {
     const fenSegments = parseFenString(fenString);
@@ -45,24 +43,5 @@ export function useSetupGame() {
     gameState.updateEnPassantSquare(enPassantTargetSquare);
   }
 
-  function buildFenFromGame() {
-    const isWhiteTurn = gameState.isWhiteTurn;
-    const white = gameState.whitePlayer;
-    const black = gameState.blackPlayer;
-    const waitingPlayer = isWhiteTurn ? white : black;
-    const enPassantSquareString = buildEnPassantForFen(gameState.enPassantSquare);
-
-    const fenString = buildFenStringFromGame(
-      board,
-      waitingPlayer.color,
-      enPassantSquareString,
-      white.castleRights,
-      black.castleRights,
-      gameState.move
-    );
-
-    console.log(fenString);
-  }
-
-  return { setupFromFEN, buildFenFromGame };
+  return { setupFromFEN };
 }

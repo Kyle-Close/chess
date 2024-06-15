@@ -1,23 +1,28 @@
+import { GameState } from '../../context/GameState';
 import { BoardState, Piece } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
-import { CastleRights } from '../../hooks/useCastleRights';
-import { UseMoveReturn } from '../../hooks/useMove';
+import { MoveMetaData } from '../move/buildMoveMetaData';
 import { buildFenCastleSegment } from './buildFenCastleSegment';
 
 export function buildFenStringFromGame(
-  board: BoardState,
-  activeColor: PieceColor,
-  enPassantTargetSquare: string,
-  whiteCastleRights: CastleRights,
-  blackCastleRights: CastleRights,
-  move: UseMoveReturn
+  gameState: GameState,
+  moveMetaData: MoveMetaData,
+  isBlackTurnEnding: boolean,
+  enPassantAlgebraicNotation: string
 ) {
-  const piecePlacementString = buildPiecePlacementString(board);
-  const color = activeColor === PieceColor.WHITE ? 'w' : 'b';
-  const castleSegment = buildFenCastleSegment(whiteCastleRights, blackCastleRights);
+  console.log(gameState);
+  const piecePlacementString = buildPiecePlacementString(moveMetaData.updatedBoard);
+  const color = gameState.isWhiteTurn === true ? 'b' : 'w';
+  const castleSegment = buildFenCastleSegment(
+    gameState.whitePlayer.castleRights,
+    gameState.blackPlayer.castleRights
+  );
+  const fullMoves = isBlackTurnEnding
+    ? gameState.move.fullMoves + 2
+    : gameState.move.fullMoves + 1;
 
-  return `${piecePlacementString} ${color} ${castleSegment} ${enPassantTargetSquare} ${move.halfMoves} ${move.fullMoves}`;
+  return `${piecePlacementString} ${color} ${castleSegment} ${enPassantAlgebraicNotation} ${gameState.move.halfMoves} ${fullMoves}`;
 }
 
 function buildPiecePlacementString(board: BoardState) {

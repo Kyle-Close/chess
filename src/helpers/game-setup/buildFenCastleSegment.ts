@@ -12,7 +12,7 @@ export function buildFenCastleSegment(
   if (blackCastleRights.kingSideIsAvailable) castleString += 'k';
   if (blackCastleRights.queenSideIsAvailable) castleString += 'q';
 
-  if (castleString === '') castleString += '-';
+  if (!castleString) castleString += '-';
 
   return castleString;
 }

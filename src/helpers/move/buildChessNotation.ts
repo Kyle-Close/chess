@@ -1,46 +1,51 @@
-import { BoardState, Piece } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
+import { Piece } from '../../context/board/InitialState';
 import { PieceType } from '../../enums/PieceType';
-import { checkIsCapture } from '../board/checkIfCapture';
 import { getSquareNotation } from '../board/getSquareNotation';
 import { getPieceFile } from '../generic/pieceLocation';
-import { isMoveCastle } from './isMoveCastle';
+import { MoveMetaData } from './buildMoveMetaData';
+import { CastleMetaData } from './getCastleMetaData';
 
-export function buildChessNotation(
-  board: BoardState,
-  piece: Piece,
-  startPos: number,
-  endPos: number,
-  opponentColor: PieceColor
-) {
+export function buildChessNotation(moveMetaData: MoveMetaData) {
   // TO-DO:
   // - Disambiguous moves (see wiki)
-  // - Castling notation
   // - En Passant notation
   // - Check notation
   // - Checkmate notation
   // - special cases (very rare)
-  const pieceNotationLetter = convertPieceToNotationLetter(piece);
-  const squareNotation = getSquareNotation(endPos);
+  const pieceNotationLetter = convertPieceToNotationLetter(moveMetaData.piece);
+  const squareNotation = getSquareNotation(moveMetaData.endPosition);
 
   // Handle capture
-  const isCapture = checkIsCapture(board, endPos, opponentColor);
-  if (isCapture) {
+  if (moveMetaData.isCapture) {
     if (pieceNotationLetter === 'P') {
-      return getPieceFile(startPos) + 'x' + squareNotation;
+      if (moveMetaData.promotionPiece)
+        return (
+          getPieceFile(moveMetaData.startPosition) +
+          'x' +
+          squareNotation +
+          convertPieceToNotationLetter(moveMetaData.promotionPiece)
+        );
+      return getPieceFile(moveMetaData.startPosition) + 'x' + squareNotation;
     } else {
       return `${pieceNotationLetter}x${squareNotation}`;
     }
   }
 
   // Handle castle
-  const castleMove = isMoveCastle(piece, startPos, endPos);
-  if (castleMove) {
-    if (castleMove === 'KING_SIDE') return 'O-O';
-    else if (castleMove === 'QUEEN_SIDE') return 'O-O-O';
+  if (moveMetaData.isCastle) {
+    if (moveMetaData.castleMetaData === CastleMetaData.KING_SIDE) return 'O-O';
+    else if (moveMetaData.castleMetaData === CastleMetaData.QUEEN_SIDE) return 'O-O-O';
   }
 
-  // Handle pawn move
+  // Handle pawn promotion
+  if (moveMetaData.isPromotion && moveMetaData.promotionPiece) {
+    const promotedPieceNotationLetter = convertPieceToNotationLetter(
+      moveMetaData.promotionPiece
+    );
+    return pieceNotationLetter + squareNotation + promotedPieceNotationLetter;
+  }
+
+  // Handle standard pawn move (not a capture, en passant or promotion)
   if (pieceNotationLetter === 'P') return squareNotation;
   else return pieceNotationLetter + squareNotation;
 }

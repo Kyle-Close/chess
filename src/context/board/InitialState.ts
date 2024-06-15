@@ -5,8 +5,8 @@ import { PieceType } from '../../enums/PieceType';
 
 export interface Piece {
   type: PieceType;
-  color: PieceColor | null;
-  hasMoved: boolean | null;
+  color: PieceColor;
+  hasMoved: boolean;
 }
 
 export interface Square {
