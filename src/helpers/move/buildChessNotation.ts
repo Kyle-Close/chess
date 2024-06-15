@@ -8,26 +8,28 @@ import { CastleMetaData } from './getCastleMetaData';
 export function buildChessNotation(moveMetaData: MoveMetaData) {
   // TO-DO:
   // - Disambiguous moves (see wiki)
-  // - En Passant notation
   // - Check notation
   // - Checkmate notation
 
   const pieceNotationLetter = convertPieceToNotationLetter(moveMetaData.piece);
-  const squareNotation = getSquareNotation(moveMetaData.endPosition);
+  const startSquareFile = getPieceFile(moveMetaData.startPosition);
+  const endSquareNotation = getSquareNotation(moveMetaData.endPosition);
 
   // Handle capture
   if (moveMetaData.isCapture) {
+    if (moveMetaData.isEnPassant) return `${startSquareFile}x${endSquareNotation} e.p.`;
+
     if (pieceNotationLetter === 'P') {
       if (moveMetaData.promotionPiece)
         return (
           getPieceFile(moveMetaData.startPosition) +
           'x' +
-          squareNotation +
+          endSquareNotation +
           convertPieceToNotationLetter(moveMetaData.promotionPiece)
         );
-      return getPieceFile(moveMetaData.startPosition) + 'x' + squareNotation;
+      return getPieceFile(moveMetaData.startPosition) + 'x' + endSquareNotation;
     } else {
-      return `${pieceNotationLetter}x${squareNotation}`;
+      return `${pieceNotationLetter}x${endSquareNotation}`;
     }
   }
 
@@ -42,12 +44,12 @@ export function buildChessNotation(moveMetaData: MoveMetaData) {
     const promotedPieceNotationLetter = convertPieceToNotationLetter(
       moveMetaData.promotionPiece
     );
-    return pieceNotationLetter + squareNotation + promotedPieceNotationLetter;
+    return pieceNotationLetter + endSquareNotation + promotedPieceNotationLetter;
   }
 
   // Handle standard pawn move (not a capture, en passant or promotion)
-  if (pieceNotationLetter === 'P') return squareNotation;
-  else return pieceNotationLetter + squareNotation;
+  if (pieceNotationLetter === 'P') return endSquareNotation;
+  else return pieceNotationLetter + endSquareNotation;
 }
 
 function convertPieceToNotationLetter(piece: Piece) {

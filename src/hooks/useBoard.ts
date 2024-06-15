@@ -147,6 +147,8 @@ export function useBoard() {
         moveMetaData.piece.color
       );
 
+      moveMetaData.isCapture = true;
+      moveMetaData.capturedPiece = moveMetaData.updatedBoard[capturedPawnIndex].piece;
       clearSquare(moveMetaData.updatedBoard, capturedPawnIndex);
     }
 
