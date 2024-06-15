@@ -3,7 +3,7 @@ import { BoardContext } from '../context/board/BoardContext';
 import { usePiece } from './usePiece';
 import { useStartEndAction } from './useStartEndAction';
 import { validatePieceMove } from '../helpers/validations/validatePieceMove';
-import { Piece } from '../context/board/InitialState';
+import { BoardState, Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
 import { copyBoardAndUpdate } from '../helpers/board/copyBoardAndUpdate';
 import { buildChessNotation } from '../helpers/move/buildChessNotation';
@@ -40,8 +40,8 @@ export function useBoard() {
     const capturedPiece = getPieceAtPosition(endPos);
     if (capturedPiece) currentPlayer.enemyPieceCaptured(capturedPiece.type);
 
-    updateGameState(piece, startPos, endPos);
-    handleSpecialMoves(piece, startPos, endPos);
+    let updatedBoard = handleSpecialMoves(piece, startPos, endPos);
+    updateGameState(piece, startPos, endPos, updatedBoard);
     startEnd.clear();
   }
 
@@ -56,8 +56,13 @@ export function useBoard() {
     return validMoves && validMoves.some((move) => move.index === endPos);
   }
 
-  function updateGameState(piece: Piece, startPos: number, endPos: number) {
-    const updatedBoard = copyBoardAndUpdate(board, piece, startPos, endPos);
+  function updateGameState(
+    piece: Piece,
+    startPos: number,
+    endPos: number,
+    updatedBoard: BoardState
+  ) {
+    updatedBoard = copyBoardAndUpdate(updatedBoard, piece, startPos, endPos);
     let enPassantAlgebraicNotation = '-';
 
     if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPos, endPos)) {
@@ -109,21 +114,33 @@ export function useBoard() {
     move(piece, startPos, endPos);
   }
 
-  function handleSpecialMoves(piece: Piece, startPos: number, endPos: number) {
+  function handleSpecialMoves(
+    piece: Piece,
+    startPos: number,
+    endPos: number
+  ): BoardState {
+    let updatedBoard = [...board];
+
     if (isMoveCastle(piece, startPos, endPos)) {
-      handleCastle(endPos);
+      updatedBoard = handleCastle(endPos);
     }
     if (piece.type === PieceType.PAWN) {
       handlePawnMoves(piece, startPos, endPos);
     }
+
+    return updatedBoard;
   }
 
   function handleCastle(endPos: number) {
     const rookStartEnd = getCastleRookStartEndPosition(endPos);
     if (rookStartEnd) {
       const rook = getPieceAtPosition(rookStartEnd.start);
-      if (rook) move(rook, rookStartEnd.start, rookStartEnd.end);
+      if (rook) {
+        move(rook, rookStartEnd.start, rookStartEnd.end);
+        return copyBoardAndUpdate(board, rook, rookStartEnd.start, rookStartEnd.end);
+      }
     }
+    return board;
   }
 
   function handlePawnMoves(piece: Piece, startPos: number, endPos: number) {
