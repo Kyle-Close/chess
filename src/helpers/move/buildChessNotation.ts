@@ -11,7 +11,7 @@ export function buildChessNotation(moveMetaData: MoveMetaData) {
   // - En Passant notation
   // - Check notation
   // - Checkmate notation
-  // - special cases (very rare)
+
   const pieceNotationLetter = convertPieceToNotationLetter(moveMetaData.piece);
   const squareNotation = getSquareNotation(moveMetaData.endPosition);
 
