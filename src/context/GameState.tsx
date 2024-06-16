@@ -11,8 +11,8 @@ interface GameStateProps {
 export interface GameState {
   whitePlayer: UsePlayerReturn;
   blackPlayer: UsePlayerReturn;
-  winner: UsePlayerReturn | null;
-  updateWinner: (player: UsePlayerReturn | null) => void;
+  matchResult: UsePlayerReturn | 'DRAW' | null;
+  updateMatchResult: (result: UsePlayerReturn | 'DRAW' | null) => void;
   move: UseMoveReturn;
   moveHistory: MoveHistory[];
   isWhiteTurn: boolean;
@@ -30,8 +30,8 @@ export interface GameState {
 export const GameState = createContext<GameState>({
   whitePlayer: {} as UsePlayerReturn,
   blackPlayer: {} as UsePlayerReturn,
-  winner: null,
-  updateWinner: () => {},
+  matchResult: null,
+  updateMatchResult: () => {},
   move: {} as UseMoveReturn,
   moveHistory: {} as MoveHistory[],
   isWhiteTurn: true,
@@ -47,10 +47,9 @@ export const GameState = createContext<GameState>({
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  // TO-DO: implement half turn & full turn logic properly
   const whitePlayer = usePlayer('Kyle', PieceColor.WHITE);
   const blackPlayer = usePlayer('CPU', PieceColor.BLACK);
-  const [winner, setWinner] = useState<UsePlayerReturn | null>(null);
+  const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([
@@ -66,8 +65,8 @@ export function GameStateProvider({ children }: GameStateProps) {
     setEnpassantSquare(val);
   };
 
-  const updateWinner = (player: UsePlayerReturn | null) => {
-    setWinner(player);
+  const updateMatchResult = (result: UsePlayerReturn | 'DRAW' | null) => {
+    setMatchResult(result);
   };
 
   const pushToMoveHistory = (move: MoveHistory) => {
@@ -110,18 +109,19 @@ export function GameStateProvider({ children }: GameStateProps) {
   };
 
   useEffect(() => {
-    if (winner !== null) {
-      console.log(`Game over! ${winner.name} has won.`);
+    if (matchResult !== null) {
+      if (matchResult === 'DRAW') console.log('Game over, draw.');
+      else console.log(`Game over! ${matchResult.name} has won.`);
     }
-  }, [winner]);
+  }, [matchResult]);
 
   return (
     <GameState.Provider
       value={{
         whitePlayer,
         blackPlayer,
-        winner,
-        updateWinner,
+        matchResult,
+        updateMatchResult,
         move: move,
         moveHistory,
         pushToMoveHistory,

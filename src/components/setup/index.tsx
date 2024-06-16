@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useSetupGame } from '../../hooks/useSetupGame';
 import { RedoMoveButton } from './RedoMoveButton';
 import { UndoMoveButton } from './UndoMoveButton';
+import { OfferDraw } from './OfferDrawButton';
+import { ResignButton } from './ResignButton';
 
 export function SetupGame() {
   const [fenString, setFenString] = useState('');
@@ -30,8 +32,12 @@ export function SetupGame() {
           Initialize Board
         </button>
       </form>
-      <UndoMoveButton />
-      <RedoMoveButton />
+      <div>
+        <UndoMoveButton />
+        <RedoMoveButton />
+      </div>
+      <OfferDraw />
+      <ResignButton />
     </div>
   );
 }

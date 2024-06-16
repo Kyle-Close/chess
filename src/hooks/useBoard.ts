@@ -165,7 +165,7 @@ export function useBoard() {
     setBoard(moveMetaData.updatedBoard);
 
     if (moveMetaData.isCheckmate) {
-      gameState.updateWinner(currentPlayer);
+      gameState.updateMatchResult(currentPlayer);
     }
   }
 
