@@ -9,6 +9,8 @@ import { isMovePawnPromotion } from './isMovePawnPromotion';
 
 export interface MoveMetaData {
   piece: Piece;
+  isCheck: boolean; // Indicates if this move puts opponent in check
+  isCheckmate: boolean;
   isEnPassant: boolean;
   isCastle: boolean;
   castleMetaData: CastleMetaData | null;
@@ -38,6 +40,8 @@ export function buildMoveMetaData(
   const capturedPiece = getCapturedPiece(board, endPosition);
 
   return {
+    isCheck: false,
+    isCheckmate: false,
     piece,
     isEnPassant,
     isCastle,

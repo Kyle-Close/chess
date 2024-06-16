@@ -8,35 +8,36 @@ import { CastleMetaData } from './getCastleMetaData';
 export function buildChessNotation(moveMetaData: MoveMetaData) {
   // TO-DO:
   // - Disambiguous moves (see wiki)
-  // - Check notation
-  // - Checkmate notation
 
   const pieceNotationLetter = convertPieceToNotationLetter(moveMetaData.piece);
   const startSquareFile = getPieceFile(moveMetaData.startPosition);
   const endSquareNotation = getSquareNotation(moveMetaData.endPosition);
+  let checkNotation = moveMetaData.isCheck ? '+' : '';
+  if (moveMetaData.isCheckmate) checkNotation = '#';
 
   // Handle capture
   if (moveMetaData.isCapture) {
-    if (moveMetaData.isEnPassant) return `${startSquareFile}x${endSquareNotation} e.p.`;
+    if (moveMetaData.isEnPassant)
+      return `${startSquareFile}x${endSquareNotation} e.p.${checkNotation}`;
 
     if (pieceNotationLetter === 'P') {
       if (moveMetaData.promotionPiece)
-        return (
-          getPieceFile(moveMetaData.startPosition) +
-          'x' +
-          endSquareNotation +
-          convertPieceToNotationLetter(moveMetaData.promotionPiece)
-        );
-      return getPieceFile(moveMetaData.startPosition) + 'x' + endSquareNotation;
+        return `${startSquareFile}x${endSquareNotation}${convertPieceToNotationLetter(
+          moveMetaData.promotionPiece
+        )}${checkNotation}`;
+
+      return startSquareFile + 'x' + endSquareNotation + checkNotation;
     } else {
-      return `${pieceNotationLetter}x${endSquareNotation}`;
+      return `${pieceNotationLetter}x${endSquareNotation}${checkNotation}`;
     }
   }
 
   // Handle castle
   if (moveMetaData.isCastle) {
-    if (moveMetaData.castleMetaData === CastleMetaData.KING_SIDE) return 'O-O';
-    else if (moveMetaData.castleMetaData === CastleMetaData.QUEEN_SIDE) return 'O-O-O';
+    if (moveMetaData.castleMetaData === CastleMetaData.KING_SIDE)
+      return 'O-O' + checkNotation;
+    else if (moveMetaData.castleMetaData === CastleMetaData.QUEEN_SIDE)
+      return 'O-O-O' + checkNotation;
   }
 
   // Handle pawn promotion
@@ -44,12 +45,17 @@ export function buildChessNotation(moveMetaData: MoveMetaData) {
     const promotedPieceNotationLetter = convertPieceToNotationLetter(
       moveMetaData.promotionPiece
     );
-    return pieceNotationLetter + endSquareNotation + promotedPieceNotationLetter;
+    return (
+      pieceNotationLetter +
+      endSquareNotation +
+      promotedPieceNotationLetter +
+      checkNotation
+    );
   }
 
   // Handle standard pawn move (not a capture, en passant or promotion)
-  if (pieceNotationLetter === 'P') return endSquareNotation;
-  else return pieceNotationLetter + endSquareNotation;
+  if (pieceNotationLetter === 'P') return endSquareNotation + checkNotation;
+  else return pieceNotationLetter + endSquareNotation + checkNotation;
 }
 
 function convertPieceToNotationLetter(piece: Piece) {

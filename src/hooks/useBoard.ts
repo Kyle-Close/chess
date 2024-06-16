@@ -22,6 +22,10 @@ import { MoveMetaData, buildMoveMetaData } from '../helpers/move/buildMoveMetaDa
 import { executeMove } from '../helpers/move/executeMove';
 import { clearSquare } from '../helpers/board/clearSquare';
 import { placePieceOnSquare } from '../helpers/board/placePieceOnSquare';
+import { isKingInCheck } from '../helpers/board/isKingInCheck';
+import { getKingIndex } from '../helpers/board/getKingIndex';
+import { isCheckmate } from '../helpers/board/isCheckmate';
+import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -93,10 +97,6 @@ export function useBoard() {
     if (currentPlayer.color === PieceColor.BLACK)
       gameState.move.updateFullMoves('INCREMENT');
 
-    if (waitingPlayer.checkForCheckmate(moveMetaData.updatedBoard)) {
-      gameState.updateWinner(currentPlayer);
-    }
-
     executeMove(
       moveMetaData.updatedBoard,
       moveMetaData.startPosition,
@@ -111,6 +111,30 @@ export function useBoard() {
         moveMetaData.endPosition
       );
 
+    // See if move put opponent in check and/or checkmate
+    const oppKingIndex = getKingIndex(moveMetaData.updatedBoard, waitingPlayer.color);
+
+    if (isKingInCheck(moveMetaData.updatedBoard, oppKingIndex, waitingPlayer.color)) {
+      moveMetaData.isCheck = true;
+      const oppKing = moveMetaData.updatedBoard[oppKingIndex].piece;
+      if (!oppKing) return;
+      const oppRemainingPlayerPieces = getRemainingPiecesByColor(
+        moveMetaData.updatedBoard,
+        oppKing?.color,
+        true
+      );
+      if (
+        oppKing &&
+        isCheckmate(
+          moveMetaData.updatedBoard,
+          oppKing,
+          oppKingIndex,
+          oppRemainingPlayerPieces
+        )
+      )
+        moveMetaData.isCheckmate = true;
+    }
+
     // Add latest move to game move history
     gameState.pushToMoveHistory({
       fenString: buildFenStringFromGame(
@@ -123,6 +147,10 @@ export function useBoard() {
     });
 
     setBoard(moveMetaData.updatedBoard);
+
+    if (moveMetaData.isCheckmate) {
+      gameState.updateWinner(currentPlayer);
+    }
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {

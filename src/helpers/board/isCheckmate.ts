@@ -1,4 +1,5 @@
 import { BoardState, Piece } from '../../context/board/InitialState';
+import { executeMove } from '../move/executeMove';
 import { filterCheckMoves } from '../validations/filterCheckMoves';
 import { kingMoveValidation } from '../validations/pieces/kingMoveValidation';
 import { validatePieceMove } from '../validations/validatePieceMove';
@@ -29,8 +30,8 @@ export function isCheckmate(
     if (!pieceMoves) return;
 
     pieceMoves.forEach((move) => {
-      const newBoard = copyBoardAndUpdate(board, piece, currentIndex, move.index);
-      if (piece.color === null) return;
+      const newBoard = [...board];
+      executeMove(newBoard, piece.index, move.index);
       const kingIndex = getKingIndex(board, piece.color);
       if (!isKingInCheck(newBoard, kingIndex, piece.color)) isInCheck = false;
     });
