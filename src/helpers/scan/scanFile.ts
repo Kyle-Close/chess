@@ -1,5 +1,5 @@
 import { BoardState } from '../../context/board/InitialState';
-import { getFileStartIndex } from '../board/getFileStartIndex';
+import { getFileStartIndex } from '../board-management/getFileStartIndex';
 import { ScanResult } from './scanRank';
 
 export function scanFile(board: BoardState, currentIndex: number) {

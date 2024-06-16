@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { PieceColor } from '../enums/PieceColor';
-import { getKingIndex } from '../helpers/board/getKingIndex';
+import { getKingIndex } from '../helpers/piece-management/getKingIndex';
 import { BoardState } from '../context/board/InitialState';
 import { scanAttackingSquares } from '../helpers/scan/scanAttackingSquares';
 

@@ -1,32 +1,35 @@
 import { useContext, useEffect } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { useStartEndAction } from './useStartEndAction';
-import { validatePieceMove } from '../helpers/validations/validatePieceMove';
+import { validatePieceMove } from '../helpers/move/validation/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
-import { buildChessNotation } from '../helpers/move/buildChessNotation';
-import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
+import { buildChessNotation } from '../helpers/move/notation/buildChessNotation';
+import { buildFenStringFromGame } from '../helpers/game-setup/building/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
-import { getCastleRookStartEndPosition } from '../helpers/board/getCastleRookStartEndPosition';
-import { isPawnAdvancingTwoSquares } from '../helpers/move/isPawnAdvancingTwoSquares';
-import { getSquareIndexByRankAndFile } from '../helpers/board/getSquareIndexByRankAndFile';
+import { getSquareIndexByRankAndFile } from '../helpers/board-management/getSquareIndexByRankAndFile';
 import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceLocation';
-import { getEnPassantCapturedPieceIndex } from '../helpers/board/getEnPassantCapturedPieceIndex';
-import { ValidSquares } from '../helpers/validations/pieces/kingMoveValidation';
+import { ValidSquares } from '../helpers/move/validation/pieces/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
 import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
-import { buildEnPassantForFen } from '../helpers/game-setup/buildEnPassantForFen';
-import { isHalfMoveResetCondition } from '../helpers/move/isHalfMoveResetCondition';
-import { MoveMetaData, buildMoveMetaData } from '../helpers/move/buildMoveMetaData';
-import { executeMove } from '../helpers/move/executeMove';
-import { clearSquare } from '../helpers/board/clearSquare';
-import { placePieceOnSquare } from '../helpers/board/placePieceOnSquare';
-import { isKingInCheck } from '../helpers/board/isKingInCheck';
-import { getKingIndex } from '../helpers/board/getKingIndex';
-import { isCheckmate } from '../helpers/board/isCheckmate';
-import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
-import { isMoveValid } from '../helpers/move/isMoveValid';
+import { buildEnPassantForFen } from '../helpers/game-setup/building/buildEnPassantForFen';
+import {
+  MoveMetaData,
+  buildMoveMetaData,
+} from '../helpers/move/execution/buildMoveMetaData';
+import { executeMove } from '../helpers/move/execution/executeMove';
+import { clearSquare } from '../helpers/board-management/clearSquare';
+import { placePieceOnSquare } from '../helpers/game-mechanics/placePieceOnSquare';
+import { isKingInCheck } from '../helpers/game-mechanics/isKingInCheck';
+import { getKingIndex } from '../helpers/piece-management/getKingIndex';
+import { isCheckmate } from '../helpers/game-mechanics/isCheckmate';
+import { getRemainingPiecesByColor } from '../helpers/piece-management/getRemainingPiecesByColor';
+import { isMoveValid } from '../helpers/move/validation/util/isMoveValid';
+import { isPawnAdvancingTwoSquares } from '../helpers/move/validation/util/isPawnAdvancingTwoSquares';
+import { isHalfMoveResetCondition } from '../helpers/move/validation/util/isHalfMoveResetCondition';
+import { getCastleRookStartEndPosition } from '../helpers/move/validation/util/getCastleRookStartEndPosition';
+import { getEnPassantCapturedPieceIndex } from '../helpers/move/validation/util/getEnPassantCapturedPieceIndex';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =

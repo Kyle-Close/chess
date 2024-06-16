@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { BoardState } from '../context/board/InitialState';
-import { isKingInCheck } from '../helpers/board/isKingInCheck';
-import { getKingIndex } from '../helpers/board/getKingIndex';
-import { isCheckmate } from '../helpers/board/isCheckmate';
+import { isKingInCheck } from '../helpers/game-mechanics/isKingInCheck';
+import { getKingIndex } from '../helpers/piece-management/getKingIndex';
+import { isCheckmate } from '../helpers/game-mechanics/isCheckmate';
 import { CastleRights, useCastleRights } from './useCastleRights';
-import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
+import { getRemainingPiecesByColor } from '../helpers/piece-management/getRemainingPiecesByColor';
 
 export interface UsePlayerReturn {
   name: string;
