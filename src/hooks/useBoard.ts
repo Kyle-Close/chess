@@ -26,6 +26,7 @@ import { isKingInCheck } from '../helpers/board/isKingInCheck';
 import { getKingIndex } from '../helpers/board/getKingIndex';
 import { isCheckmate } from '../helpers/board/isCheckmate';
 import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
+import { isMoveValid } from '../helpers/move/isMoveValid';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -38,8 +39,9 @@ export function useBoard() {
   const waitingPlayer = isWhiteTurn ? gameState.blackPlayer : gameState.whitePlayer;
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
-    if (!isValidMove(piece, startPos, endPos)) return;
     const moveMetaData = buildMoveMetaData(board, gameState, piece, startPos, endPos);
+    updateIsValidMove(moveMetaData, piece, startPos, endPos);
+    if (!moveMetaData.isMoveValid) return;
 
     handleSpecialMoves(moveMetaData);
     updateGameState(moveMetaData);
@@ -47,20 +49,34 @@ export function useBoard() {
     startEnd.clear();
   }
 
-  function isValidMove(piece: Piece, startPos: number, endPos: number) {
-    const validMoves = validatePieceMove(
-      board,
-      piece,
-      startPos,
-      currentPlayer.castleRights,
-      gameState.enPassantSquare
-    );
-    return validMoves && validMoves.some((move) => move.index === endPos);
+  function updateIsValidMove(
+    moveMetaData: MoveMetaData,
+    piece: Piece,
+    startPos: number,
+    endPos: number
+  ) {
+    if (
+      gameState.enPassantSquare &&
+      isMoveValid(
+        board,
+        piece,
+        startPos,
+        endPos,
+        currentPlayer.castleRights,
+        gameState.enPassantSquare
+      )
+    )
+      moveMetaData.isMoveValid = true;
+    else if (isMoveValid(board, piece, startPos, endPos, currentPlayer.castleRights))
+      moveMetaData.isMoveValid = true;
   }
 
   function updateGameState(moveMetaData: MoveMetaData) {
     const isBlackTurnEnding = gameState.isWhiteTurn === false;
     let enPassantAlgebraicNotation = '';
+
+    // Clear the redo queue
+    gameState.clearMoveHistoryRedo();
 
     // If piece was captured update that in player data
     if (moveMetaData.capturedPiece)

@@ -2,13 +2,13 @@ import { BoardState, Piece } from '../../context/board/InitialState';
 import { CastleRights } from '../../hooks/useCastleRights';
 import { validatePieceMove } from '../validations/validatePieceMove';
 
-export function isValidMove(
+export function isMoveValid(
   board: BoardState,
   piece: Piece,
   startPos: number,
   endPos: number,
-  castleRights: CastleRights,
-  enPassantSquare: number
+  castleRights?: CastleRights,
+  enPassantSquare?: number
 ) {
   const validMoves = validatePieceMove(
     board,
@@ -17,6 +17,7 @@ export function isValidMove(
     castleRights,
     enPassantSquare
   );
-  if (!validMoves || validMoves.length === 0) return;
-  if (!validMoves.some((move) => move.index === endPos)) return;
+  if (!validMoves || validMoves.length === 0) return false;
+  if (!validMoves.some((move) => move.index === endPos)) return false;
+  return true;
 }

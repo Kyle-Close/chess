@@ -19,6 +19,7 @@ export interface GameState {
   toggleTurn: () => void;
   pushToMoveHistory: (move: MoveHistory) => void;
   popMoveHistory: () => MoveHistory;
+  clearMoveHistoryRedo: () => void;
   moveHistoryRedo: MoveHistory[];
   pushToMoveHistoryRedo: (move: MoveHistory) => void;
   popMoveHistoryRedo: () => MoveHistory;
@@ -39,6 +40,7 @@ export const GameState = createContext<GameState>({
   popMoveHistory: () => ({} as MoveHistory),
   moveHistoryRedo: [] as MoveHistory[],
   pushToMoveHistoryRedo: () => {},
+  clearMoveHistoryRedo: () => {},
   popMoveHistoryRedo: () => ({} as MoveHistory),
   enPassantSquare: null,
   updateEnPassantSquare: () => {},
@@ -98,6 +100,10 @@ export function GameStateProvider({ children }: GameStateProps) {
     return poppedMove;
   };
 
+  const clearMoveHistoryRedo = () => {
+    setMoveHistoryRedo([]);
+  };
+
   const toggleTurn = () => {
     if (isWhiteTurn) setIsWhiteTurn(false);
     else setIsWhiteTurn(true);
@@ -127,6 +133,7 @@ export function GameStateProvider({ children }: GameStateProps) {
         popMoveHistoryRedo,
         enPassantSquare,
         updateEnPassantSquare,
+        clearMoveHistoryRedo,
       }}
     >
       {children}
