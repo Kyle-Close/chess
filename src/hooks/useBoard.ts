@@ -8,11 +8,11 @@ import { buildChessNotation } from '../helpers/move/buildChessNotation';
 import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
-import { getCastleRookStartEndPosition } from '../helpers/board/getCastleRookStartEndPosition';
+import { getRookMovementForCastling } from '../helpers/game-core/piece-management/getRookMovementForCastling';
 import { isPawnAdvancingTwoSquares } from '../helpers/move/isPawnAdvancingTwoSquares';
-import { getSquareIndexByRankAndFile } from '../helpers/board/getSquareIndexByRankAndFile';
+import { translatePositionToIndex } from '../helpers/game-core/board-utility/translatePositionToIndex';
 import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceLocation';
-import { getEnPassantCapturedPieceIndex } from '../helpers/board/getEnPassantCapturedPieceIndex';
+import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
 import { ValidSquares } from '../helpers/validations/pieces/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
 import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
@@ -20,12 +20,12 @@ import { buildEnPassantForFen } from '../helpers/game-setup/buildEnPassantForFen
 import { isHalfMoveResetCondition } from '../helpers/move/isHalfMoveResetCondition';
 import { MoveMetaData, buildMoveMetaData } from '../helpers/move/buildMoveMetaData';
 import { executeMove } from '../helpers/move/executeMove';
-import { clearSquare } from '../helpers/board/clearSquare';
-import { placePieceOnSquare } from '../helpers/board/placePieceOnSquare';
-import { isKingInCheck } from '../helpers/board/isKingInCheck';
-import { getKingIndex } from '../helpers/board/getKingIndex';
-import { isCheckmate } from '../helpers/board/isCheckmate';
-import { getRemainingPiecesByColor } from '../helpers/board/getRemainingPiecesByColor';
+import { clearSquare } from '../helpers/game-core/board-management/clearSquare';
+import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
+import { isKingInCheck } from '../helpers/analysis/isKingInCheck';
+import { getKingIndex } from '../helpers/game-core/piece-management/getKingIndex';
+import { isCheckmate } from '../helpers/analysis/isCheckmate';
+import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
 import { isMoveValid } from '../helpers/move/isMoveValid';
 
 export function useBoard() {
@@ -86,7 +86,7 @@ export function useBoard() {
       moveMetaData.piece.type === PieceType.PAWN &&
       isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)
     ) {
-      const enPassantSquareIndex = getSquareIndexByRankAndFile(
+      const enPassantSquareIndex = translatePositionToIndex(
         (getPieceRank(moveMetaData.startPosition) +
           (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as PieceRank,
         getPieceFile(moveMetaData.startPosition)
@@ -121,7 +121,7 @@ export function useBoard() {
 
     // Handle changing the pawn piece to the promoted piece
     if (moveMetaData.promotionPiece)
-      placePieceOnSquare(
+      assignPieceToSquare(
         moveMetaData.updatedBoard,
         moveMetaData.promotionPiece,
         moveMetaData.endPosition
@@ -175,7 +175,7 @@ export function useBoard() {
   }
 
   function handleCastle(moveMetaData: MoveMetaData) {
-    const rookStartEnd = getCastleRookStartEndPosition(moveMetaData.endPosition);
+    const rookStartEnd = getRookMovementForCastling(moveMetaData.endPosition);
     if (!rookStartEnd) return;
 
     const rook = getPieceAtPosition(rookStartEnd.start);
@@ -199,7 +199,7 @@ export function useBoard() {
     // Set or clear gameState en passant state
     if (isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)) {
       gameState.updateEnPassantSquare(
-        getSquareIndexByRankAndFile(
+        translatePositionToIndex(
           (getPieceRank(moveMetaData.startPosition) +
             (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as PieceRank,
           getPieceFile(moveMetaData.startPosition)
@@ -218,7 +218,7 @@ export function useBoard() {
       moveMetaData.promotionPiece = newPiece;
 
       // Update the game board with promoted piece
-      placePieceOnSquare(moveMetaData.updatedBoard, newPiece, moveMetaData.endPosition);
+      assignPieceToSquare(moveMetaData.updatedBoard, newPiece, moveMetaData.endPosition);
     }
   }
 

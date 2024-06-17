@@ -1,4 +1,4 @@
-import { getPieceFile } from '../generic/pieceLocation';
+import { getPieceFile } from '../../generic/pieceLocation';
 
 export function getFileStartIndex(index: number) {
   // The 'start' index refers to the 1st rank indexes.

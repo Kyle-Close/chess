@@ -1,4 +1,4 @@
-import { getPieceFile } from '../generic/pieceLocation';
+import { getPieceFile } from '../../generic/pieceLocation';
 
 export function getDiagonalStartIndex(index: number, isTopLeftToBottomRight: boolean) {
   let result = index;

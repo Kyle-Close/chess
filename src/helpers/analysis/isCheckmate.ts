@@ -3,8 +3,8 @@ import { executeMove } from '../move/executeMove';
 import { filterCheckMoves } from '../validations/filterCheckMoves';
 import { kingMoveValidation } from '../validations/pieces/kingMoveValidation';
 import { validatePieceMove } from '../validations/validatePieceMove';
-import { copyBoardAndUpdate } from './copyBoardAndUpdate';
-import { getKingIndex } from './getKingIndex';
+import { copyBoardAndUpdate } from '../board/copyBoardAndUpdate';
+import { getKingIndex } from '../game-core/piece-management/getKingIndex';
 import { isKingInCheck } from './isKingInCheck';
 
 export interface PieceWithIndex extends Piece {

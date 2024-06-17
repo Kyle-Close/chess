@@ -1,7 +1,7 @@
 import { BoardState, Piece } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
-import { isPawnInStartPosition } from '../board/isPawnInStartPosition';
+import { isPawnInStartPosition } from '../analysis/isPawnInStartPosition';
 import { isNumber } from '../generic/isNumber';
 
 export function buildBoardFromFen(fenPositionString: string) {

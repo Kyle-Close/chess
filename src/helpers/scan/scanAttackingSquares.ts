@@ -1,15 +1,15 @@
 import { BoardState } from '../../context/board/InitialState';
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
-import { getAllPlayerPiecesWithIndex } from '../board/getAllPlayerPiecesWithIndex';
-import { getPawnAttackingIndexes } from '../board/getPawnAttackingIndexes';
+import { getPlayerPiecesWithIndex } from '../game-core/piece-management/getPlayerPiecesWithIndex';
+import { getPawnAttackingIndexes } from '../game-core/piece-management/getPawnAttackingIndexes';
 import { validatePieceMove } from '../validations/validatePieceMove';
 
 export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   // Returns an array of indexes that are being attacked.
   // An attacked square is a square your opponent can capture on if you had a piece there
 
-  const piecesWithIndex = getAllPlayerPiecesWithIndex(board, color);
+  const piecesWithIndex = getPlayerPiecesWithIndex(board, color);
   const attackingIndexes: number[] = [];
 
   piecesWithIndex.forEach((piece) => {

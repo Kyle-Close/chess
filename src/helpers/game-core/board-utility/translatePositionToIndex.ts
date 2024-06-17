@@ -1,6 +1,6 @@
-import { PieceFile, PieceRank } from '../generic/pieceLocation';
+import { PieceFile, PieceRank } from '../../generic/pieceLocation';
 
-export function getSquareIndexByRankAndFile(rank: PieceRank, file: PieceFile) {
+export function translatePositionToIndex(rank: PieceRank, file: PieceFile) {
   const rankMultiplier = rank - 1;
   const fileAdder = getFileAdder(file);
 

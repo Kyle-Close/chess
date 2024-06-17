@@ -1,4 +1,4 @@
-import { PieceColor } from '../../enums/PieceColor';
+import { PieceColor } from '../../../enums/PieceColor';
 
 export function getEnPassantCapturedPieceIndex(
   pawnIndexAfterCapture: number,

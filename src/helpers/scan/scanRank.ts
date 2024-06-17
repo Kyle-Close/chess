@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../context/board/InitialState';
-import { getRankStartIndex } from '../board/getRankStartIndex';
+import { getRankStartIndex } from '../game-core/board-utility/getRankStartIndex';
 
 export type ScanResult = Piece | null;
 

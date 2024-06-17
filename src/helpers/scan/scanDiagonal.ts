@@ -1,5 +1,5 @@
 import { BoardState } from '../../context/board/InitialState';
-import { getDiagonalStartIndex } from '../board/getDiagonalStartIndex';
+import { getDiagonalStartIndex } from '../game-core/board-utility/getDiagonalStartIndex';
 import { getPieceFile } from '../generic/pieceLocation';
 import { ScanResult } from './scanRank';
 

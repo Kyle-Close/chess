@@ -1,4 +1,4 @@
-export function getCastleRookStartEndPosition(kingEndPos: number) {
+export function getRookMovementForCastling(kingEndPos: number) {
   switch (kingEndPos) {
     case 6:
       return { start: 7, end: 5 };
