@@ -1,11 +1,11 @@
-import { Piece } from '../../context/board/InitialState';
-import { PieceType } from '../../enums/PieceType';
-import { getSquareNotation } from '../notation-setup/fen-management/getSquareNotation';
-import { getPieceFile } from '../generic/pieceLocation';
-import { MoveMetaData } from './buildMoveMetaData';
-import { CastleMetaData } from './getCastleMetaData';
+import { Piece } from '../../../context/board/InitialState';
+import { PieceType } from '../../../enums/PieceType';
+import { getSquareNotation } from '../fen-management/getSquareNotation';
+import { getPieceFile } from '../../generic/pieceLocation';
+import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
+import { CastleMetaData } from '../../game-core/move-execution/getCastleMetaData';
 
-export function buildChessNotation(moveMetaData: MoveMetaData) {
+export function buildAgebraicNotation(moveMetaData: MoveMetaData) {
   // TO-DO:
   // - Disambiguous moves (see wiki)
 

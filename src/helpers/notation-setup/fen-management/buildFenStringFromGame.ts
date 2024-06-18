@@ -2,7 +2,7 @@ import { GameState } from '../../../context/GameState';
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
-import { MoveMetaData } from '../../move/buildMoveMetaData';
+import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
 import { buildFenCastleSegment } from './buildFenCastleSegment';
 
 export function buildFenStringFromGame(

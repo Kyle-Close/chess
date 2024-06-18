@@ -1,6 +1,6 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
-import { getPawnAttackingIndexes } from '../../game-core/piece-management/getPawnAttackingIndexes';
+import { getPawnAttackingIndexes } from '../piece-management/getPawnAttackingIndexes';
 import { PieceRank, getPieceFile, getPieceRank } from '../../generic/pieceLocation';
 import { ValidSquares } from './kingMoveValidation';
 

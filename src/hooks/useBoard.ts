@@ -1,32 +1,35 @@
 import { useContext, useEffect } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { useStartEndAction } from './useStartEndAction';
-import { validatePieceMove } from '../helpers/validations/validatePieceMove';
+import { validatePieceMove } from '../helpers/game-core/piece-validation/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
-import { buildChessNotation } from '../helpers/move/buildChessNotation';
+import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { getRookMovementForCastling } from '../helpers/game-core/piece-management/getRookMovementForCastling';
-import { isPawnAdvancingTwoSquares } from '../helpers/move/isPawnAdvancingTwoSquares';
+import { isPawnAdvancingTwoSquares } from '../helpers/game-core/move-execution/isPawnAdvancingTwoSquares';
 import { translatePositionToIndex } from '../helpers/game-core/board-utility/translatePositionToIndex';
 import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceLocation';
 import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
-import { ValidSquares } from '../helpers/validations/pieces/kingMoveValidation';
+import { ValidSquares } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
 import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
 import { buildEnPassantForFen } from '../helpers/notation-setup/fen-management/buildEnPassantForFen';
-import { isHalfMoveResetCondition } from '../helpers/move/isHalfMoveResetCondition';
-import { MoveMetaData, buildMoveMetaData } from '../helpers/move/buildMoveMetaData';
-import { executeMove } from '../helpers/move/executeMove';
+import { isHalfMoveResetCondition } from '../helpers/game-core/move-execution/isHalfMoveResetCondition';
+import {
+  MoveMetaData,
+  buildMoveMetaData,
+} from '../helpers/game-core/move-execution/buildMoveMetaData';
+import { executeMove } from '../helpers/game-core/move-execution/executeMove';
 import { clearSquare } from '../helpers/game-core/board-management/clearSquare';
 import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
 import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
 import { getKingIndex } from '../helpers/game-core/piece-management/getKingIndex';
 import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
 import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
-import { isMoveValid } from '../helpers/move/isMoveValid';
+import { isMoveValid } from '../helpers/game-core/move-execution/isMoveValid';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -159,7 +162,7 @@ export function useBoard() {
         isBlackTurnEnding,
         enPassantAlgebraicNotation
       ),
-      chessNotation: buildChessNotation(moveMetaData),
+      chessNotation: buildAgebraicNotation(moveMetaData),
     });
 
     setBoard(moveMetaData.updatedBoard);

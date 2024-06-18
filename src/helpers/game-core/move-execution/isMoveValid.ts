@@ -1,6 +1,6 @@
-import { BoardState, Piece } from '../../context/board/InitialState';
-import { CastleRights } from '../../hooks/useCastleRights';
-import { validatePieceMove } from '../validations/validatePieceMove';
+import { BoardState, Piece } from '../../../context/board/InitialState';
+import { CastleRights } from '../../../hooks/useCastleRights';
+import { validatePieceMove } from '../piece-validation/validatePieceMove';
 
 export function isMoveValid(
   board: BoardState,

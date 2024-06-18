@@ -1,6 +1,6 @@
-import { GameState } from '../../context/GameState';
-import { BoardState, Piece } from '../../context/board/InitialState';
-import { getCapturedPiece } from './getCapturedPiece';
+import { GameState } from '../../../context/GameState';
+import { BoardState, Piece } from '../../../context/board/InitialState';
+import { getCapturedPiece } from '../piece-management/getCapturedPiece';
 import { CastleMetaData, getCastleMetaData } from './getCastleMetaData';
 import { isMoveCapture } from './isMoveCapture';
 import { isMoveCastle } from './isMoveCastle';

@@ -1,4 +1,4 @@
-import { BoardState } from '../../context/board/InitialState';
+import { BoardState } from '../../../context/board/InitialState';
 
 export function executeMove(board: BoardState, startPos: number, endPos: number) {
   const startSquare = board[startPos];

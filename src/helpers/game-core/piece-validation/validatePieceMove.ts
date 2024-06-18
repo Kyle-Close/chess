@@ -1,14 +1,14 @@
-import { BoardState, Piece } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
-import { CastleRights } from '../../hooks/useCastleRights';
+import { BoardState, Piece } from '../../../context/board/InitialState';
+import { PieceColor } from '../../../enums/PieceColor';
+import { PieceType } from '../../../enums/PieceType';
+import { CastleRights } from '../../../hooks/useCastleRights';
 import { filterCheckMoves } from './filterCheckMoves';
-import { bishopMoveValidation } from './pieces/bishopMoveValidation';
-import { ValidSquares, kingMoveValidation } from './pieces/kingMoveValidation';
-import { knightMoveValidation } from './pieces/knightMoveValidation';
-import { pawnMoveValidation } from './pieces/pawnMoveValidation';
-import { queenMoveValidation } from './pieces/queenMoveValidation';
-import { rookMoveValidation } from './pieces/rookMoveValidation';
+import { bishopMoveValidation } from './bishopMoveValidation';
+import { ValidSquares, kingMoveValidation } from './kingMoveValidation';
+import { knightMoveValidation } from './knightMoveValidation';
+import { pawnMoveValidation } from './pawnMoveValidation';
+import { queenMoveValidation } from './queenMoveValidation';
+import { rookMoveValidation } from './rookMoveValidation';
 
 export function validatePieceMove(
   board: BoardState,

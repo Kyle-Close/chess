@@ -1,4 +1,4 @@
-import { BoardState } from '../../context/board/InitialState';
+import { BoardState } from '../../../context/board/InitialState';
 
 export function getCapturedPiece(board: BoardState, endPos: number) {
   const captureSquare = board[endPos];

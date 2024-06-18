@@ -1,8 +1,8 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { executeMove } from '../../move/executeMove';
-import { filterCheckMoves } from '../../validations/filterCheckMoves';
-import { kingMoveValidation } from '../../validations/pieces/kingMoveValidation';
-import { validatePieceMove } from '../../validations/validatePieceMove';
+import { executeMove } from '../../game-core/move-execution/executeMove';
+import { filterCheckMoves } from '../../game-core/piece-validation/filterCheckMoves';
+import { kingMoveValidation } from '../../game-core/piece-validation/kingMoveValidation';
+import { validatePieceMove } from '../../game-core/piece-validation/validatePieceMove';
 import { copyBoardAndUpdate } from '../../game-core/board-utility/copyBoardAndUpdate';
 import { getKingIndex } from '../../game-core/piece-management/getKingIndex';
 import { isKingInCheck } from './isKingInCheck';
