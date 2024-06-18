@@ -1,5 +1,6 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceFile, getPieceFile } from '../../analysis/game-checks/pieceLocation';
+import { SquareFile } from '../../../enums/SquareFile';
+import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
 export function knightMoveValidation(
@@ -8,7 +9,7 @@ export function knightMoveValidation(
   currentIndex: number
 ) {
   let validSquares: ValidSquares[] = [];
-  const pieceFile = getPieceFile(currentIndex);
+  const pieceFile = getSquareFile(currentIndex);
 
   validSquares = getAllKnightMoves(currentIndex, pieceFile);
   validSquares = filterOutOfBounds(validSquares);
@@ -18,7 +19,7 @@ export function knightMoveValidation(
   return validSquares;
 }
 
-function getAllKnightMoves(currentIndex: number, startFile: PieceFile) {
+function getAllKnightMoves(currentIndex: number, startFile: SquareFile) {
   let leftSideTop = null;
   let leftTop = null;
   let leftBottom = null;

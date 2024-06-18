@@ -1,5 +1,6 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceFile, getPieceFile } from '../../analysis/game-checks/pieceLocation';
+import { SquareFile } from '../../../enums/SquareFile';
+import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
 export function bishopMoveValidation(
@@ -58,16 +59,16 @@ export function appendDiagonalMoves(
   currentIndex: number,
   validSquares: ValidSquares[],
   jumpCount: number,
-  lastFile: PieceFile
+  lastFile: SquareFile
 ) {
   let newIndex = currentIndex;
-  let pieceFile = getPieceFile(newIndex);
+  let pieceFile = getSquareFile(newIndex);
 
   while (pieceFile !== lastFile) {
     newIndex = newIndex + jumpCount;
     if (newIndex < 0 || newIndex > 63) break;
 
-    pieceFile = getPieceFile(newIndex);
+    pieceFile = getSquareFile(newIndex);
     const currentPiece = board[newIndex].piece;
 
     if (pieceFile === lastFile) {

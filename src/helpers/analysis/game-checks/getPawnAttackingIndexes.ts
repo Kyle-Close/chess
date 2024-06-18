@@ -1,9 +1,9 @@
 import { PieceColor } from '../../../enums/PieceColor';
-import { getPieceFile } from './pieceLocation';
+import { getSquareFile } from '../board-mapping/getSquareFile';
 
 export function getPawnAttackingIndexes(currentIndex: number, color: PieceColor) {
   const attackingSquares: number[] = [];
-  const file = getPieceFile(currentIndex);
+  const file = getSquareFile(currentIndex);
 
   if (file === 'a') {
     if (color === PieceColor.WHITE) attackingSquares.push(currentIndex + 9);

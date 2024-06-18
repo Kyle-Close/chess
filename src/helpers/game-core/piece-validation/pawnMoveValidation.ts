@@ -1,9 +1,9 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { SquareRank } from '../../../enums/SquareRank';
+import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { getPawnAttackingIndexes } from '../../analysis/game-checks/getPawnAttackingIndexes';
-import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
 import { ValidSquares } from './kingMoveValidation';
 
 export function pawnMoveValidation(
@@ -82,7 +82,7 @@ function captureAvailable(
   if (!pieceRank) return;
   if (pieceRank === 1 && piece.color === PieceColor.BLACK) return;
   if (pieceRank === 8 && piece.color === PieceColor.WHITE) return;
-  const pieceFile = getPieceFile(currentIndex);
+  const pieceFile = getSquareFile(currentIndex);
 
   if (piece.color === PieceColor.WHITE) {
     if (

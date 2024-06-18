@@ -1,6 +1,6 @@
 import { BoardState } from '../../../context/board/InitialState';
 import { getDiagonalStartIndex } from '../../game-core/board-utility/getDiagonalStartIndex';
-import { getPieceFile } from '../game-checks/pieceLocation';
+import { getSquareFile } from '../board-mapping/getSquareFile';
 import { ScanResult } from './scanRank';
 
 export function scanDiagonal(
@@ -21,7 +21,7 @@ export function scanDiagonal(
     while (true) {
       nextIndex = nextIndex + 9;
       if (nextIndex > 63) break;
-      const file = getPieceFile(nextIndex);
+      const file = getSquareFile(nextIndex);
       result.push(board[nextIndex].piece);
       if (file === 'h') break;
     }
@@ -31,7 +31,7 @@ export function scanDiagonal(
     while (true) {
       nextIndex = nextIndex + 7;
       if (nextIndex > 63) break;
-      const file = getPieceFile(nextIndex);
+      const file = getSquareFile(nextIndex);
       result.push(board[nextIndex].piece);
       if (file === 'a') break;
     }

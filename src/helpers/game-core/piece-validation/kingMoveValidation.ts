@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
+import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 import { filterOccupiedSelf, filterOutOfBounds } from './knightMoveValidation';
 
 export interface ValidSquares {
@@ -24,7 +24,7 @@ export function kingMoveValidation(
 
 function appendSurroundingSquares(currentIndex: number) {
   const result: ValidSquares[] = [];
-  const file = getPieceFile(currentIndex);
+  const file = getSquareFile(currentIndex);
 
   if (file !== 'a') {
     result.push({ index: currentIndex + 7, isCapture: false });

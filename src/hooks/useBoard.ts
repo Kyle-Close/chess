@@ -11,7 +11,6 @@ import { PieceColor } from '../enums/PieceColor';
 import { getRookMovementForCastling } from '../helpers/analysis/game-checks/getRookMovementForCastling';
 import { isPawnAdvancingTwoSquares } from '../helpers/game-core/move-execution/isPawnAdvancingTwoSquares';
 import { translatePositionToIndex } from '../helpers/game-core/board-utility/translatePositionToIndex';
-import { getPieceFile } from '../helpers/analysis/game-checks/pieceLocation';
 import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
 import { ValidSquares } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
@@ -32,6 +31,7 @@ import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management
 import { isMoveValid } from '../helpers/game-core/move-execution/isMoveValid';
 import { SquareRank } from '../enums/SquareRank';
 import { getSquareRank } from '../helpers/analysis/board-mapping/getSquareRank';
+import { getSquareFile } from '../helpers/analysis/board-mapping/getSquareFile';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -94,7 +94,7 @@ export function useBoard() {
       const enPassantSquareIndex = translatePositionToIndex(
         (getSquareRank(moveMetaData.startPosition) +
           (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as SquareRank,
-        getPieceFile(moveMetaData.startPosition)
+        getSquareFile(moveMetaData.startPosition)
       );
 
       enPassantAlgebraicNotation = buildEnPassantForFen(enPassantSquareIndex);
@@ -207,7 +207,7 @@ export function useBoard() {
         translatePositionToIndex(
           (getSquareRank(moveMetaData.startPosition) +
             (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as SquareRank,
-          getPieceFile(moveMetaData.startPosition)
+          getSquareFile(moveMetaData.startPosition)
         )
       );
     } else gameState.updateEnPassantSquare(null);

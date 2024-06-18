@@ -1,14 +1,14 @@
 import { BoardState } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
-import { getPieceFile } from '../game-checks/pieceLocation';
+import { getSquareFile } from '../board-mapping/getSquareFile';
 
 export function scanForKnightCheck(
   board: BoardState,
   currentKingPosition: number,
   opponentColor: PieceColor
 ) {
-  const kingFile = getPieceFile(currentKingPosition);
+  const kingFile = getSquareFile(currentKingPosition);
   const possibleCheckSquares: number[] = [];
 
   if (kingFile === 'a') {

@@ -1,10 +1,10 @@
-import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
+import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 
 export function getFileStartIndex(index: number) {
   // The 'start' index refers to the 1st rank indexes.
   // Ex. for any index in file 'c' look to the 1st rank index -> 2
 
-  const file = getPieceFile(index);
+  const file = getSquareFile(index);
 
   if (file === 'a') return 0;
   else if (file === 'b') return 1;

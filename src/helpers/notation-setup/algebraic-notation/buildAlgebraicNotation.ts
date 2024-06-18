@@ -1,16 +1,16 @@
 import { Piece } from '../../../context/board/InitialState';
 import { PieceType } from '../../../enums/PieceType';
 import { getSquareNotation } from '../fen-management/getSquareNotation';
-import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
 import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
 import { CastleMetaData } from '../../game-core/move-execution/getCastleMetaData';
+import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 
 export function buildAgebraicNotation(moveMetaData: MoveMetaData) {
   // TO-DO:
   // - Disambiguous moves (see wiki)
 
   const pieceNotationLetter = convertPieceToNotationLetter(moveMetaData.piece);
-  const startSquareFile = getPieceFile(moveMetaData.startPosition);
+  const startSquareFile = getSquareFile(moveMetaData.startPosition);
   const endSquareNotation = getSquareNotation(moveMetaData.endPosition);
   let checkNotation = moveMetaData.isCheck ? '+' : '';
   if (moveMetaData.isCheckmate) checkNotation = '#';
