@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { BoardState } from '../context/board/InitialState';
-import { isKingInCheck } from '../helpers/analysis/isKingInCheck';
+import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
 import { getKingIndex } from '../helpers/game-core/piece-management/getKingIndex';
-import { isCheckmate } from '../helpers/analysis/isCheckmate';
+import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
 import { CastleRights, useCastleRights } from './useCastleRights';
 import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
 

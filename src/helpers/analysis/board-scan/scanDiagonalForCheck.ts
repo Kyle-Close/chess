@@ -1,5 +1,5 @@
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
+import { PieceColor } from '../../../enums/PieceColor';
+import { PieceType } from '../../../enums/PieceType';
 import { ScanResult } from './scanRank';
 
 export function scanDiagonalForCheck(

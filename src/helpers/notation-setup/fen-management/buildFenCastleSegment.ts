@@ -1,4 +1,4 @@
-import { CastleRights } from '../../hooks/useCastleRights';
+import { CastleRights } from '../../../hooks/useCastleRights';
 
 export function buildFenCastleSegment(
   whiteCastleRights: CastleRights,

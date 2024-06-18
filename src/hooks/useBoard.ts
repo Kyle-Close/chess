@@ -5,7 +5,7 @@ import { validatePieceMove } from '../helpers/validations/validatePieceMove';
 import { Piece } from '../context/board/InitialState';
 import { GameState } from '../context/GameState';
 import { buildChessNotation } from '../helpers/move/buildChessNotation';
-import { buildFenStringFromGame } from '../helpers/game-setup/buildFenStringFromGame';
+import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { getRookMovementForCastling } from '../helpers/game-core/piece-management/getRookMovementForCastling';
@@ -16,15 +16,15 @@ import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utili
 import { ValidSquares } from '../helpers/validations/pieces/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
 import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
-import { buildEnPassantForFen } from '../helpers/game-setup/buildEnPassantForFen';
+import { buildEnPassantForFen } from '../helpers/notation-setup/fen-management/buildEnPassantForFen';
 import { isHalfMoveResetCondition } from '../helpers/move/isHalfMoveResetCondition';
 import { MoveMetaData, buildMoveMetaData } from '../helpers/move/buildMoveMetaData';
 import { executeMove } from '../helpers/move/executeMove';
 import { clearSquare } from '../helpers/game-core/board-management/clearSquare';
 import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
-import { isKingInCheck } from '../helpers/analysis/isKingInCheck';
+import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
 import { getKingIndex } from '../helpers/game-core/piece-management/getKingIndex';
-import { isCheckmate } from '../helpers/analysis/isCheckmate';
+import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
 import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
 import { isMoveValid } from '../helpers/move/isMoveValid';
 

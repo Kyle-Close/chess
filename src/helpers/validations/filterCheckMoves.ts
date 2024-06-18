@@ -1,7 +1,7 @@
 import { BoardState, Piece } from '../../context/board/InitialState';
-import { copyBoardAndUpdate } from '../board/copyBoardAndUpdate';
+import { copyBoardAndUpdate } from '../game-core/board-utility/copyBoardAndUpdate';
 import { getKingIndex } from '../game-core/piece-management/getKingIndex';
-import { isKingInCheck } from '../analysis/isKingInCheck';
+import { isKingInCheck } from '../analysis/game-checks/isKingInCheck';
 import { ValidSquares } from './pieces/kingMoveValidation';
 
 export function filterCheckMoves(

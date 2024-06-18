@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { GameState } from '../context/GameState';
 import { BoardContext } from '../context/board/BoardContext';
-import { buildBoardFromFen } from '../helpers/game-setup/buildBoardFromFen';
-import { parseFenString } from '../helpers/game-setup/parseFenString';
+import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
+import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
-import { getPlayerCastleRightsFromFen } from '../helpers/game-setup/getPlayerCastleRightsFromFen';
-import { getEnPassantTargetSquareFromFen } from '../helpers/game-setup/getEnPassantTargetSquareFromFen';
+import { getPlayerCastleRightsFromFen } from '../helpers/notation-setup/game-setup/getPlayerCastleRightsFromFen';
+import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);

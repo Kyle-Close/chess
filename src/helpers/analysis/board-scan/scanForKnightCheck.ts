@@ -1,7 +1,7 @@
-import { BoardState } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
-import { getPieceFile } from '../generic/pieceLocation';
+import { BoardState } from '../../../context/board/InitialState';
+import { PieceColor } from '../../../enums/PieceColor';
+import { PieceType } from '../../../enums/PieceType';
+import { getPieceFile } from '../../generic/pieceLocation';
 
 export function scanForKnightCheck(
   board: BoardState,

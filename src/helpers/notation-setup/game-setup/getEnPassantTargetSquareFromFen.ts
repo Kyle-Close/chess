@@ -1,5 +1,5 @@
-import { translatePositionToIndex } from '../game-core/board-utility/translatePositionToIndex';
-import { PieceFile, PieceRank } from '../generic/pieceLocation';
+import { translatePositionToIndex } from '../../game-core/board-utility/translatePositionToIndex';
+import { PieceFile, PieceRank } from '../../generic/pieceLocation';
 
 export function getEnPassantTargetSquareFromFen(fenEnPassantValue: string) {
   if (fenEnPassantValue === '-') return null;

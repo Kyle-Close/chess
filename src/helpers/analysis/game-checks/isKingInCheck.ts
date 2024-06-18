@@ -1,12 +1,12 @@
-import { BoardState } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
-import { scanDiagonal } from '../scan/scanDiagonal';
-import { scanDiagonalForCheck } from '../scan/scanDiagonalForCheck';
-import { scanFile } from '../scan/scanFile';
-import { scanFileForCheck } from '../scan/scanFileForCheck';
-import { scanForKnightCheck } from '../scan/scanForKnightCheck';
-import { scanRank } from '../scan/scanRank';
-import { scanRankForCheck } from '../scan/scanRankForCheck';
+import { BoardState } from '../../../context/board/InitialState';
+import { PieceColor } from '../../../enums/PieceColor';
+import { scanDiagonal } from '../board-scan/scanDiagonal';
+import { scanDiagonalForCheck } from '../board-scan/scanDiagonalForCheck';
+import { scanFile } from '../board-scan/scanFile';
+import { scanFileForCheck } from '../board-scan/scanFileForCheck';
+import { scanForKnightCheck } from '../board-scan/scanForKnightCheck';
+import { scanRank } from '../board-scan/scanRank';
+import { scanRankForCheck } from '../board-scan/scanRankForCheck';
 
 export function isKingInCheck(
   board: BoardState,

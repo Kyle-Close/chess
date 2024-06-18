@@ -1,5 +1,5 @@
-import { PieceColor } from '../../enums/PieceColor';
-import { CastleRights } from '../../hooks/useCastleRights';
+import { PieceColor } from '../../../enums/PieceColor';
+import { CastleRights } from '../../../hooks/useCastleRights';
 
 export function getPlayerCastleRightsFromFen(
   castleRights: string,

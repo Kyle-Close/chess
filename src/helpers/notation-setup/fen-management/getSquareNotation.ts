@@ -1,4 +1,4 @@
-import { getPieceFile, getPieceRank } from '../generic/pieceLocation';
+import { getPieceFile, getPieceRank } from '../../generic/pieceLocation';
 
 export function getSquareNotation(index: number) {
   const file = getPieceFile(index);

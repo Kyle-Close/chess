@@ -1,7 +1,7 @@
-import { BoardState } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
+import { BoardState } from '../../../context/board/InitialState';
+import { PieceColor } from '../../../enums/PieceColor';
 
-export function checkIsCapture(
+export function isMoveCapture(
   board: BoardState,
   targetIndex: number,
   opponentColor: PieceColor

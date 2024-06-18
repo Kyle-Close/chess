@@ -1,9 +1,9 @@
-import { BoardState } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
-import { getPlayerPiecesWithIndex } from '../game-core/piece-management/getPlayerPiecesWithIndex';
-import { getPawnAttackingIndexes } from '../game-core/piece-management/getPawnAttackingIndexes';
-import { validatePieceMove } from '../validations/validatePieceMove';
+import { BoardState } from '../../../context/board/InitialState';
+import { PieceColor } from '../../../enums/PieceColor';
+import { PieceType } from '../../../enums/PieceType';
+import { getPlayerPiecesWithIndex } from '../../game-core/piece-management/getPlayerPiecesWithIndex';
+import { getPawnAttackingIndexes } from '../../game-core/piece-management/getPawnAttackingIndexes';
+import { validatePieceMove } from '../../validations/validatePieceMove';
 
 export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   // Returns an array of indexes that are being attacked.
