@@ -1,6 +1,6 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { copyBoardAndUpdate } from '../board-utility/copyBoardAndUpdate';
-import { getKingIndex } from '../piece-management/getKingIndex';
+import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isKingInCheck } from '../../analysis/game-checks/isKingInCheck';
 import { ValidSquares } from './kingMoveValidation';
 

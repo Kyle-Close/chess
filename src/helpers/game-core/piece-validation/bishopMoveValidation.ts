@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceFile, getPieceFile } from '../../generic/pieceLocation';
+import { PieceFile, getPieceFile } from '../../analysis/game-checks/pieceLocation';
 import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
 export function bishopMoveValidation(

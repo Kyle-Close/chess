@@ -4,7 +4,7 @@ import { filterCheckMoves } from '../../game-core/piece-validation/filterCheckMo
 import { kingMoveValidation } from '../../game-core/piece-validation/kingMoveValidation';
 import { validatePieceMove } from '../../game-core/piece-validation/validatePieceMove';
 import { copyBoardAndUpdate } from '../../game-core/board-utility/copyBoardAndUpdate';
-import { getKingIndex } from '../../game-core/piece-management/getKingIndex';
+import { getKingIndex } from './getKingIndex';
 import { isKingInCheck } from './isKingInCheck';
 
 export interface PieceWithIndex extends Piece {

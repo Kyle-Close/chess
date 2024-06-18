@@ -1,7 +1,7 @@
 import { Piece } from '../../../context/board/InitialState';
 import { PieceType } from '../../../enums/PieceType';
 import { getSquareNotation } from '../fen-management/getSquareNotation';
-import { getPieceFile } from '../../generic/pieceLocation';
+import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
 import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
 import { CastleMetaData } from '../../game-core/move-execution/getCastleMetaData';
 

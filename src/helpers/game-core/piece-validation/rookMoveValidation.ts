@@ -1,6 +1,6 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
-import { PieceRank, getPieceRank } from '../../generic/pieceLocation';
+import { PieceRank, getPieceRank } from '../../analysis/game-checks/pieceLocation';
 import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
 export function rookMoveValidation(

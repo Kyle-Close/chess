@@ -1,5 +1,5 @@
 import { PieceColor } from '../../../enums/PieceColor';
-import { getPieceFile } from '../../generic/pieceLocation';
+import { getPieceFile } from './pieceLocation';
 
 export function getPawnAttackingIndexes(currentIndex: number, color: PieceColor) {
   const attackingSquares: number[] = [];

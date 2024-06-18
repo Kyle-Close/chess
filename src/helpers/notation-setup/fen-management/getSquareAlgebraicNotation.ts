@@ -1,4 +1,4 @@
-import { getPieceFile, getPieceRank } from '../../generic/pieceLocation';
+import { getPieceFile, getPieceRank } from '../../analysis/game-checks/pieceLocation';
 
 export function getSquareAlgebraicNotation(index: number) {
   const file = getPieceFile(index);

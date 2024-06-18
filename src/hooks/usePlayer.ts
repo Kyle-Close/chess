@@ -3,7 +3,7 @@ import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { BoardState } from '../context/board/InitialState';
 import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
-import { getKingIndex } from '../helpers/game-core/piece-management/getKingIndex';
+import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
 import { CastleRights, useCastleRights } from './useCastleRights';
 import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';

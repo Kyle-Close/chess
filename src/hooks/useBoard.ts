@@ -8,14 +8,18 @@ import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notat
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
-import { getRookMovementForCastling } from '../helpers/game-core/piece-management/getRookMovementForCastling';
+import { getRookMovementForCastling } from '../helpers/analysis/game-checks/getRookMovementForCastling';
 import { isPawnAdvancingTwoSquares } from '../helpers/game-core/move-execution/isPawnAdvancingTwoSquares';
 import { translatePositionToIndex } from '../helpers/game-core/board-utility/translatePositionToIndex';
-import { PieceRank, getPieceFile, getPieceRank } from '../helpers/generic/pieceLocation';
+import {
+  PieceRank,
+  getPieceFile,
+  getPieceRank,
+} from '../helpers/analysis/game-checks/pieceLocation';
 import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
 import { ValidSquares } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
-import { convertStringToPiece } from '../helpers/generic/convertStringToPiece';
+import { convertStringToPiece } from '../helpers/utilities/convertStringToPiece';
 import { buildEnPassantForFen } from '../helpers/notation-setup/fen-management/buildEnPassantForFen';
 import { isHalfMoveResetCondition } from '../helpers/game-core/move-execution/isHalfMoveResetCondition';
 import {
@@ -26,7 +30,7 @@ import { executeMove } from '../helpers/game-core/move-execution/executeMove';
 import { clearSquare } from '../helpers/game-core/board-management/clearSquare';
 import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
 import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
-import { getKingIndex } from '../helpers/game-core/piece-management/getKingIndex';
+import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
 import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
 import { isMoveValid } from '../helpers/game-core/move-execution/isMoveValid';

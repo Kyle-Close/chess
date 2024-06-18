@@ -1,4 +1,4 @@
-import { getPieceRank } from '../../generic/pieceLocation';
+import { getPieceRank } from '../../analysis/game-checks/pieceLocation';
 
 export function isPawnAdvancingTwoSquares(startIndex: number, endIndex: number) {
   const startRank = getPieceRank(startIndex);

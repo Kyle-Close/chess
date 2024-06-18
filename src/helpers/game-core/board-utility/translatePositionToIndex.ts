@@ -1,4 +1,4 @@
-import { PieceFile, PieceRank } from '../../generic/pieceLocation';
+import { PieceFile, PieceRank } from '../../analysis/game-checks/pieceLocation';
 
 export function translatePositionToIndex(rank: PieceRank, file: PieceFile) {
   const rankMultiplier = rank - 1;

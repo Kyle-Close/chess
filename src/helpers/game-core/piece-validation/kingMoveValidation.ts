@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { getPieceFile } from '../../generic/pieceLocation';
+import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
 import { filterOccupiedSelf, filterOutOfBounds } from './knightMoveValidation';
 
 export interface ValidSquares {

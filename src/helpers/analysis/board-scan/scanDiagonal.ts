@@ -1,6 +1,6 @@
 import { BoardState } from '../../../context/board/InitialState';
 import { getDiagonalStartIndex } from '../../game-core/board-utility/getDiagonalStartIndex';
-import { getPieceFile } from '../../generic/pieceLocation';
+import { getPieceFile } from '../game-checks/pieceLocation';
 import { ScanResult } from './scanRank';
 
 export function scanDiagonal(

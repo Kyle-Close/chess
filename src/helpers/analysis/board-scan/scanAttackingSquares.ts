@@ -2,7 +2,7 @@ import { BoardState } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
 import { getPlayerPiecesWithIndex } from '../../game-core/piece-management/getPlayerPiecesWithIndex';
-import { getPawnAttackingIndexes } from '../../game-core/piece-management/getPawnAttackingIndexes';
+import { getPawnAttackingIndexes } from '../game-checks/getPawnAttackingIndexes';
 import { validatePieceMove } from '../../game-core/piece-validation/validatePieceMove';
 
 export function scanAttackingSquares(board: BoardState, color: PieceColor) {

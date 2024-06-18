@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { getPieceRank } from '../../generic/pieceLocation';
+import { getPieceRank } from '../../analysis/game-checks/pieceLocation';
 import { appendDiagonalMoves, getJumpCount, getLastFile } from './bishopMoveValidation';
 import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 import { filterOutOfBounds } from './knightMoveValidation';
