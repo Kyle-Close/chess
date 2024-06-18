@@ -80,8 +80,6 @@ export function useBoard() {
   }
 
   function updateGameState(moveMetaData: MoveMetaData) {
-    const isBlackTurnEnding = gameState.isWhiteTurn === false;
-
     // Clear the redo queue
     gameState.clearMoveHistoryRedo();
 
@@ -95,55 +93,68 @@ export function useBoard() {
     // Update turn
     gameState.toggleTurn();
 
-    // Update game half moves
-    gameState.move.updateHalfMoves('INCREMENT');
+    // Update move counters
+    updateMoveCounts(moveMetaData);
 
-    if (isHalfMoveResetCondition(moveMetaData.piece, board[moveMetaData.endPosition].isCapture))
-      gameState.move.updateHalfMoves(0);
-
-    // Update game full moves
-    if (currentPlayer.color === PieceColor.BLACK) gameState.move.updateFullMoves('INCREMENT');
-
+    // Update the moveMetaData board with the move being executed
     executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
 
-    // Handle changing the pawn piece to the promoted piece
-    if (moveMetaData.promotionPiece)
-      assignPieceToSquare(
-        moveMetaData.updatedBoard,
-        moveMetaData.promotionPiece,
-        moveMetaData.endPosition
-      );
+    // Handle pawn promotion (if applicable)
+    handlePawnPromotion(moveMetaData);
 
-    // See if move put opponent in check and/or checkmate
-    const oppKingIndex = getKingIndex(moveMetaData.updatedBoard, waitingPlayer.color);
-
-    if (isKingInCheck(moveMetaData.updatedBoard, oppKingIndex, waitingPlayer.color)) {
-      moveMetaData.isCheck = true;
-      const oppKing = moveMetaData.updatedBoard[oppKingIndex].piece;
-      if (!oppKing) return;
-      const oppRemainingPlayerPieces = getRemainingPiecesByColor(
-        moveMetaData.updatedBoard,
-        oppKing?.color,
-        true
-      );
-      if (
-        oppKing &&
-        isCheckmate(moveMetaData.updatedBoard, oppKing, oppKingIndex, oppRemainingPlayerPieces)
-      )
-        moveMetaData.isCheckmate = true;
-    }
+    // Handle opponent check & checkmate status
+    handleOpponentCheckState(moveMetaData);
 
     // Add latest move to game move history
+    updateMoveHistory(moveMetaData);
+
+    // Check if game is over. Update gameState if true
+    handleGameIsOver(moveMetaData);
+
+    // Finally, update global board state with updated board after move
+    setBoard(moveMetaData.updatedBoard);
+  }
+
+  function handleGameIsOver(moveMetaData: MoveMetaData) {
+    if (moveMetaData.isCheckmate) gameState.updateMatchResult(currentPlayer);
+  }
+
+  function updateMoveHistory(moveMetaData: MoveMetaData) {
+    const isBlackTurnEnding = gameState.isWhiteTurn === false;
+
     gameState.pushToMoveHistory({
       fenString: buildFenStringFromGame(gameState, moveMetaData, isBlackTurnEnding),
       chessNotation: buildAgebraicNotation(moveMetaData),
     });
+  }
 
-    setBoard(moveMetaData.updatedBoard);
+  function handlePawnPromotion(moveMetaData: MoveMetaData) {
+    if (!moveMetaData.promotionPiece) return;
 
-    if (moveMetaData.isCheckmate) {
-      gameState.updateMatchResult(currentPlayer);
-    }
+    assignPieceToSquare(
+      moveMetaData.updatedBoard,
+      moveMetaData.promotionPiece,
+      moveMetaData.endPosition
+    );
+  }
+
+  function handleOpponentCheckState(moveMetaData: MoveMetaData) {
+    // See if move put opponent in check and/or checkmate
+    const oppKingIndex = getKingIndex(moveMetaData.updatedBoard, waitingPlayer.color);
+    if (!isKingInCheck(moveMetaData.updatedBoard, oppKingIndex, waitingPlayer.color)) return;
+
+    moveMetaData.isCheck = true;
+    const oppKing = moveMetaData.updatedBoard[oppKingIndex].piece;
+    if (!oppKing) return;
+
+    const oppRemainingPlayerPieces = getRemainingPiecesByColor(
+      moveMetaData.updatedBoard,
+      oppKing.color,
+      true
+    );
+
+    if (isCheckmate(moveMetaData.updatedBoard, oppKing, oppKingIndex, oppRemainingPlayerPieces))
+      moveMetaData.isCheckmate = true;
   }
 
   function handleEnPassant(moveMetaData: MoveMetaData) {
@@ -155,6 +166,17 @@ export function useBoard() {
     } else {
       gameState.updateEnPassantSquare(null);
     }
+  }
+
+  function updateMoveCounts(moveMetaData: MoveMetaData) {
+    // Update game half moves
+    gameState.move.updateHalfMoves('INCREMENT');
+
+    if (isHalfMoveResetCondition(moveMetaData.piece, board[moveMetaData.endPosition].isCapture))
+      gameState.move.updateHalfMoves(0);
+
+    // Update game full moves
+    if (currentPlayer.color === PieceColor.BLACK) gameState.move.updateFullMoves('INCREMENT');
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {
