@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { GameState } from '../context/GameState';
+import { GameState } from '../context/game-state/GameState';
 import { BoardContext } from '../context/board/BoardContext';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';

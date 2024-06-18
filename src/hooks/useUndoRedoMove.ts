@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { GameState } from '../context/GameState';
+import { GameState } from '../context/game-state/GameState';
 import { useSetupGame } from './useSetupGame';
 
 export function useUndoRedoMove() {

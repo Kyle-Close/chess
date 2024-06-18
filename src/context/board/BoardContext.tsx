@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { BoardState, Piece, initialBoardState } from './InitialState';
+import { BoardState, Piece, getInitialBoardState } from './InitialState';
 
 interface BoardProviderProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ interface BoardContext {
 }
 
 export const BoardContext = createContext<BoardContext>({
-  board: initialBoardState,
+  board: getInitialBoardState(),
   setBoard: () => {},
   getPieceAtPosition: () => {
     return undefined as any;
@@ -24,7 +24,7 @@ export const BoardContext = createContext<BoardContext>({
 });
 
 export function BoardProvider({ children }: BoardProviderProps) {
-  const [board, setBoard] = useState<BoardState>(initialBoardState);
+  const [board, setBoard] = useState<BoardState>(getInitialBoardState);
 
   const getPieceAtPosition = (index: number) => {
     return board[index].piece;

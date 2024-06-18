@@ -1,4 +1,4 @@
-import { GameState } from '../../../context/GameState';
+import { GameState } from '../../../context/game-state/GameState';
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';

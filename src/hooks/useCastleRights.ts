@@ -10,9 +10,6 @@ export interface CastleRights {
   canCastleKingSide: boolean;
   queenSideIsAvailable: boolean;
   kingSideIsAvailable: boolean;
-  // the available properties indicate a situation where the king and rook(s)
-  //   have not moved. But the canCastle may not be possible due to a temporary
-  //   situation where castling is not available (e.g. being blocked)
 }
 
 export function useCastleRights(color: PieceColor) {
@@ -21,11 +18,20 @@ export function useCastleRights(color: PieceColor) {
     getCastleRights(board, color)
   );
 
+  function reset() {
+    setCastleRights({
+      canCastleKingSide: true,
+      canCastleQueenSide: true,
+      kingSideIsAvailable: false,
+      queenSideIsAvailable: false,
+    });
+  }
+
   useEffect(() => {
     setCastleRights(getCastleRights(board, color));
   }, [board]);
 
-  return { castleRights };
+  return { castleRights, reset };
 }
 
 function getCastleRights(board: BoardState, color: PieceColor): CastleRights {

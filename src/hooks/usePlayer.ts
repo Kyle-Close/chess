@@ -21,6 +21,7 @@ export interface UsePlayerReturn {
   updateColor: (color: PieceColor) => void;
   checkForCheckmate: (board: BoardState) => boolean;
   castleRights: CastleRights;
+  reset: () => void;
 }
 
 export function usePlayer(
@@ -32,7 +33,16 @@ export function usePlayer(
   const [color, setColor] = useState<PieceColor>(initialColor);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
-  const { castleRights } = useCastleRights(color);
+  const castleRights = useCastleRights(color);
+
+  const reset = () => {
+    setName(initialName);
+    setIsTurn(false);
+    setColor(initialColor);
+    setCapturedPieces([]);
+    setIsInCheck(false);
+    castleRights.reset();
+  };
 
   const updateName = (name: string) => {
     setName(name);
@@ -81,6 +91,7 @@ export function usePlayer(
     color,
     updateColor,
     checkForCheckmate,
-    castleRights,
+    castleRights: castleRights.castleRights,
+    reset,
   };
 }

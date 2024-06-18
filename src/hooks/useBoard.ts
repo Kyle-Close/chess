@@ -2,8 +2,8 @@ import { useContext, useEffect } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { useStartEndAction } from './useStartEndAction';
 import { validatePieceMove } from '../helpers/game-core/piece-validation/validatePieceMove';
-import { Piece } from '../context/board/InitialState';
-import { GameState } from '../context/GameState';
+import { Piece, getInitialBoardState } from '../context/board/InitialState';
+import { GameState } from '../context/game-state/GameState';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { PieceType } from '../enums/PieceType';
@@ -42,6 +42,10 @@ export function useBoard() {
   const isWhiteTurn = gameState.isWhiteTurn;
   const currentPlayer = isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
   const waitingPlayer = isWhiteTurn ? gameState.blackPlayer : gameState.whitePlayer;
+
+  function resetBoard() {
+    setBoard(getInitialBoardState());
+  }
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
     const moveMetaData = buildMoveMetaData(board, gameState, piece, startPos, endPos);
@@ -306,5 +310,6 @@ export function useBoard() {
     startPos: startEnd.startPos,
     handleSquareClicked,
     handleRightClickOnBoard,
+    resetBoard,
   };
 }

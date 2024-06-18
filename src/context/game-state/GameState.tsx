@@ -1,8 +1,9 @@
 import { createContext, useEffect, useState } from 'react';
-import { UsePlayerReturn, usePlayer } from '../hooks/usePlayer';
-import { PieceColor } from '../enums/PieceColor';
-import { MoveHistory } from './types/MoveHistory';
-import { UseMoveReturn, useMove } from '../hooks/useMove';
+import { UsePlayerReturn, usePlayer } from '../../hooks/usePlayer';
+import { PieceColor } from '../../enums/PieceColor';
+import { MoveHistory } from '../types/MoveHistory';
+import { UseMoveReturn, useMove } from '../../hooks/useMove';
+import { buildInitialMoveHistory } from './buildInitialMoveHistory';
 
 interface GameStateProps {
   children: React.ReactNode;
@@ -25,6 +26,7 @@ export interface GameState {
   popMoveHistoryRedo: () => MoveHistory;
   enPassantSquare: null | number;
   updateEnPassantSquare: (val: number | null) => void;
+  reset: () => void;
 }
 
 export const GameState = createContext<GameState>({
@@ -44,6 +46,7 @@ export const GameState = createContext<GameState>({
   popMoveHistoryRedo: () => ({} as MoveHistory),
   enPassantSquare: null,
   updateEnPassantSquare: () => {},
+  reset: () => {},
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
@@ -52,14 +55,22 @@ export function GameStateProvider({ children }: GameStateProps) {
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
-  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>([
-    {
-      chessNotation: '',
-      fenString: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-    },
-  ]);
+  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>(
+    buildInitialMoveHistory()
+  );
   const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
   const [enPassantSquare, setEnpassantSquare] = useState<null | number>(null);
+
+  const reset = () => {
+    whitePlayer.reset();
+    blackPlayer.reset();
+    setMatchResult(null);
+    move.reset();
+    setIsWhiteTurn(true);
+    setMoveHistory(buildInitialMoveHistory());
+    setMoveHistoryRedo([]);
+    setEnpassantSquare(null);
+  };
 
   const updateEnPassantSquare = (val: number | null) => {
     setEnpassantSquare(val);
@@ -134,6 +145,7 @@ export function GameStateProvider({ children }: GameStateProps) {
         enPassantSquare,
         updateEnPassantSquare,
         clearMoveHistoryRedo,
+        reset,
       }}
     >
       {children}

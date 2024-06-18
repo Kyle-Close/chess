@@ -4,6 +4,7 @@ import { RedoMoveButton } from './RedoMoveButton';
 import { UndoMoveButton } from './UndoMoveButton';
 import { OfferDraw } from './OfferDrawButton';
 import { ResignButton } from './ResignButton';
+import { ResetButton } from './ResetButton';
 
 export function SetupGame() {
   const [fenString, setFenString] = useState('');
@@ -38,6 +39,7 @@ export function SetupGame() {
       </div>
       <OfferDraw />
       <ResignButton />
+      <ResetButton />
     </div>
   );
 }

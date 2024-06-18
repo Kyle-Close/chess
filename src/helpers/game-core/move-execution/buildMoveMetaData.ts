@@ -1,4 +1,4 @@
-import { GameState } from '../../../context/GameState';
+import { GameState } from '../../../context/game-state/GameState';
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { getCapturedPiece } from '../piece-management/getCapturedPiece';
 import { CastleMetaData, getCastleMetaData } from './getCastleMetaData';

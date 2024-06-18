@@ -5,6 +5,7 @@ export interface UseMoveReturn {
   updateHalfMoves: (value: number | 'INCREMENT') => void;
   fullMoves: number;
   updateFullMoves: (value: number | 'INCREMENT') => void;
+  reset: () => void;
 }
 
 export function useMove(): UseMoveReturn {
@@ -22,10 +23,16 @@ export function useMove(): UseMoveReturn {
     else setFullMoves(value);
   }
 
+  function reset() {
+    setHalfMoves(0);
+    setFullMoves(0);
+  }
+
   return {
     halfMoves,
     updateHalfMoves,
     fullMoves,
     updateFullMoves,
+    reset,
   };
 }
