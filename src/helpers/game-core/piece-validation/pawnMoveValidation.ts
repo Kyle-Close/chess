@@ -1,11 +1,9 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
+import { SquareRank } from '../../../enums/SquareRank';
+import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { getPawnAttackingIndexes } from '../../analysis/game-checks/getPawnAttackingIndexes';
-import {
-  PieceRank,
-  getPieceFile,
-  getPieceRank,
-} from '../../analysis/game-checks/pieceLocation';
+import { getPieceFile } from '../../analysis/game-checks/pieceLocation';
 import { ValidSquares } from './kingMoveValidation';
 
 export function pawnMoveValidation(
@@ -15,7 +13,7 @@ export function pawnMoveValidation(
   enPassantTargetSquare?: number | null
 ) {
   const validSquares: ValidSquares[] = [];
-  const pieceRank = getPieceRank(currentIndex);
+  const pieceRank = getSquareRank(currentIndex);
 
   if (isOnLastRank(piece, pieceRank)) return [];
 
@@ -61,7 +59,7 @@ function isPawnBlocked(
   currentIndex: number,
   piece: Piece,
   squaresAhead: number,
-  pieceRank: PieceRank
+  pieceRank: SquareRank
 ) {
   if (!pieceRank) return;
 
@@ -79,7 +77,7 @@ function captureAvailable(
   currentIndex: number,
   piece: Piece,
   isLeft: boolean,
-  pieceRank: PieceRank
+  pieceRank: SquareRank
 ) {
   if (!pieceRank) return;
   if (pieceRank === 1 && piece.color === PieceColor.BLACK) return;
@@ -121,7 +119,7 @@ function captureAvailable(
   }
 }
 
-function isOnLastRank(piece: Piece, pieceRank: PieceRank) {
+function isOnLastRank(piece: Piece, pieceRank: SquareRank) {
   if (piece.color === PieceColor.WHITE && pieceRank === 8) return true;
   else if (piece.color === PieceColor.BLACK && pieceRank === 1) return true;
   else return false;

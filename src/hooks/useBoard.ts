@@ -11,11 +11,7 @@ import { PieceColor } from '../enums/PieceColor';
 import { getRookMovementForCastling } from '../helpers/analysis/game-checks/getRookMovementForCastling';
 import { isPawnAdvancingTwoSquares } from '../helpers/game-core/move-execution/isPawnAdvancingTwoSquares';
 import { translatePositionToIndex } from '../helpers/game-core/board-utility/translatePositionToIndex';
-import {
-  PieceRank,
-  getPieceFile,
-  getPieceRank,
-} from '../helpers/analysis/game-checks/pieceLocation';
+import { getPieceFile } from '../helpers/analysis/game-checks/pieceLocation';
 import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
 import { ValidSquares } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { UsePlayerReturn } from './usePlayer';
@@ -34,6 +30,8 @@ import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
 import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
 import { isMoveValid } from '../helpers/game-core/move-execution/isMoveValid';
+import { SquareRank } from '../enums/SquareRank';
+import { getSquareRank } from '../helpers/analysis/board-mapping/getSquareRank';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
@@ -94,8 +92,8 @@ export function useBoard() {
       isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)
     ) {
       const enPassantSquareIndex = translatePositionToIndex(
-        (getPieceRank(moveMetaData.startPosition) +
-          (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as PieceRank,
+        (getSquareRank(moveMetaData.startPosition) +
+          (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as SquareRank,
         getPieceFile(moveMetaData.startPosition)
       );
 
@@ -207,8 +205,8 @@ export function useBoard() {
     if (isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)) {
       gameState.updateEnPassantSquare(
         translatePositionToIndex(
-          (getPieceRank(moveMetaData.startPosition) +
-            (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as PieceRank,
+          (getSquareRank(moveMetaData.startPosition) +
+            (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as SquareRank,
           getPieceFile(moveMetaData.startPosition)
         )
       );

@@ -1,5 +1,5 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { getPieceRank } from '../../analysis/game-checks/pieceLocation';
+import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { appendDiagonalMoves, getJumpCount, getLastFile } from './bishopMoveValidation';
 import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 import { filterOutOfBounds } from './knightMoveValidation';
@@ -18,11 +18,11 @@ export function queenMoveValidation(
 ) {
   let validSquares: ValidSquares[] = [];
 
-  const pieceRank = getPieceRank(currentIndex);
+  const squareRank = getSquareRank(currentIndex);
   const squaresCanMoveForward = countForwardMoves(board, piece, currentIndex);
-  const squaresCanMoveRight = countRightMoves(board, piece, currentIndex, pieceRank);
+  const squaresCanMoveRight = countRightMoves(board, piece, currentIndex, squareRank);
   const squaresCanMoveBackwards = countBackwardsMoves(board, piece, currentIndex);
-  const squaresCanMoveLeft = countLeftMoves(board, piece, currentIndex, pieceRank);
+  const squaresCanMoveLeft = countLeftMoves(board, piece, currentIndex, squareRank);
 
   if (squaresCanMoveForward)
     addValidSquares(piece, 'FORWARD', squaresCanMoveForward, currentIndex, validSquares);
