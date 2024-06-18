@@ -13,6 +13,7 @@ export interface MoveMetaData {
   isCheck: boolean; // Indicates if this move puts opponent in check
   isCheckmate: boolean;
   isEnPassant: boolean;
+  enPassantNotation: string;
   isCastle: boolean;
   castleMetaData: CastleMetaData | null;
   isPromotion: boolean;
@@ -33,9 +34,7 @@ export function buildMoveMetaData(
 ): MoveMetaData {
   const isEnPassant = isMoveEnPassant(piece, endPosition, gameState.enPassantSquare);
   const isCastle = isMoveCastle(piece, startPosition, endPosition);
-  const castleMetaData = isCastle
-    ? getCastleMetaData(piece, startPosition, endPosition)
-    : null;
+  const castleMetaData = isCastle ? getCastleMetaData(piece, startPosition, endPosition) : null;
   const isPromotion = isMovePawnPromotion(piece, endPosition);
   const isCapture = isMoveCapture(board, endPosition);
   const capturedPiece = getCapturedPiece(board, endPosition);
@@ -47,6 +46,7 @@ export function buildMoveMetaData(
     isCheckmate: false,
     piece,
     isEnPassant,
+    enPassantNotation: '',
     isCastle,
     castleMetaData,
     isPromotion,

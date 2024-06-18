@@ -34,8 +34,7 @@ import { getSquareRank } from '../helpers/analysis/board-mapping/getSquareRank';
 import { getSquareFile } from '../helpers/analysis/board-mapping/getSquareFile';
 
 export function useBoard() {
-  const { board, setBoard, getPieceAtPosition, clearIsValidSquares } =
-    useContext(BoardContext);
+  const { board, setBoard, getPieceAtPosition, clearIsValidSquares } = useContext(BoardContext);
   const gameState = useContext(GameState);
   const startEnd = useStartEndAction();
 
@@ -82,27 +81,16 @@ export function useBoard() {
 
   function updateGameState(moveMetaData: MoveMetaData) {
     const isBlackTurnEnding = gameState.isWhiteTurn === false;
-    let enPassantAlgebraicNotation = '';
 
     // Clear the redo queue
     gameState.clearMoveHistoryRedo();
 
-    // If piece was captured update that in player data
+    // Handle piece capture
     if (moveMetaData.capturedPiece)
       currentPlayer.enemyPieceCaptured(moveMetaData.capturedPiece.type);
 
-    if (
-      moveMetaData.piece.type === PieceType.PAWN &&
-      isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)
-    ) {
-      const enPassantSquareIndex = translatePositionToIndex(
-        (getSquareRank(moveMetaData.startPosition) +
-          (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as SquareRank,
-        getSquareFile(moveMetaData.startPosition)
-      );
-
-      enPassantAlgebraicNotation = buildEnPassantForFen(enPassantSquareIndex);
-    }
+    // Handle en passant
+    handleEnPassant(moveMetaData);
 
     // Update turn
     gameState.toggleTurn();
@@ -110,23 +98,13 @@ export function useBoard() {
     // Update game half moves
     gameState.move.updateHalfMoves('INCREMENT');
 
-    if (
-      isHalfMoveResetCondition(
-        moveMetaData.piece,
-        board[moveMetaData.endPosition].isCapture
-      )
-    )
+    if (isHalfMoveResetCondition(moveMetaData.piece, board[moveMetaData.endPosition].isCapture))
       gameState.move.updateHalfMoves(0);
 
     // Update game full moves
-    if (currentPlayer.color === PieceColor.BLACK)
-      gameState.move.updateFullMoves('INCREMENT');
+    if (currentPlayer.color === PieceColor.BLACK) gameState.move.updateFullMoves('INCREMENT');
 
-    executeMove(
-      moveMetaData.updatedBoard,
-      moveMetaData.startPosition,
-      moveMetaData.endPosition
-    );
+    executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
 
     // Handle changing the pawn piece to the promoted piece
     if (moveMetaData.promotionPiece)
@@ -150,24 +128,14 @@ export function useBoard() {
       );
       if (
         oppKing &&
-        isCheckmate(
-          moveMetaData.updatedBoard,
-          oppKing,
-          oppKingIndex,
-          oppRemainingPlayerPieces
-        )
+        isCheckmate(moveMetaData.updatedBoard, oppKing, oppKingIndex, oppRemainingPlayerPieces)
       )
         moveMetaData.isCheckmate = true;
     }
 
     // Add latest move to game move history
     gameState.pushToMoveHistory({
-      fenString: buildFenStringFromGame(
-        gameState,
-        moveMetaData,
-        isBlackTurnEnding,
-        enPassantAlgebraicNotation
-      ),
+      fenString: buildFenStringFromGame(gameState, moveMetaData, isBlackTurnEnding),
       chessNotation: buildAgebraicNotation(moveMetaData),
     });
 
@@ -175,6 +143,17 @@ export function useBoard() {
 
     if (moveMetaData.isCheckmate) {
       gameState.updateMatchResult(currentPlayer);
+    }
+  }
+
+  function handleEnPassant(moveMetaData: MoveMetaData) {
+    const { piece, startPosition, endPosition } = moveMetaData;
+
+    if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPosition, endPosition)) {
+      const enPassantSquareIndex = getEnPassantCapturedPieceIndex(endPosition, piece.color);
+      moveMetaData.enPassantNotation = buildEnPassantForFen(enPassantSquareIndex);
+    } else {
+      gameState.updateEnPassantSquare(null);
     }
   }
 
@@ -188,8 +167,7 @@ export function useBoard() {
     if (!rookStartEnd) return;
 
     const rook = getPieceAtPosition(rookStartEnd.start);
-    if (rook)
-      executeMove(moveMetaData.updatedBoard, rookStartEnd.start, rookStartEnd.end);
+    if (rook) executeMove(moveMetaData.updatedBoard, rookStartEnd.start, rookStartEnd.end);
   }
 
   function handlePawnMoves(moveMetaData: MoveMetaData) {
@@ -247,22 +225,17 @@ export function useBoard() {
       undefined,
       gameState.enPassantSquare
     );
-    if (piece.type === PieceType.KING && validMoves)
-      addCastleMoves(validMoves, currentPlayer);
+    if (piece.type === PieceType.KING && validMoves) addCastleMoves(validMoves, currentPlayer);
     return validMoves;
   }
 
   function addCastleMoves(validMoves: ValidSquares[], player: UsePlayerReturn) {
     if (player.color === PieceColor.WHITE) {
-      if (player.castleRights.canCastleKingSide)
-        validMoves.push({ index: 6, isCapture: false });
-      if (player.castleRights.canCastleQueenSide)
-        validMoves.push({ index: 2, isCapture: false });
+      if (player.castleRights.canCastleKingSide) validMoves.push({ index: 6, isCapture: false });
+      if (player.castleRights.canCastleQueenSide) validMoves.push({ index: 2, isCapture: false });
     } else {
-      if (player.castleRights.canCastleKingSide)
-        validMoves.push({ index: 62, isCapture: false });
-      if (player.castleRights.canCastleQueenSide)
-        validMoves.push({ index: 58, isCapture: false });
+      if (player.castleRights.canCastleKingSide) validMoves.push({ index: 62, isCapture: false });
+      if (player.castleRights.canCastleQueenSide) validMoves.push({ index: 58, isCapture: false });
     }
   }
 
@@ -297,8 +270,7 @@ export function useBoard() {
   useEffect(() => {
     if (startEnd.startPos === null) clearIsValidSquares();
     else if (startEnd.startPos !== null && startEnd.endPos === null) {
-      if (isClickingValidSquare(startEnd.startPos, true))
-        handleShowValidMoves(startEnd.startPos);
+      if (isClickingValidSquare(startEnd.startPos, true)) handleShowValidMoves(startEnd.startPos);
     } else if (startEnd.startPos !== null && startEnd.endPos !== null) {
       const piece = getPieceAtPosition(startEnd.startPos);
       if (piece) tryMove(piece, startEnd.startPos, startEnd.endPos);

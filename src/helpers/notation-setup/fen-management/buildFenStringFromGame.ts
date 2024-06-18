@@ -8,21 +8,17 @@ import { buildFenCastleSegment } from './buildFenCastleSegment';
 export function buildFenStringFromGame(
   gameState: GameState,
   moveMetaData: MoveMetaData,
-  isBlackTurnEnding: boolean,
-  enPassantAlgebraicNotation: string
+  isBlackTurnEnding: boolean
 ) {
-  console.log(gameState);
   const piecePlacementString = buildPiecePlacementString(moveMetaData.updatedBoard);
   const color = gameState.isWhiteTurn === true ? 'b' : 'w';
   const castleSegment = buildFenCastleSegment(
     gameState.whitePlayer.castleRights,
     gameState.blackPlayer.castleRights
   );
-  const fullMoves = isBlackTurnEnding
-    ? gameState.move.fullMoves + 2
-    : gameState.move.fullMoves + 1;
+  const fullMoves = isBlackTurnEnding ? gameState.move.fullMoves + 2 : gameState.move.fullMoves + 1;
 
-  return `${piecePlacementString} ${color} ${castleSegment} ${enPassantAlgebraicNotation} ${gameState.move.halfMoves} ${fullMoves}`;
+  return `${piecePlacementString} ${color} ${castleSegment} ${moveMetaData.enPassantNotation} ${gameState.move.halfMoves} ${fullMoves}`;
 }
 
 function buildPiecePlacementString(board: BoardState) {
