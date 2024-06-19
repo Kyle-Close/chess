@@ -1,13 +1,14 @@
-import { PieceFile, PieceRank } from '../../analysis/game-checks/pieceLocation';
+import { SquareFile } from '../../../enums/SquareFile';
+import { SquareRank } from '../../../enums/SquareRank';
 
-export function translatePositionToIndex(rank: PieceRank, file: PieceFile) {
+export function translatePositionToIndex(rank: SquareRank, file: SquareFile) {
   const rankMultiplier = rank - 1;
   const fileAdder = getFileAdder(file);
 
   return rankMultiplier * 8 + fileAdder;
 }
 
-function getFileAdder(file: PieceFile) {
+function getFileAdder(file: SquareFile) {
   switch (file) {
     case 'a':
       return 0;
@@ -25,5 +26,7 @@ function getFileAdder(file: PieceFile) {
       return 6;
     case 'h':
       return 7;
+    default:
+      throw Error('Invalid File');
   }
 }
