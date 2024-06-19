@@ -26,6 +26,7 @@ import { handleEnPassant } from '../helpers/game-core/move-utility/handleEnPassa
 import { handleCastle } from '../helpers/game-core/move-utility/handleCastle';
 import { updateIsValidMove } from '../helpers/game-core/move-utility/updateIsValidMove';
 import { handlePawnPromotion } from '../helpers/game-core/move-utility/handlePawnPromotion';
+import { isInsufficientMaterial } from '../helpers/game-core/board-utility/isInsufficientMaterial';
 
 export interface UseMoveReturn {
   halfMoves: number;
@@ -101,7 +102,8 @@ export function useMove(): UseMoveReturn {
 
   function handleGameIsOver(moveMetaData: MoveMetaData) {
     if (moveMetaData.isCheckmate) gameState.updateMatchResult(currentPlayer);
-    if (gameState.move.halfMoves >= 49) gameState.updateMatchResult('DRAW');
+    else if (gameState.move.halfMoves >= 49) gameState.updateMatchResult('DRAW');
+    else if (isInsufficientMaterial(moveMetaData.updatedBoard)) gameState.updateMatchResult('DRAW');
   }
 
   function updateMoveHistory(moveMetaData: MoveMetaData) {
