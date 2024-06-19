@@ -4,7 +4,7 @@ import { SquareRank } from '../../../enums/SquareRank';
 import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { getPawnAttackingIndexes } from '../../analysis/game-checks/getPawnAttackingIndexes';
-import { ValidSquares } from './kingMoveValidation';
+import { ValidMoves } from './kingMoveValidation';
 
 export function pawnMoveValidation(
   board: BoardState,
@@ -12,19 +12,13 @@ export function pawnMoveValidation(
   currentIndex: number,
   enPassantTargetSquare?: number | null
 ) {
-  const validSquares: ValidSquares[] = [];
+  const validSquares: ValidMoves[] = [];
   const pieceRank = getSquareRank(currentIndex);
 
   if (isOnLastRank(piece, pieceRank)) return [];
 
   const isBlockedOneSquareAhead = isPawnBlocked(board, currentIndex, piece, 1, pieceRank);
-  const isBlockedTwoSquaresAhead = isPawnBlocked(
-    board,
-    currentIndex,
-    piece,
-    2,
-    pieceRank
-  );
+  const isBlockedTwoSquaresAhead = isPawnBlocked(board, currentIndex, piece, 2, pieceRank);
   const captureLeft = captureAvailable(board, currentIndex, piece, true, pieceRank);
   const captureRight = captureAvailable(board, currentIndex, piece, false, pieceRank);
 
@@ -125,11 +119,7 @@ function isOnLastRank(piece: Piece, pieceRank: SquareRank) {
   else return false;
 }
 
-export function isEnpassantCapturePossible(
-  color: PieceColor,
-  currentPos: number,
-  target: number
-) {
+export function isEnpassantCapturePossible(color: PieceColor, currentPos: number, target: number) {
   const attackingSquares = getPawnAttackingIndexes(currentPos, color);
   if (attackingSquares.includes(target)) return true;
   else return false;

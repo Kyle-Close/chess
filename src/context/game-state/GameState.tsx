@@ -55,9 +55,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
-  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>(
-    buildInitialMoveHistory()
-  );
+  const [moveHistory, setMoveHistory] = useState<MoveHistory[]>(buildInitialMoveHistory());
   const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
   const [enPassantSquare, setEnpassantSquare] = useState<null | number>(null);
 
@@ -65,7 +63,7 @@ export function GameStateProvider({ children }: GameStateProps) {
     whitePlayer.reset();
     blackPlayer.reset();
     setMatchResult(null);
-    move.reset();
+    move.resetGameStateMoves();
     setIsWhiteTurn(true);
     setMoveHistory(buildInitialMoveHistory());
     setMoveHistoryRedo([]);

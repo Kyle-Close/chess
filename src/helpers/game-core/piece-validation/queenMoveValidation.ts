@@ -1,7 +1,7 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { appendDiagonalMoves, getJumpCount, getLastFile } from './bishopMoveValidation';
-import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 import { filterOutOfBounds } from './knightMoveValidation';
 import {
   addValidSquares,
@@ -11,12 +11,8 @@ import {
   countRightMoves,
 } from './rookMoveValidation';
 
-export function queenMoveValidation(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number
-) {
-  let validSquares: ValidSquares[] = [];
+export function queenMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
+  let validSquares: ValidMoves[] = [];
 
   const squareRank = getSquareRank(currentIndex);
   const squaresCanMoveForward = countForwardMoves(board, piece, currentIndex);
@@ -29,13 +25,7 @@ export function queenMoveValidation(
   if (squaresCanMoveRight)
     addValidSquares(piece, 'RIGHT', squaresCanMoveRight, currentIndex, validSquares);
   if (squaresCanMoveBackwards)
-    addValidSquares(
-      piece,
-      'BACKWARDS',
-      squaresCanMoveBackwards,
-      currentIndex,
-      validSquares
-    );
+    addValidSquares(piece, 'BACKWARDS', squaresCanMoveBackwards, currentIndex, validSquares);
   if (squaresCanMoveLeft)
     addValidSquares(piece, 'LEFT', squaresCanMoveLeft, currentIndex, validSquares);
 

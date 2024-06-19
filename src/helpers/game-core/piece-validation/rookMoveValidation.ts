@@ -2,14 +2,10 @@ import { BoardState, Piece, Square } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { SquareRank } from '../../../enums/SquareRank';
 import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
-import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
-export function rookMoveValidation(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number
-) {
-  const validSquares: ValidSquares[] = [];
+export function rookMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
+  const validSquares: ValidMoves[] = [];
   const squareRank = getSquareRank(currentIndex);
 
   const squaresCanMoveForward = countForwardMoves(board, piece, currentIndex);
@@ -22,24 +18,14 @@ export function rookMoveValidation(
   if (squaresCanMoveRight)
     addValidSquares(piece, 'RIGHT', squaresCanMoveRight, currentIndex, validSquares);
   if (squaresCanMoveBackwards)
-    addValidSquares(
-      piece,
-      'BACKWARDS',
-      squaresCanMoveBackwards,
-      currentIndex,
-      validSquares
-    );
+    addValidSquares(piece, 'BACKWARDS', squaresCanMoveBackwards, currentIndex, validSquares);
   if (squaresCanMoveLeft)
     addValidSquares(piece, 'LEFT', squaresCanMoveLeft, currentIndex, validSquares);
 
   return updateValidSquaresToIncludeCaptures(board, piece, validSquares);
 }
 
-export function countBackwardsMoves(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number
-) {
+export function countBackwardsMoves(board: BoardState, piece: Piece, currentIndex: number) {
   let foundPiece = false;
   let isCapture = false;
   let count = 0;
@@ -180,7 +166,7 @@ export function addValidSquares(
   direction: Direction,
   canSlide: { count: number; isCapture: boolean },
   currentIndex: number,
-  validSquares: ValidSquares[]
+  validSquares: ValidMoves[]
 ) {
   if (direction === 'FORWARD') {
     for (let i = 0; i < canSlide.count; i++) {

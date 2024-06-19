@@ -1,14 +1,10 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { SquareFile } from '../../../enums/SquareFile';
 import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
-import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
-export function knightMoveValidation(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number
-) {
-  let validSquares: ValidSquares[] = [];
+export function knightMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
+  let validSquares: ValidMoves[] = [];
   const pieceFile = getSquareFile(currentIndex);
 
   validSquares = getAllKnightMoves(currentIndex, pieceFile);
@@ -48,7 +44,7 @@ function getAllKnightMoves(currentIndex: number, startFile: SquareFile) {
     rightBottom = currentIndex + 17;
   }
 
-  const result: ValidSquares[] = [];
+  const result: ValidMoves[] = [];
 
   if (leftSideTop) result.push({ index: leftSideTop, isCapture: false });
   if (leftTop) result.push({ index: leftTop, isCapture: false });
@@ -62,18 +58,13 @@ function getAllKnightMoves(currentIndex: number, startFile: SquareFile) {
   return result;
 }
 
-export function filterOutOfBounds(validSquares: ValidSquares[]) {
+export function filterOutOfBounds(validSquares: ValidMoves[]) {
   return validSquares.filter((square) => square.index >= 0 && square.index <= 63);
 }
 
-export function filterOccupiedSelf(
-  board: BoardState,
-  piece: Piece,
-  validSquares: ValidSquares[]
-) {
+export function filterOccupiedSelf(board: BoardState, piece: Piece, validSquares: ValidMoves[]) {
   return validSquares.filter(
     (square) =>
-      board[square.index].piece === null ||
-      board[square.index].piece?.color !== piece.color
+      board[square.index].piece === null || board[square.index].piece?.color !== piece.color
   );
 }

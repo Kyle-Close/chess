@@ -1,14 +1,10 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { SquareFile } from '../../../enums/SquareFile';
 import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
-import { ValidSquares, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
 
-export function bishopMoveValidation(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number
-) {
-  const validMoves: ValidSquares[] = [];
+export function bishopMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
+  const validMoves: ValidMoves[] = [];
 
   // UP and to the LEFT
   appendDiagonalMoves(
@@ -57,7 +53,7 @@ export function appendDiagonalMoves(
   board: BoardState,
   piece: Piece,
   currentIndex: number,
-  validSquares: ValidSquares[],
+  validSquares: ValidMoves[],
   jumpCount: number,
   lastFile: SquareFile
 ) {

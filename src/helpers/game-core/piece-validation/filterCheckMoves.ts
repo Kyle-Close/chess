@@ -2,10 +2,10 @@ import { BoardState, Piece } from '../../../context/board/InitialState';
 import { copyBoardAndUpdate } from '../board-utility/copyBoardAndUpdate';
 import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isKingInCheck } from '../../analysis/game-checks/isKingInCheck';
-import { ValidSquares } from './kingMoveValidation';
+import { ValidMoves } from './kingMoveValidation';
 
 export function filterCheckMoves(
-  validMoves: ValidSquares[],
+  validMoves: ValidMoves[],
   board: BoardState,
   pieceToMove: Piece,
   currentPiecePos: number

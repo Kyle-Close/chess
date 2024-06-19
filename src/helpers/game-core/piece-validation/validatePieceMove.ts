@@ -4,7 +4,7 @@ import { PieceType } from '../../../enums/PieceType';
 import { CastleRights } from '../../../hooks/useCastleRights';
 import { filterCheckMoves } from './filterCheckMoves';
 import { bishopMoveValidation } from './bishopMoveValidation';
-import { ValidSquares, kingMoveValidation } from './kingMoveValidation';
+import { ValidMoves, kingMoveValidation } from './kingMoveValidation';
 import { knightMoveValidation } from './knightMoveValidation';
 import { pawnMoveValidation } from './pawnMoveValidation';
 import { queenMoveValidation } from './queenMoveValidation';
@@ -21,7 +21,7 @@ export function validatePieceMove(
   const pieceType = piece.type;
   const color = piece.color;
   if (color === null) return [];
-  let validMoves: ValidSquares[] = [];
+  let validMoves: ValidMoves[] = [];
 
   if (pieceType === PieceType.PAWN)
     validMoves = pawnMoveValidation(board, piece, currentIndex, enPassantTargetSquare);
@@ -35,10 +35,8 @@ export function validatePieceMove(
     validMoves = queenMoveValidation(board, piece, currentIndex);
   else if (pieceType === PieceType.KING) {
     validMoves = kingMoveValidation(board, piece, currentIndex);
-    if (castleRights?.canCastleKingSide)
-      validMoves = pushKingSideCastleIndex(color, validMoves);
-    if (castleRights?.canCastleQueenSide)
-      validMoves = pushQueenSideCastleIndex(color, validMoves);
+    if (castleRights?.canCastleKingSide) validMoves = pushKingSideCastleIndex(color, validMoves);
+    if (castleRights?.canCastleQueenSide) validMoves = pushQueenSideCastleIndex(color, validMoves);
   }
 
   validMoves = filterCheckMoves(validMoves, board, piece, currentIndex);
@@ -46,12 +44,12 @@ export function validatePieceMove(
   return validMoves;
 }
 
-function pushKingSideCastleIndex(color: PieceColor, validMoves: ValidSquares[]) {
+function pushKingSideCastleIndex(color: PieceColor, validMoves: ValidMoves[]) {
   if (color === PieceColor.WHITE) return [...validMoves, { index: 6, isCapture: false }];
   else return [...validMoves, { index: 62, isCapture: false }];
 }
 
-function pushQueenSideCastleIndex(color: PieceColor, validMoves: ValidSquares[]) {
+function pushQueenSideCastleIndex(color: PieceColor, validMoves: ValidMoves[]) {
   if (color === PieceColor.WHITE) return [...validMoves, { index: 2, isCapture: false }];
   else return [...validMoves, { index: 58, isCapture: false }];
 }
