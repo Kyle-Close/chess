@@ -48,35 +48,13 @@ export function useBoard() {
 
   function tryMove(piece: Piece, startPos: number, endPos: number) {
     const moveMetaData = buildMoveMetaData(board, gameState, piece, startPos, endPos);
-    updateIsValidMove(moveMetaData, piece, startPos, endPos);
+    updateIsValidMove(moveMetaData);
     if (!moveMetaData.isMoveValid) return;
 
     handleSpecialMoves(moveMetaData);
     updateGameState(moveMetaData);
 
     startEnd.clear();
-  }
-
-  function updateIsValidMove(
-    moveMetaData: MoveMetaData,
-    piece: Piece,
-    startPos: number,
-    endPos: number
-  ) {
-    if (
-      gameState.enPassantSquare &&
-      isMoveValid(
-        board,
-        piece,
-        startPos,
-        endPos,
-        currentPlayer.castleRights,
-        gameState.enPassantSquare
-      )
-    )
-      moveMetaData.isMoveValid = true;
-    else if (isMoveValid(board, piece, startPos, endPos, currentPlayer.castleRights))
-      moveMetaData.isMoveValid = true;
   }
 
   function updateGameState(moveMetaData: MoveMetaData) {
@@ -190,6 +168,15 @@ export function useBoard() {
 
     const rook = getPieceAtPosition(rookStartEnd.start);
     if (rook) executeMove(moveMetaData.updatedBoard, rookStartEnd.start, rookStartEnd.end);
+  }
+
+  function updateIsValidMove(moveMetaData: MoveMetaData) {
+    const { startPosition, endPosition, piece } = moveMetaData;
+    const { castleRights } = currentPlayer;
+    const { enPassantSquare } = gameState;
+
+    if (isMoveValid(board, piece, startPosition, endPosition, castleRights, enPassantSquare))
+      moveMetaData.isMoveValid = true;
   }
 
   function handlePawnMoves(moveMetaData: MoveMetaData) {
