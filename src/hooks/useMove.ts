@@ -18,7 +18,6 @@ import { PieceColor } from '../enums/PieceColor';
 import { SquareRank } from '../enums/SquareRank';
 import { convertStringToPiece } from '../helpers/utilities/convertStringToPiece';
 import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
-import { isMoveValid } from '../helpers/game-core/move-execution/isMoveValid';
 import { isHalfMoveResetCondition } from '../helpers/game-core/move-execution/isHalfMoveResetCondition';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
