@@ -75,6 +75,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   };
 
   const updateMatchResult = (result: UsePlayerReturn | 'DRAW' | null) => {
+    console.log(result);
     setMatchResult(result);
   };
 

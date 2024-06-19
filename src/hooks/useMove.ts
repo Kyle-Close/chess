@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Piece } from '../context/board/InitialState';
 import {
   MoveMetaData,
@@ -101,6 +101,7 @@ export function useMove(): UseMoveReturn {
 
   function handleGameIsOver(moveMetaData: MoveMetaData) {
     if (moveMetaData.isCheckmate) gameState.updateMatchResult(currentPlayer);
+    if (gameState.move.halfMoves >= 49) gameState.updateMatchResult('DRAW');
   }
 
   function updateMoveHistory(moveMetaData: MoveMetaData) {
