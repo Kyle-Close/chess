@@ -6,7 +6,6 @@ import {
 } from '../helpers/game-core/move-execution/buildMoveMetaData';
 import { GameState } from '../context/game-state/GameState';
 import { BoardContext } from '../context/board/BoardContext';
-import { getRookMovementForCastling } from '../helpers/analysis/game-checks/getRookMovementForCastling';
 import { executeMove } from '../helpers/game-core/move-execution/executeMove';
 import { PieceType } from '../enums/PieceType';
 import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
@@ -20,14 +19,14 @@ import { SquareRank } from '../enums/SquareRank';
 import { convertStringToPiece } from '../helpers/utilities/convertStringToPiece';
 import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
 import { isMoveValid } from '../helpers/game-core/move-execution/isMoveValid';
-import { buildEnPassantForFen } from '../helpers/notation-setup/fen-management/buildEnPassantForFen';
 import { isHalfMoveResetCondition } from '../helpers/game-core/move-execution/isHalfMoveResetCondition';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
-import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
-import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
-import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
-import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
+import { handleOpponentCheckState } from '../helpers/game-core/move-utility/handleOpponentCheckState';
+import { handleEnPassant } from '../helpers/game-core/move-utility/handleEnPassant';
+import { handleCastle } from '../helpers/game-core/move-utility/handleCastle';
+import { updateIsValidMove } from '../helpers/game-core/move-utility/updateIsValidMove';
+import { handlePawnPromotion } from '../helpers/game-core/move-utility/handlePawnPromotion';
 
 export interface UseMoveReturn {
   halfMoves: number;
@@ -50,22 +49,13 @@ export function useMove(): UseMoveReturn {
 
   function tryMove(piece: Piece, startPos: number, endPos: number): boolean {
     const moveMetaData = buildMoveMetaData(board, gameState, piece, startPos, endPos);
-    updateIsValidMove(moveMetaData);
+    updateIsValidMove(moveMetaData, currentPlayer, gameState);
     if (!moveMetaData.isMoveValid) return false;
 
-    handleSpecialMoves(moveMetaData);
     updateGameState(moveMetaData);
+    handleSpecialMoves(moveMetaData);
 
     return true;
-  }
-
-  function updateIsValidMove(moveMetaData: MoveMetaData) {
-    const { startPosition, endPosition, piece } = moveMetaData;
-    const { castleRights } = currentPlayer;
-    const { enPassantSquare } = gameState;
-
-    if (isMoveValid(board, piece, startPosition, endPosition, castleRights, enPassantSquare))
-      moveMetaData.isMoveValid = true;
   }
 
   function updateGameState(moveMetaData: MoveMetaData) {
@@ -77,7 +67,8 @@ export function useMove(): UseMoveReturn {
       currentPlayer.enemyPieceCaptured(moveMetaData.capturedPiece.type);
 
     // Handle en passant
-    handleEnPassant(moveMetaData);
+    const isEnPassant = handleEnPassant(moveMetaData);
+    if (!isEnPassant) gameState.updateEnPassantSquare(null);
 
     // Update turn
     gameState.toggleTurn();
@@ -92,7 +83,7 @@ export function useMove(): UseMoveReturn {
     handlePawnPromotion(moveMetaData);
 
     // Handle opponent check & checkmate status
-    handleOpponentCheckState(moveMetaData);
+    handleOpponentCheckState(moveMetaData, waitingPlayer);
 
     // Add latest move to game move history
     updateMoveHistory(moveMetaData);
@@ -109,17 +100,6 @@ export function useMove(): UseMoveReturn {
     if (moveMetaData.piece.type === PieceType.PAWN) handlePawnMoves(moveMetaData);
   }
 
-  function handleEnPassant(moveMetaData: MoveMetaData) {
-    const { piece, startPosition, endPosition } = moveMetaData;
-
-    if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPosition, endPosition)) {
-      const enPassantSquareIndex = getEnPassantCapturedPieceIndex(endPosition, piece.color);
-      moveMetaData.enPassantNotation = buildEnPassantForFen(enPassantSquareIndex);
-    } else {
-      gameState.updateEnPassantSquare(null);
-    }
-  }
-
   function handleGameIsOver(moveMetaData: MoveMetaData) {
     if (moveMetaData.isCheckmate) gameState.updateMatchResult(currentPlayer);
   }
@@ -133,25 +113,6 @@ export function useMove(): UseMoveReturn {
     });
   }
 
-  function handleOpponentCheckState(moveMetaData: MoveMetaData) {
-    // See if move put opponent in check and/or checkmate
-    const oppKingIndex = getKingIndex(moveMetaData.updatedBoard, waitingPlayer.color);
-    if (!isKingInCheck(moveMetaData.updatedBoard, oppKingIndex, waitingPlayer.color)) return;
-
-    moveMetaData.isCheck = true;
-    const oppKing = moveMetaData.updatedBoard[oppKingIndex].piece;
-    if (!oppKing) return;
-
-    const oppRemainingPlayerPieces = getRemainingPiecesByColor(
-      moveMetaData.updatedBoard,
-      oppKing.color,
-      true
-    );
-
-    if (isCheckmate(moveMetaData.updatedBoard, oppKing, oppKingIndex, oppRemainingPlayerPieces))
-      moveMetaData.isCheckmate = true;
-  }
-
   function updateMoveCounts(moveMetaData: MoveMetaData) {
     // Update game half moves
     gameState.move.updateHalfMoves('INCREMENT');
@@ -161,24 +122,6 @@ export function useMove(): UseMoveReturn {
 
     // Update game full moves
     if (currentPlayer.color === PieceColor.BLACK) gameState.move.updateFullMoves('INCREMENT');
-  }
-
-  function handleCastle(moveMetaData: MoveMetaData) {
-    const rookStartEnd = getRookMovementForCastling(moveMetaData.endPosition);
-    if (!rookStartEnd) return;
-
-    const rook = board[rookStartEnd.start].piece;
-    if (rook) executeMove(moveMetaData.updatedBoard, rookStartEnd.start, rookStartEnd.end);
-  }
-
-  function handlePawnPromotion(moveMetaData: MoveMetaData) {
-    if (!moveMetaData.promotionPiece) return;
-
-    assignPieceToSquare(
-      moveMetaData.updatedBoard,
-      moveMetaData.promotionPiece,
-      moveMetaData.endPosition
-    );
   }
 
   function handlePawnMoves(moveMetaData: MoveMetaData) {

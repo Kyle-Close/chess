@@ -1,14 +1,11 @@
 import { useContext, useEffect } from 'react';
 import { BoardContext } from '../context/board/BoardContext';
 import { useStartEndAction } from './useStartEndAction';
-import { validatePieceMove } from '../helpers/game-core/piece-validation/validatePieceMove';
-import { Piece, getInitialBoardState } from '../context/board/InitialState';
+import { getInitialBoardState } from '../context/board/InitialState';
 import { GameState } from '../context/game-state/GameState';
-import { PieceType } from '../enums/PieceType';
-import { PieceColor } from '../enums/PieceColor';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
-import { UsePlayerReturn } from './usePlayer';
 import { useMove } from './useMove';
+import { getValidMoves } from '../helpers/game-core/move-execution/getValidMoves';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } = useContext(BoardContext);
@@ -26,30 +23,8 @@ export function useBoard() {
   function handleShowValidMoves(startPos: number) {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
-      const validMoves = getValidMoves(currentPiece, startPos);
+      const validMoves = getValidMoves(currentPlayer, currentPiece, startPos, board, gameState);
       if (validMoves) highlightValidMoves(validMoves);
-    }
-  }
-
-  function getValidMoves(piece: Piece, startPos: number) {
-    const validMoves = validatePieceMove(
-      board,
-      piece,
-      startPos,
-      undefined,
-      gameState.enPassantSquare
-    );
-    if (piece.type === PieceType.KING && validMoves) addCastleMoves(validMoves, currentPlayer);
-    return validMoves;
-  }
-
-  function addCastleMoves(validMoves: ValidMoves[], player: UsePlayerReturn) {
-    if (player.color === PieceColor.WHITE) {
-      if (player.castleRights.canCastleKingSide) validMoves.push({ index: 6, isCapture: false });
-      if (player.castleRights.canCastleQueenSide) validMoves.push({ index: 2, isCapture: false });
-    } else {
-      if (player.castleRights.canCastleKingSide) validMoves.push({ index: 62, isCapture: false });
-      if (player.castleRights.canCastleQueenSide) validMoves.push({ index: 58, isCapture: false });
     }
   }
 
