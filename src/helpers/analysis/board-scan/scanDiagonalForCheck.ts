@@ -7,13 +7,22 @@ export function scanDiagonalForCheck(
   scannedDiagonalB: ScanResult[],
   opponentColor: PieceColor
 ) {
-  let isCheck =
-    scanDiagonalForPawnCheck(scannedDiagonalA, opponentColor) ||
-    scanDiagonalForPawnCheck(scannedDiagonalB, opponentColor) ||
-    scanDiagonalForBishopOrQueenCheck(scannedDiagonalA, opponentColor) ||
-    scanDiagonalForBishopOrQueenCheck(scannedDiagonalB, opponentColor);
-
-  return isCheck;
+  const isDiagonalAPawnCheck = scanDiagonalForPawnCheck(scannedDiagonalA, opponentColor);
+  const isDiagonalBPawnCheck = scanDiagonalForPawnCheck(scannedDiagonalB, opponentColor);
+  const isDiagonalABishopOrQueenCheck = scanDiagonalForBishopOrQueenCheck(
+    scannedDiagonalA,
+    opponentColor
+  );
+  const isDiagonalBBishopOrQueenCheck = scanDiagonalForBishopOrQueenCheck(
+    scannedDiagonalB,
+    opponentColor
+  );
+  return (
+    isDiagonalAPawnCheck ||
+    isDiagonalBPawnCheck ||
+    isDiagonalABishopOrQueenCheck ||
+    isDiagonalBBishopOrQueenCheck
+  );
 }
 
 function getPawnPositionForCheck(kingIndex: number, opponentColor: PieceColor) {
@@ -22,10 +31,7 @@ function getPawnPositionForCheck(kingIndex: number, opponentColor: PieceColor) {
   return kingIndex - 1;
 }
 
-function scanDiagonalForPawnCheck(
-  scannedDiagonal: ScanResult[],
-  opponentColor: PieceColor
-) {
+function scanDiagonalForPawnCheck(scannedDiagonal: ScanResult[], opponentColor: PieceColor) {
   let isCheck = false;
 
   scannedDiagonal.forEach((square, index) => {
@@ -34,8 +40,7 @@ function scanDiagonalForPawnCheck(
     if (!isMyKing) return;
 
     const pawnCheckPositionIndex = getPawnPositionForCheck(index, opponentColor);
-    if (pawnCheckPositionIndex < 0 || pawnCheckPositionIndex >= scannedDiagonal.length)
-      return;
+    if (pawnCheckPositionIndex < 0 || pawnCheckPositionIndex >= scannedDiagonal.length) return;
 
     const pieceInPawnCheckPosition = scannedDiagonal[pawnCheckPositionIndex];
 
@@ -66,36 +71,52 @@ function scanDiagonalForBishopOrQueenCheck(
 
   // the left array are all the pieces that come before the king
   for (let i = 0; i < left.length; i++) {
-    if (left[i] === null) continue;
-    else if (left[i]?.color !== opponentColor) {
-      isCheck = false;
-    } else if (left[i]?.type === PieceType.BISHOP || left[i]?.type === PieceType.QUEEN) {
+    const scanResult = left[i];
+
+    // Blank space - skip to next square
+    if (scanResult === null) continue;
+
+    const isEnemyPiece = scanResult.color === opponentColor;
+    const isQueenOrBishop =
+      scanResult.type === PieceType.QUEEN || scanResult.type === PieceType.BISHOP;
+
+    // If the piece is the enemies & is a bishop or queen, then inCheck
+    if (isQueenOrBishop && isEnemyPiece) {
       isCheck = true;
+      continue;
     }
+
+    // else, the piece is yours OR the piece is the enemies but not a bishop or queen
+    else isCheck = false;
   }
 
   if (isCheck) return true;
 
   // the right array is all the pieces that come after the king
   for (let i = right.length - 1; i >= 0; i--) {
-    if (right[i] === null) continue;
-    else if (right[i]?.color !== opponentColor) {
-      isCheck = false;
-    } else if (
-      right[i]?.type === PieceType.BISHOP ||
-      right[i]?.type === PieceType.QUEEN
-    ) {
+    const scanResult = right[i];
+
+    // Blank space - skip to next square
+    if (scanResult === null) continue;
+
+    const isEnemyPiece = scanResult.color === opponentColor;
+    const isQueenOrBishop =
+      scanResult.type === PieceType.QUEEN || scanResult.type === PieceType.BISHOP;
+
+    // If the piece is the enemies & is a bishop or queen, then inCheck
+    if (isQueenOrBishop && isEnemyPiece) {
       isCheck = true;
+      continue;
     }
+
+    // else, the piece is yours OR the piece is the enemies but not a bishop or queen
+    else isCheck = false;
   }
 
   return isCheck;
 }
 
-function getKingIndexFromDiagonalScan(
-  scannedDiagonal: ScanResult[],
-  kingColor: PieceColor
-) {
+function getKingIndexFromDiagonalScan(scannedDiagonal: ScanResult[], kingColor: PieceColor) {
   return scannedDiagonal.findIndex(
     (square) => square?.type === PieceType.KING && square.color === kingColor
   );

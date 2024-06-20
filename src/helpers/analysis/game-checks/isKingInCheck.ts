@@ -8,11 +8,7 @@ import { scanForKnightCheck } from '../board-scan/scanForKnightCheck';
 import { scanRank } from '../board-scan/scanRank';
 import { scanRankForCheck } from '../board-scan/scanRankForCheck';
 
-export function isKingInCheck(
-  board: BoardState,
-  currentKingIndex: number,
-  color: PieceColor
-) {
+export function isKingInCheck(board: BoardState, currentKingIndex: number, color: PieceColor) {
   let isCheck = false;
   const opponentColor = color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
 
@@ -25,8 +21,7 @@ export function isKingInCheck(
   const scannedDiagonalA = scanDiagonal(board, currentKingIndex, true);
   const scannedDiagonalB = scanDiagonal(board, currentKingIndex, false);
 
-  if (scanDiagonalForCheck(scannedDiagonalA, scannedDiagonalB, opponentColor))
-    isCheck = true;
+  if (scanDiagonalForCheck(scannedDiagonalA, scannedDiagonalB, opponentColor)) isCheck = true;
 
   if (scanForKnightCheck(board, currentKingIndex, opponentColor)) isCheck = true;
 
