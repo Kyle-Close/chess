@@ -7,10 +7,9 @@ export function useSquare(
   isStartPos: boolean,
   handleSquareClicked: (index: number) => void
 ) {
-  const classes = ['flex', 'justify-center', 'items-center'];
+  const classes = ['flex', 'justify-center', 'items-center', 'relative'];
 
-  if (currentPiece && currentPiece.color === PieceColor.BLACK)
-    classes.push('text-black');
+  if (currentPiece && currentPiece.color === PieceColor.BLACK) classes.push('text-black');
 
   if (isStartPos) classes.push('bg-green-300');
   else classes.push('bg-zinc-500');

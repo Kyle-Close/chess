@@ -10,6 +10,10 @@ import { pawnMoveValidation } from './pawnMoveValidation';
 import { queenMoveValidation } from './queenMoveValidation';
 import { rookMoveValidation } from './rookMoveValidation';
 
+// TODO: Make sure all implementations of validatePieceMove are using the updatedBoard and not state directly
+// - scan attacking squares done
+// - is checkmate done
+// - is move valid done
 export function validatePieceMove(
   board: BoardState,
   piece: Piece,
@@ -39,6 +43,7 @@ export function validatePieceMove(
     if (castleRights?.canCastleQueenSide) validMoves = pushQueenSideCastleIndex(color, validMoves);
   }
 
+  console.log('Calling filterCheckMoves() from validatePieceMove()');
   validMoves = filterCheckMoves(validMoves, board, piece, currentIndex);
 
   return validMoves;

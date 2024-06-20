@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import { BoardContext } from '../context/board/BoardContext';
+import { useState } from 'react';
 import { PieceColor } from '../enums/PieceColor';
 import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { BoardState } from '../context/board/InitialState';
-import { scanAttackingSquares } from '../helpers/analysis/board-scan/scanAttackingSquares';
+import { isSquaresAttacked } from '../helpers/game-core/move-utility/isSquaresAttacked';
+import { isPathObstructed } from '../helpers/game-core/move-utility/isPathObstructed';
 
 export interface CastleRights {
   canCastleQueenSide: boolean;
@@ -12,26 +12,31 @@ export interface CastleRights {
   kingSideIsAvailable: boolean;
 }
 
-export function useCastleRights(color: PieceColor) {
-  const { board } = useContext(BoardContext);
-  const [castleRights, setCastleRights] = useState<CastleRights>(
-    getCastleRights(board, color)
-  );
+export interface UseCastleRightsReturn {
+  castleRights: CastleRights;
+  updateCastleRights: (board: BoardState, color: PieceColor) => void;
+  reset: () => void;
+}
+
+const initialCastleRights = {
+  canCastleKingSide: true,
+  canCastleQueenSide: true,
+  kingSideIsAvailable: false,
+  queenSideIsAvailable: false,
+};
+
+export function useCastleRights(): UseCastleRightsReturn {
+  const [castleRights, setCastleRights] = useState<CastleRights>(initialCastleRights);
 
   function reset() {
-    setCastleRights({
-      canCastleKingSide: true,
-      canCastleQueenSide: true,
-      kingSideIsAvailable: false,
-      queenSideIsAvailable: false,
-    });
+    setCastleRights(initialCastleRights);
   }
 
-  useEffect(() => {
+  function updateCastleRights(board: BoardState, color: PieceColor) {
     setCastleRights(getCastleRights(board, color));
-  }, [board]);
+  }
 
-  return { castleRights, reset };
+  return { castleRights, updateCastleRights, reset };
 }
 
 function getCastleRights(board: BoardState, color: PieceColor): CastleRights {
@@ -69,16 +74,8 @@ function getCastleRights(board: BoardState, color: PieceColor): CastleRights {
   if (isQueenSidePathObstructed) canCastleQueenSide = false;
   if (isKingSidePathObstructed) canCastleKingSide = false;
 
-  const isQueenSideAttacked = checkIfPathIsAttacked(
-    board,
-    queenSideSquaresAlongPath,
-    color
-  );
-  const isKingSideAttacked = checkIfPathIsAttacked(
-    board,
-    kingSideSquaresAlongPath,
-    color
-  );
+  const isQueenSideAttacked = isSquaresAttacked(board, queenSideSquaresAlongPath, color);
+  const isKingSideAttacked = isSquaresAttacked(board, kingSideSquaresAlongPath, color);
 
   if (isQueenSideAttacked) canCastleQueenSide = false;
   if (isKingSideAttacked) canCastleKingSide = false;
@@ -89,27 +86,6 @@ function getCastleRights(board: BoardState, color: PieceColor): CastleRights {
     queenSideIsAvailable,
     kingSideIsAvailable,
   };
-}
-
-function checkIfPathIsAttacked(
-  board: BoardState,
-  pathSquares: number[],
-  color: PieceColor
-) {
-  // Checks if any of the passed in squares are being attacked by opponent
-  const opponentColor = color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
-  const attackedIndexes = scanAttackingSquares(board, opponentColor);
-
-  return pathSquares.some((square) => attackedIndexes.includes(square));
-}
-
-function isPathObstructed(board: BoardState, squaresAlongPath: number[]) {
-  // Only care about spaces between.
-  return squaresAlongPath.some((square, index) => {
-    if (index === 0 || index === squaresAlongPath.length - 1) return false;
-    if (board[square].piece !== null) return true;
-    else return false;
-  });
 }
 
 function getQueenSideSquaresAlongPath(color: PieceColor) {

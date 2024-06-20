@@ -23,7 +23,8 @@ export function useBoard() {
   function handleShowValidMoves(startPos: number) {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
-      const validMoves = getValidMoves(currentPlayer, currentPiece, startPos, board, gameState);
+      const boardCopy = [...board];
+      const validMoves = getValidMoves(currentPlayer, currentPiece, startPos, boardCopy, gameState);
       if (validMoves) highlightValidMoves(validMoves);
     }
   }

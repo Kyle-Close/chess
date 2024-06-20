@@ -19,21 +19,13 @@ export function Square({
   isValidMove,
   isCapture,
 }: SquareProps) {
-  const { handleClick, classes } = useSquare(
-    index,
-    currentPiece,
-    isStartPos,
-    handleSquareClicked
-  );
+  const { handleClick, classes } = useSquare(index, currentPiece, isStartPos, handleSquareClicked);
   return (
     <div onClick={handleClick} className={classes.join(' ')}>
+      <div className='absolute top-0 left-0 text-xs text-green-200'>{index}</div>
       {getPieceAbbreviation(currentPiece)}
-      {isValidMove && !isCapture && (
-        <div className='bg-green-200 w-1/3 h-1/3 rounded-full'></div>
-      )}
-      {isValidMove && isCapture && (
-        <div className='bg-red-400 w-1/3 h-1/3 rounded-full'></div>
-      )}
+      {isValidMove && !isCapture && <div className='bg-green-200 w-1/3 h-1/3 rounded-full'></div>}
+      {isValidMove && isCapture && <div className='bg-red-400 w-1/3 h-1/3 rounded-full'></div>}
     </div>
   );
 }

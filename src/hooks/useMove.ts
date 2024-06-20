@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Piece } from '../context/board/InitialState';
 import {
   MoveMetaData,
@@ -77,6 +77,7 @@ export function useMove(): UseMoveReturn {
     updateMoveCounts(moveMetaData);
 
     // Update the moveMetaData board with the move being executed
+    console.log('Calling executeMove() from useMove()');
     executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
 
     // Handle pawn promotion (if applicable)
@@ -84,6 +85,12 @@ export function useMove(): UseMoveReturn {
 
     // Handle opponent check & checkmate status
     handleOpponentCheckState(moveMetaData, waitingPlayer);
+
+    // Update castle rights
+    currentPlayer.castleRights.updateCastleRights(
+      moveMetaData.updatedBoard,
+      moveMetaData.piece.color
+    );
 
     // Add latest move to game move history
     updateMoveHistory(moveMetaData);

@@ -1,8 +1,8 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { copyBoardAndUpdate } from '../board-utility/copyBoardAndUpdate';
 import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isKingInCheck } from '../../analysis/game-checks/isKingInCheck';
 import { ValidMoves } from './kingMoveValidation';
+import { executeMove } from '../move-execution/executeMove';
 
 export function filterCheckMoves(
   validMoves: ValidMoves[],
@@ -12,16 +12,16 @@ export function filterCheckMoves(
 ) {
   const playerColor = pieceToMove.color;
   if (playerColor === null) return validMoves;
+  console.log('original valid moves: ', validMoves);
+  console.log('current piece pos: ', currentPiecePos);
 
-  return validMoves.filter((square) => {
-    const boardStateAfterMove = copyBoardAndUpdate(
-      board,
-      pieceToMove,
-      currentPiecePos,
-      square.index
-    );
+  return validMoves.filter((target) => {
+    console.log('Calling executeMove() from filterCheckMoves()');
 
-    const currentKingIndex = getKingIndex(boardStateAfterMove, playerColor);
-    return !isKingInCheck(boardStateAfterMove, currentKingIndex, playerColor);
+    const boardPostMove = executeMove(board, currentPiecePos, target.index, true);
+    const currentKingIndex = getKingIndex(boardPostMove, playerColor);
+    const isInCheck = isKingInCheck(boardPostMove, currentKingIndex, playerColor);
+
+    return !isInCheck;
   });
 }

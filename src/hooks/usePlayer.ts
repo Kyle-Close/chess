@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
-import { BoardState } from '../context/board/InitialState';
-import { isKingInCheck } from '../helpers/analysis/game-checks/isKingInCheck';
-import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
-import { isCheckmate } from '../helpers/analysis/game-checks/isCheckmate';
-import { CastleRights, useCastleRights } from './useCastleRights';
-import { getRemainingPiecesByColor } from '../helpers/game-core/piece-management/getRemainingPiecesByColor';
+import { UseCastleRightsReturn, useCastleRights } from './useCastleRights';
 
 export interface UsePlayerReturn {
   name: string;
@@ -19,21 +14,17 @@ export interface UsePlayerReturn {
   updateIsInCheck: (isCheck: boolean) => void;
   color: PieceColor;
   updateColor: (color: PieceColor) => void;
-  checkForCheckmate: (board: BoardState) => boolean;
-  castleRights: CastleRights;
+  castleRights: UseCastleRightsReturn;
   reset: () => void;
 }
 
-export function usePlayer(
-  initialName: string,
-  initialColor: PieceColor
-): UsePlayerReturn {
+export function usePlayer(initialName: string, initialColor: PieceColor): UsePlayerReturn {
   const [name, setName] = useState(initialName);
   const [isTurn, setIsTurn] = useState(false);
   const [color, setColor] = useState<PieceColor>(initialColor);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
-  const castleRights = useCastleRights(color);
+  const castleRights = useCastleRights();
 
   const reset = () => {
     setName(initialName);
@@ -60,21 +51,6 @@ export function usePlayer(
     setCapturedPieces((prevCapturedPieces) => [...prevCapturedPieces, pieceType]);
   };
 
-  const checkForCheckmate = (board: BoardState) => {
-    const isCheck = isKingInCheck(board, getKingIndex(board, color), color);
-
-    if (!isCheck) return false;
-
-    const kingIndex = getKingIndex(board, color);
-    const kingPiece = board[kingIndex].piece;
-    const remainingPieces = getRemainingPiecesByColor(board, color, true);
-
-    if (!kingPiece) return false;
-
-    if (isCheckmate(board, kingPiece, kingIndex, remainingPieces)) return true;
-    else return false;
-  };
-
   const updatePlayerTurn = (isTurn: boolean) => {
     setIsTurn(isTurn);
   };
@@ -90,8 +66,7 @@ export function usePlayer(
     updateIsInCheck,
     color,
     updateColor,
-    checkForCheckmate,
-    castleRights: castleRights.castleRights,
+    castleRights,
     reset,
   };
 }
