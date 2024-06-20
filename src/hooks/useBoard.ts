@@ -24,7 +24,7 @@ export function useBoard() {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
       const boardCopy = [...board];
-      const validMoves = getValidMoves(currentPlayer, currentPiece, startPos, boardCopy, gameState);
+      const validMoves = getValidMoves(boardCopy, currentPiece, startPos, gameState);
       if (validMoves) highlightValidMoves(validMoves);
     }
   }

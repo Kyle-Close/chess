@@ -6,12 +6,7 @@ import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { getPawnAttackingIndexes } from '../../analysis/game-checks/getPawnAttackingIndexes';
 import { ValidMoves } from './kingMoveValidation';
 
-export function pawnMoveValidation(
-  board: BoardState,
-  piece: Piece,
-  currentIndex: number,
-  enPassantTargetSquare?: number | null
-) {
+export function pawnMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
   const validSquares: ValidMoves[] = [];
   const pieceRank = getSquareRank(currentIndex);
 
@@ -36,14 +31,6 @@ export function pawnMoveValidation(
 
   if (captureLeft) validSquares.push({ index: captureLeft.index, isCapture: true });
   if (captureRight) validSquares.push({ index: captureRight.index, isCapture: true });
-
-  if (
-    enPassantTargetSquare &&
-    piece.color !== null &&
-    isEnpassantCapturePossible(piece.color, currentIndex, enPassantTargetSquare)
-  ) {
-    validSquares.push({ index: enPassantTargetSquare, isCapture: true });
-  }
 
   return validSquares;
 }

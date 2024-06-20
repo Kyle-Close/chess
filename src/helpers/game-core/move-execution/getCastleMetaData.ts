@@ -7,13 +7,8 @@ export enum CastleMetaData {
   QUEEN_SIDE,
 }
 
-export function getCastleMetaData(
-  piece: Piece,
-  startPos: number,
-  endPos: number
-): CastleMetaData {
-  if (piece.type !== PieceType.KING)
-    throw Error('Called CastleMetaData() when no castle.');
+export function getCastleMetaData(piece: Piece, startPos: number, endPos: number): CastleMetaData {
+  if (piece.type !== PieceType.KING) throw Error('Called CastleMetaData() when no castle.');
 
   const color = piece.color;
 
@@ -24,7 +19,7 @@ export function getCastleMetaData(
     if (endPos === 6) return CastleMetaData.KING_SIDE;
     else if (endPos === 2) return CastleMetaData.QUEEN_SIDE;
   } else {
-    if (endPos === 60) return CastleMetaData.KING_SIDE;
+    if (endPos === 62) return CastleMetaData.KING_SIDE;
     else if (endPos === 58) return CastleMetaData.QUEEN_SIDE;
   }
 

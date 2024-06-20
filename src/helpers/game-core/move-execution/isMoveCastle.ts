@@ -12,7 +12,7 @@ export function isMoveCastle(piece: Piece, startPos: number, endPos: number) {
   if (color === PieceColor.WHITE) {
     if (endPos === 6 || endPos === 2) return true;
   } else {
-    if (endPos === 60 || endPos === 58) return true;
+    if (endPos === 62 || endPos === 58) return true;
   }
 
   return false;

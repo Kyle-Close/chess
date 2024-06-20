@@ -49,7 +49,7 @@ export function useMove(): UseMoveReturn {
 
   function tryMove(piece: Piece, startPos: number, endPos: number): boolean {
     const moveMetaData = buildMoveMetaData(board, gameState, piece, startPos, endPos);
-    updateIsValidMove(moveMetaData, currentPlayer, gameState);
+    updateIsValidMove(moveMetaData, gameState);
     if (!moveMetaData.isMoveValid) return false;
 
     updateGameState(moveMetaData);
