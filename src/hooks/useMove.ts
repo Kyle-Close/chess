@@ -77,7 +77,6 @@ export function useMove(): UseMoveReturn {
     updateMoveCounts(moveMetaData);
 
     // Update the moveMetaData board with the move being executed
-    console.log('Calling executeMove() from useMove()');
     executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
 
     // Handle pawn promotion (if applicable)
@@ -148,7 +147,6 @@ export function useMove(): UseMoveReturn {
 
     // Set or clear gameState en passant state
     if (isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)) {
-      console.log('calling translatePositionToIndex() from useMove()');
       gameState.updateEnPassantSquare(
         translatePositionToIndex(
           (getSquareRank(moveMetaData.startPosition) +

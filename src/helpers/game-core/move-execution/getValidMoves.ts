@@ -12,7 +12,6 @@ export function getValidMoves(
   board: BoardState,
   gameState: GameState
 ) {
-  console.log('Calling validatePieceMove() from getValidMoves()');
   const validMoves = validatePieceMove(
     board,
     piece,

@@ -8,7 +8,6 @@ export function handleCastle(moveMetaData: MoveMetaData) {
 
   const rook = moveMetaData.updatedBoard[rookStartEnd.start].piece;
   if (rook) {
-    console.log('Calling executeMove() from handleCastle()');
     executeMove(moveMetaData.updatedBoard, rookStartEnd.start, rookStartEnd.end);
   }
 }

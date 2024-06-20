@@ -5,7 +5,6 @@ import { ScanResult } from './scanRank';
 export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: PieceColor) {
   let isCheck = false;
   const { top, bottom } = splitFileScan(fileScan, opponentPieceColor);
-  console.log('yers', top, bottom);
 
   // scan top down to king for unobstructed rook or queen
   for (let i = 0; i < top.length; i++) {
@@ -13,7 +12,6 @@ export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: Pie
 
     // If the square is unoccupied, go to next square
     if (piece === null) continue;
-    console.log(piece);
     const isEnemy = piece.color === opponentPieceColor;
     const isQueen = piece.type === PieceType.QUEEN;
     const isRook = piece.type === PieceType.ROOK;

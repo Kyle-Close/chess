@@ -43,7 +43,6 @@ export function validatePieceMove(
     if (castleRights?.canCastleQueenSide) validMoves = pushQueenSideCastleIndex(color, validMoves);
   }
 
-  console.log('Calling filterCheckMoves() from validatePieceMove()');
   validMoves = filterCheckMoves(validMoves, board, piece, currentIndex);
 
   return validMoves;

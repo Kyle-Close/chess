@@ -12,12 +12,8 @@ export function filterCheckMoves(
 ) {
   const playerColor = pieceToMove.color;
   if (playerColor === null) return validMoves;
-  console.log('original valid moves: ', validMoves);
-  console.log('current piece pos: ', currentPiecePos);
 
   return validMoves.filter((target) => {
-    console.log('Calling executeMove() from filterCheckMoves()');
-
     const boardPostMove = executeMove(board, currentPiecePos, target.index, true);
     const currentKingIndex = getKingIndex(boardPostMove, playerColor);
     const isInCheck = isKingInCheck(boardPostMove, currentKingIndex, playerColor);
