@@ -10,6 +10,7 @@ export function isMoveValid(
   castleRights?: CastleRights,
   enPassantSquare?: number | null
 ) {
+  console.log('isMoveValid()');
   const validMoves = validatePieceMove(board, piece, startPos, castleRights, enPassantSquare);
   if (!validMoves || validMoves.length === 0) return false;
   if (!validMoves.some((move) => move.index === endPos)) return false;

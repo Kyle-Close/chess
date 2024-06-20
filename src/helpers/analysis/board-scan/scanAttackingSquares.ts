@@ -4,6 +4,7 @@ import { PieceType } from '../../../enums/PieceType';
 import { getPlayerPiecesWithIndex } from '../../game-core/piece-management/getPlayerPiecesWithIndex';
 import { getPawnAttackingIndexes } from '../game-checks/getPawnAttackingIndexes';
 import { validatePieceMove } from '../../game-core/piece-validation/validatePieceMove';
+import { CastleRights } from '../../../hooks/useCastleRights';
 
 export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   // Returns an array of indexes that are being attacked.
@@ -13,6 +14,7 @@ export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   const attackingIndexes: number[] = [];
 
   piecesWithIndex.forEach((piece) => {
+    console.log('scanAttackingSquares()');
     const validMoves = validatePieceMove(board, piece, piece.index);
 
     if (piece.type !== PieceType.PAWN && validMoves) {

@@ -26,6 +26,7 @@ export function isCheckmate(
 
   const canBlock = remainingPlayerPieces.some((piece) => {
     let isInCheck = true;
+    console.log('isCheckMate()');
     const pieceMoves = validatePieceMove(board, piece, piece.index);
     if (!pieceMoves) return;
 

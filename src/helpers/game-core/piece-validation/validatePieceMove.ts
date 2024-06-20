@@ -10,10 +10,6 @@ import { pawnMoveValidation } from './pawnMoveValidation';
 import { queenMoveValidation } from './queenMoveValidation';
 import { rookMoveValidation } from './rookMoveValidation';
 
-// TODO: Make sure all implementations of validatePieceMove are using the updatedBoard and not state directly
-// - scan attacking squares done
-// - is checkmate done
-// - is move valid done
 export function validatePieceMove(
   board: BoardState,
   piece: Piece,

@@ -1,5 +1,6 @@
 import { BoardState } from '../../../context/board/InitialState';
 import { PieceColor } from '../../../enums/PieceColor';
+import { CastleRights } from '../../../hooks/useCastleRights';
 import { scanAttackingSquares } from '../../analysis/board-scan/scanAttackingSquares';
 
 export function isSquaresAttacked(board: BoardState, pathSquares: number[], color: PieceColor) {
