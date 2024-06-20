@@ -46,7 +46,7 @@ export function buildMoveMetaData(
     isCheckmate: false,
     piece,
     isEnPassant,
-    enPassantNotation: '',
+    enPassantNotation: '-',
     isCastle,
     castleMetaData,
     isPromotion,

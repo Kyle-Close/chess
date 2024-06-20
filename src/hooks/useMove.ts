@@ -52,8 +52,8 @@ export function useMove(): UseMoveReturn {
     updateIsValidMove(moveMetaData, gameState);
     if (!moveMetaData.isMoveValid) return false;
 
-    updateGameState(moveMetaData);
     handleSpecialMoves(moveMetaData);
+    updateGameState(moveMetaData);
 
     return true;
   }
@@ -83,7 +83,7 @@ export function useMove(): UseMoveReturn {
     handlePawnPromotion(moveMetaData);
 
     // Handle opponent check & checkmate status
-    handleOpponentCheckState(moveMetaData, waitingPlayer);
+    handleOpponentCheckState(moveMetaData, gameState, waitingPlayer);
 
     // Update castle rights
     currentPlayer.castleRights.updateCastleRights(

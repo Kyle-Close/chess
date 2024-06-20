@@ -1,7 +1,8 @@
 import { BoardState } from '../../../context/board/InitialState';
+import { deepCopyBoard } from '../../utilities/deepCopyBoard';
 
 export function executeMove(board: BoardState, startPos: number, endPos: number, useCopy = false) {
-  const newBoard = useCopy ? JSON.parse(JSON.stringify(board)) : board;
+  const newBoard = useCopy ? deepCopyBoard(board) : board;
 
   const startSquare = newBoard[startPos];
   const endSquare = newBoard[endPos];

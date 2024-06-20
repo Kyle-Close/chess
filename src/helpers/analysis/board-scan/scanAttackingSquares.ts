@@ -13,7 +13,6 @@ export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   const attackingIndexes: number[] = [];
 
   piecesWithIndex.forEach((piece) => {
-    console.log('scanAttackingSquares()');
     const validMoves = validatePieceMove(board, piece, piece.index);
 
     if (piece.type !== PieceType.PAWN && validMoves) {

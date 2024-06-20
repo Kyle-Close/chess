@@ -1,8 +1,11 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
+import { GameState } from '../../../context/game-state/GameState';
 import { executeMove } from '../../game-core/move-execution/executeMove';
+import { getValidMoves } from '../../game-core/move-execution/getValidMoves';
 import { filterCheckMoves } from '../../game-core/piece-validation/filterCheckMoves';
 import { kingMoveValidation } from '../../game-core/piece-validation/kingMoveValidation';
 import { validatePieceMove } from '../../game-core/piece-validation/validatePieceMove';
+import { deepCopyBoard } from '../../utilities/deepCopyBoard';
 import { getKingIndex } from './getKingIndex';
 import { isKingInCheck } from './isKingInCheck';
 
@@ -12,6 +15,7 @@ export interface PieceWithIndex extends Piece {
 
 export function isCheckmate(
   board: BoardState,
+  gameState: GameState,
   kingPiece: Piece,
   currentIndex: number,
   remainingPlayerPieces: PieceWithIndex[]
@@ -26,12 +30,11 @@ export function isCheckmate(
 
   const canBlock = remainingPlayerPieces.some((piece) => {
     let isInCheck = true;
-    console.log('isCheckMate()');
-    const pieceMoves = validatePieceMove(board, piece, piece.index);
+    const pieceMoves = getValidMoves(board, piece, piece.index, gameState);
     if (!pieceMoves) return;
 
     pieceMoves.forEach((move) => {
-      const newBoard = [...board];
+      const newBoard = deepCopyBoard(board);
       executeMove(newBoard, piece.index, move.index);
       const kingIndex = getKingIndex(board, piece.color);
       if (!isKingInCheck(newBoard, kingIndex, piece.color)) isInCheck = false;

@@ -2,6 +2,7 @@ import { BoardState, Piece } from '../../../context/board/InitialState';
 import { GameState } from '../../../context/game-state/GameState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
+import { filterCheckMoves } from '../piece-validation/filterCheckMoves';
 import { ValidMoves } from '../piece-validation/kingMoveValidation';
 import { isEnpassantCapturePossible } from '../piece-validation/pawnMoveValidation';
 import { validatePieceMove } from '../piece-validation/validatePieceMove';
@@ -12,7 +13,7 @@ export function getValidMoves(
   startPos: number,
   gameState: GameState
 ) {
-  const validMoves = validatePieceMove(board, piece, startPos);
+  let validMoves = validatePieceMove(board, piece, startPos);
   if (!validMoves) return;
 
   const currentPlayer = gameState.isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
@@ -27,6 +28,8 @@ export function getValidMoves(
 
   if (enPassant && isEnpassantCapturePossible(piece.color, startPos, enPassant))
     validMoves.push({ index: enPassant, isCapture: true });
+
+  validMoves = filterCheckMoves(validMoves, board, piece, startPos);
 
   return validMoves;
 }

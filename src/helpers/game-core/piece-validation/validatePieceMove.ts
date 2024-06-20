@@ -27,7 +27,5 @@ export function validatePieceMove(board: BoardState, piece: Piece, currentIndex:
   else if (pieceType === PieceType.KING)
     validMoves = kingMoveValidation(board, piece, currentIndex);
 
-  validMoves = filterCheckMoves(validMoves, board, piece, currentIndex);
-
   return validMoves;
 }

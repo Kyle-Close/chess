@@ -1,3 +1,4 @@
+import { GameState } from '../../../context/game-state/GameState';
 import { UsePlayerReturn } from '../../../hooks/usePlayer';
 import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isCheckmate } from '../../analysis/game-checks/isCheckmate';
@@ -7,6 +8,7 @@ import { getRemainingPiecesByColor } from '../piece-management/getRemainingPiece
 
 export function handleOpponentCheckState(
   moveMetaData: MoveMetaData,
+  gameState: GameState,
   waitingPlayer: UsePlayerReturn
 ) {
   // See if move put opponent in check and/or checkmate
@@ -23,6 +25,14 @@ export function handleOpponentCheckState(
     true
   );
 
-  if (isCheckmate(moveMetaData.updatedBoard, oppKing, oppKingIndex, oppRemainingPlayerPieces))
+  if (
+    isCheckmate(
+      moveMetaData.updatedBoard,
+      gameState,
+      oppKing,
+      oppKingIndex,
+      oppRemainingPlayerPieces
+    )
+  )
     moveMetaData.isCheckmate = true;
 }
