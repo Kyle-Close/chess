@@ -4,12 +4,11 @@ import { BoardContext } from '../context/board/BoardContext';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
-import { getPlayerCastleRightsFromFen } from '../helpers/notation-setup/game-setup/getPlayerCastleRightsFromFen';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
-  const { initializeBoard } = useContext(BoardContext);
+  const { initializeBoard, board } = useContext(BoardContext);
 
   function setupFromFEN(fenString: string) {
     const fenSegments = parseFenString(fenString);
@@ -29,14 +28,8 @@ export function useSetupGame() {
     gameState.move.updateFullMoves(Number(fenSegments.fullMoves));
 
     // Set player castle rights
-    gameState.whitePlayer.castleRights = getPlayerCastleRightsFromFen(
-      fenSegments.castleRights,
-      PieceColor.WHITE
-    );
-    gameState.blackPlayer.castleRights = getPlayerCastleRightsFromFen(
-      fenSegments.castleRights,
-      PieceColor.BLACK
-    );
+    gameState.whitePlayer.castleRights.updateCastleRights(board, PieceColor.WHITE);
+    gameState.blackPlayer.castleRights.updateCastleRights(board, PieceColor.BLACK);
 
     // Set en passant target square
     const enPassantTargetSquare = getEnPassantTargetSquareFromFen(fenSegments.enPassant);

@@ -4,16 +4,16 @@ import { ScanResult } from './scanRank';
 
 export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: PieceColor) {
   let isCheck = false;
-  const top = getTopFileScan(fileScan, opponentPieceColor);
-  const bottom = TODO;
+  const { top, bottom } = splitFileScan(fileScan, opponentPieceColor);
+  console.log('yers', top, bottom);
 
-  // scan top down for unubstructed rook or queen
-  for (let i = 0; i < 8; i++) {
-    const piece = rankScan[i];
+  // scan top down to king for unobstructed rook or queen
+  for (let i = 0; i < top.length; i++) {
+    const piece = top[i];
 
     // If the square is unoccupied, go to next square
     if (piece === null) continue;
-
+    console.log(piece);
     const isEnemy = piece.color === opponentPieceColor;
     const isQueen = piece.type === PieceType.QUEEN;
     const isRook = piece.type === PieceType.ROOK;
@@ -31,8 +31,8 @@ export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: Pie
   if (isCheck) return true;
 
   // scan right side for unubstructed rook or queen
-  for (let i = 7; i >= 0; i--) {
-    const piece = rankScan[i];
+  for (let i = bottom.length - 1; i >= 0; i--) {
+    const piece = bottom[i];
 
     // If the square is unoccupied, go to next square
     if (piece === null) continue;
@@ -54,15 +54,27 @@ export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: Pie
   return isCheck;
 }
 
-function getTopFileScan(fileScan: ScanResult[], opponentColor: PieceColor) {
-  const newFileScan: ScanResult[] = [];
+function splitFileScan(fileScan: ScanResult[], opponentColor: PieceColor) {
+  const topScan: ScanResult[] = [];
 
   for (let i = 0; i < fileScan.length; i++) {
     const piece = fileScan[i];
-
-    if (piece && piece.color !== opponentColor && piece.type === PieceType.QUEEN) break;
-    newFileScan.push(piece);
+    const isMyKing = piece && piece.type === PieceType.KING && piece.color !== opponentColor;
+    if (isMyKing) break;
+    else topScan.push(piece);
   }
 
-  return newFileScan;
+  const bottomScan: ScanResult[] = [];
+
+  for (let i = fileScan.length - 1; i >= 0; i--) {
+    const piece = fileScan[i];
+    const isMyKing = piece && piece.type === PieceType.KING && piece.color !== opponentColor;
+    if (isMyKing) break;
+    else bottomScan.push(piece);
+  }
+
+  return {
+    top: topScan,
+    bottom: bottomScan,
+  };
 }

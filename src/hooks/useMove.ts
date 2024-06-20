@@ -148,6 +148,7 @@ export function useMove(): UseMoveReturn {
 
     // Set or clear gameState en passant state
     if (isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)) {
+      console.log('calling translatePositionToIndex() from useMove()');
       gameState.updateEnPassantSquare(
         translatePositionToIndex(
           (getSquareRank(moveMetaData.startPosition) +
