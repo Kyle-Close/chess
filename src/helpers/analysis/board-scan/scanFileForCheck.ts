@@ -17,7 +17,7 @@ export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: Pie
     const isRook = piece.type === PieceType.ROOK;
 
     // If the square is occupied by opponent rook or queen, isCheck
-    if (isEnemy && isQueen && isRook) {
+    if (isEnemy && (isQueen || isRook)) {
       isCheck = true;
       continue;
     }
@@ -28,8 +28,8 @@ export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: Pie
 
   if (isCheck) return true;
 
-  // scan right side for unubstructed rook or queen
-  for (let i = bottom.length - 1; i >= 0; i--) {
+  // scan bottom for unubstructed rook or queen
+  for (let i = 0; i < bottom.length; i++) {
     const piece = bottom[i];
 
     // If the square is unoccupied, go to next square
@@ -40,7 +40,7 @@ export function scanFileForCheck(fileScan: ScanResult[], opponentPieceColor: Pie
     const isRook = piece.type === PieceType.ROOK;
 
     // If the square is occupied by opponent rook or queen, isCheck
-    if (isEnemy && isQueen && isRook) {
+    if (isEnemy && (isQueen || isRook)) {
       isCheck = true;
       continue;
     }

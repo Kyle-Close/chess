@@ -26,7 +26,7 @@ import { handleEnPassant } from '../helpers/game-core/move-utility/handleEnPassa
 import { handleCastle } from '../helpers/game-core/move-utility/handleCastle';
 import { updateIsValidMove } from '../helpers/game-core/move-utility/updateIsValidMove';
 import { handlePawnPromotion } from '../helpers/game-core/move-utility/handlePawnPromotion';
-import { isInsufficientMaterial } from '../helpers/game-core/board-utility/isInsufficientMaterial';
+import { isInsufficientMaterial } from '../helpers/analysis/game-checks/isInsufficientMaterial';
 
 export interface UseMoveReturn {
   halfMoves: number;

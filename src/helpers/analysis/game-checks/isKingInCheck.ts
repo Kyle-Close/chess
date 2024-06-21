@@ -4,6 +4,7 @@ import { scanDiagonal } from '../board-scan/scanDiagonal';
 import { scanDiagonalForCheck } from '../board-scan/scanDiagonalForCheck';
 import { scanFile } from '../board-scan/scanFile';
 import { scanFileForCheck } from '../board-scan/scanFileForCheck';
+import { scanForEnemyKingWithinOneSquare } from '../board-scan/scanForEnemyKingWithinOneSquare';
 import { scanForKnightCheck } from '../board-scan/scanForKnightCheck';
 import { scanRank } from '../board-scan/scanRank';
 import { scanRankForCheck } from '../board-scan/scanRankForCheck';
@@ -24,6 +25,8 @@ export function isKingInCheck(board: BoardState, currentKingIndex: number, color
   if (scanDiagonalForCheck(scannedDiagonalA, scannedDiagonalB, opponentColor)) isCheck = true;
 
   if (scanForKnightCheck(board, currentKingIndex, opponentColor)) isCheck = true;
+
+  if (scanForEnemyKingWithinOneSquare(board, currentKingIndex)) isCheck = true;
 
   return isCheck;
 }
