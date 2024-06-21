@@ -1,14 +1,13 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { PieceType } from '../../../enums/PieceType';
-import { filterCheckMoves } from './filterCheckMoves';
-import { bishopMoveValidation } from './bishopMoveValidation';
-import { ValidMoves, kingMoveValidation } from './kingMoveValidation';
-import { knightMoveValidation } from './knightMoveValidation';
-import { pawnMoveValidation } from './pawnMoveValidation';
-import { queenMoveValidation } from './queenMoveValidation';
-import { rookMoveValidation } from './rookMoveValidation';
+import { bishopMoveValidation } from '../piece-validation/bishopMoveValidation';
+import { ValidMoves, kingMoveValidation } from '../piece-validation/kingMoveValidation';
+import { knightMoveValidation } from '../piece-validation/knightMoveValidation';
+import { pawnMoveValidation } from '../piece-validation/pawnMoveValidation';
+import { queenMoveValidation } from '../piece-validation/queenMoveValidation';
+import { rookMoveValidation } from '../piece-validation/rookMoveValidation';
 
-export function validatePieceMove(board: BoardState, piece: Piece, currentIndex: number) {
+export function getStandardPieceMoves(board: BoardState, piece: Piece, currentIndex: number) {
   if (piece === null) return;
   const pieceType = piece.type;
   const color = piece.color;

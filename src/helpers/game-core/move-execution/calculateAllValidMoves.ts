@@ -5,15 +5,15 @@ import { PieceType } from '../../../enums/PieceType';
 import { filterCheckMoves } from '../piece-validation/filterCheckMoves';
 import { ValidMoves } from '../piece-validation/kingMoveValidation';
 import { isEnpassantCapturePossible } from '../piece-validation/pawnMoveValidation';
-import { validatePieceMove } from '../piece-validation/validatePieceMove';
+import { getStandardPieceMoves } from './getStandardPieceMoves';
 
-export function getValidMoves(
+export function calculateAllValidMoves(
   board: BoardState,
   piece: Piece,
   startPos: number,
   gameState: GameState
 ) {
-  let validMoves = validatePieceMove(board, piece, startPos);
+  let validMoves = getStandardPieceMoves(board, piece, startPos);
   if (!validMoves) return;
 
   const currentPlayer = gameState.isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;

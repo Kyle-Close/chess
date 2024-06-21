@@ -5,7 +5,7 @@ import { getInitialBoardState } from '../context/board/InitialState';
 import { GameState } from '../context/game-state/GameState';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { useMove } from './useMove';
-import { getValidMoves } from '../helpers/game-core/move-execution/getValidMoves';
+import { calculateAllValidMoves } from '../helpers/game-core/move-execution/calculateAllValidMoves';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } = useContext(BoardContext);
@@ -24,7 +24,7 @@ export function useBoard() {
     const currentPiece = getPieceAtPosition(startPos);
     if (currentPiece) {
       const boardCopy = [...board];
-      const validMoves = getValidMoves(boardCopy, currentPiece, startPos, gameState);
+      const validMoves = calculateAllValidMoves(boardCopy, currentPiece, startPos, gameState);
       if (validMoves) highlightValidMoves(validMoves);
     }
   }

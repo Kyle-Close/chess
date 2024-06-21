@@ -10,9 +10,7 @@ export function buildFenStringFromGame(
   moveMetaData: MoveMetaData,
   isBlackTurnEnding: boolean
 ) {
-  console.log(moveMetaData.updatedBoard);
   const piecePlacementString = buildPiecePlacementString(moveMetaData.updatedBoard);
-  console.log(piecePlacementString);
   const color = gameState.isWhiteTurn === true ? 'b' : 'w';
   const castleSegment = buildFenCastleSegment(
     gameState.whitePlayer.castleRights.castleRights,

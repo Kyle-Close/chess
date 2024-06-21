@@ -3,7 +3,7 @@ import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
 import { getPlayerPiecesWithIndex } from '../../game-core/piece-management/getPlayerPiecesWithIndex';
 import { getPawnAttackingIndexes } from '../game-checks/getPawnAttackingIndexes';
-import { validatePieceMove } from '../../game-core/piece-validation/validatePieceMove';
+import { getStandardPieceMoves } from '../../game-core/move-execution/getStandardPieceMoves';
 
 export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   // Returns an array of indexes that are being attacked.
@@ -13,7 +13,7 @@ export function scanAttackingSquares(board: BoardState, color: PieceColor) {
   const attackingIndexes: number[] = [];
 
   piecesWithIndex.forEach((piece) => {
-    const validMoves = validatePieceMove(board, piece, piece.index);
+    const validMoves = getStandardPieceMoves(board, piece, piece.index);
 
     if (piece.type !== PieceType.PAWN && validMoves) {
       validMoves.forEach((move) => {
