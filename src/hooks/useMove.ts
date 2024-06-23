@@ -114,7 +114,6 @@ export function useMove(): UseMoveReturn {
     else if (
       isStalemate(moveMetaData.updatedBoard, gameState, moveMetaData.isCheck, waitingPlayer.color)
     ) {
-      console.log('stalemate');
       gameState.updateMatchResult('DRAW');
     }
   }
