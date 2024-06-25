@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { UseCastleRightsReturn, useCastleRights } from './useCastleRights';
+import { useTimer } from './useTimer';
 
 export interface UsePlayerReturn {
   name: string;
@@ -18,12 +19,18 @@ export interface UsePlayerReturn {
   reset: () => void;
 }
 
-export function usePlayer(initialName: string, initialColor: PieceColor): UsePlayerReturn {
+export function usePlayer(
+  initialName: string,
+  initialColor: PieceColor,
+  initialIsTurn: boolean
+): UsePlayerReturn {
   const [name, setName] = useState(initialName);
-  const [isTurn, setIsTurn] = useState(false);
+  const [isTurn, setIsTurn] = useState(initialIsTurn);
   const [color, setColor] = useState<PieceColor>(initialColor);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
+  const isTimerInitOn = color === PieceColor.WHITE ? true : false;
+  const timer = useTimer(180, isTimerInitOn);
   const castleRights = useCastleRights();
 
   const reset = () => {
@@ -54,6 +61,11 @@ export function usePlayer(initialName: string, initialColor: PieceColor): UsePla
   const updatePlayerTurn = (isTurn: boolean) => {
     setIsTurn(isTurn);
   };
+
+  useEffect(() => {
+    if (isTurn) timer.start();
+    else timer.stop();
+  }, [isTurn]);
 
   return {
     name,

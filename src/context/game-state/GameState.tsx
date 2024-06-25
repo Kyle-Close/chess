@@ -50,8 +50,8 @@ export const GameState = createContext<GameState>({
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE);
-  const blackPlayer = usePlayer('CPU', PieceColor.BLACK);
+  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE, true);
+  const blackPlayer = usePlayer('CPU', PieceColor.BLACK, false);
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);

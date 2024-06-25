@@ -74,6 +74,10 @@ export function useMove(): UseMoveReturn {
     // Update turn
     gameState.toggleTurn();
 
+    // Update player turns
+    currentPlayer.updatePlayerTurn(false);
+    waitingPlayer.updatePlayerTurn(true);
+
     // Update move counters
     updateMoveCounts(moveMetaData);
 
