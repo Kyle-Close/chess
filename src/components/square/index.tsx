@@ -25,7 +25,7 @@ export function Square({
       <div className='flex p-2 max-w-1/2 max-h-1/2 relative z-10'>
         {currentPiece !== null && <PieceComponent piece={currentPiece} />}
         {isValidMove && !isCapture && (
-          <div className='bg-green-500 rounded-full flex max-w-4 min-h-4 min-w-4 max-h-4 left-1/2 top-1/2 absolute transform -translate-x-1/2 -translate-y-1/2'></div>
+          <div className='bg-green-600 rounded-full flex max-w-4 min-h-4 min-w-4 max-h-4 left-1/2 top-1/2 absolute transform -translate-x-1/2 -translate-y-1/2'></div>
         )}
         {isValidMove && isCapture && (
           <div className='bg-red-500 rounded-full flex max-w-4 min-h-4 min-w-4 max-h-4 left-1/2 top-1/2 absolute transform -translate-x-1/2 -translate-y-1/2'></div>

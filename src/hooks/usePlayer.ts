@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { PieceType } from '../enums/PieceType';
 import { PieceColor } from '../enums/PieceColor';
 import { UseCastleRightsReturn, useCastleRights } from './useCastleRights';
-import { useTimer } from './useTimer';
+import { UseTimerReturn, useTimer } from './useTimer';
 
 export interface UsePlayerReturn {
   name: string;
@@ -17,6 +17,7 @@ export interface UsePlayerReturn {
   updateColor: (color: PieceColor) => void;
   castleRights: UseCastleRightsReturn;
   reset: () => void;
+  timer: UseTimerReturn;
 }
 
 export function usePlayer(
@@ -80,5 +81,6 @@ export function usePlayer(
     updateColor,
     castleRights,
     reset,
+    timer,
   };
 }

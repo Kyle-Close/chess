@@ -11,7 +11,7 @@ export function useSquare(
   const rankNumber = Number(getSquareRank(index));
   const remainderForBlueSquareFirst = rankNumber % 2 === 1 ? 0 : 1;
   const bgColor = index % 2 === remainderForBlueSquareFirst ? 'bg-sky-800' : 'bg-gray-200';
-  const classes = ['flex', 'justify-center', 'items-center', 'relative', bgColor, 'bg-opacity-80'];
+  const classes = ['flex', 'justify-center', 'items-center', 'relative', bgColor];
 
   if (currentPiece && currentPiece.color === PieceColor.BLACK) classes.push('text-black');
 

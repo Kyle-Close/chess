@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 
+export interface UseTimerReturn {
+  start: () => void;
+  stop: () => void;
+  reset: (initialSeconds: number) => void;
+  remainingSeconds: number;
+}
+
 export function useTimer(initialSeconds: number, isStart: boolean) {
   const [isOn, setIsOn] = useState(isStart);
   const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);

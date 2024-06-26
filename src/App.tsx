@@ -1,11 +1,9 @@
-import { Board } from './components/board';
+import { Game } from './components/game';
 
 function App() {
   return (
-    <div className='flex flex-grow min-h-full bg-neutral-700'>
-      <div className='flex grow min-h-full items-center'>
-        <Board />
-      </div>
+    <div className='flex flex-grow justify-center min-h-full bg-neutral-700'>
+      <Game />
     </div>
   );
 }
