@@ -37,7 +37,7 @@ export function Piece({ piece }: PieceProps) {
       else if (piece.type === PieceType.KING) return pieceSrc.blackKing;
     }
   };
-  return <img className='max-h-8 bg-opacity-100' src={getPieceSrc()} />;
+  return <img className='sm:max-h-8 md:max-h-10 md:max-w-10 bg-opacity-100' src={getPieceSrc()} />;
 }
 
 const pieceSrc = {
