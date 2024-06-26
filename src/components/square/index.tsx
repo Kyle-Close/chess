@@ -1,6 +1,5 @@
 import { Piece } from '../../context/board/InitialState';
 import { useSquare } from '../../hooks/useSquare';
-import whitePawn from '../../assets/white-pawn.png';
 import { Piece as PieceComponent } from '../piece';
 
 interface SquareProps {

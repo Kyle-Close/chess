@@ -6,6 +6,7 @@ import { GameState } from '../context/game-state/GameState';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { useMove } from './useMove';
 import { calculateAllValidMoves } from '../helpers/game-core/move-execution/calculateAllValidMoves';
+import { executeMove } from '../helpers/game-core/move-execution/executeMove';
 
 export function useBoard() {
   const { board, setBoard, getPieceAtPosition, clearIsValidSquares } = useContext(BoardContext);
@@ -41,6 +42,7 @@ export function useBoard() {
   }
 
   const handleSquareClicked = (index: number) => {
+    console.log('clicked index ' + index);
     const isValidClick = isClickingValidSquare(index, startEnd.startPos !== null);
     if (isValidClick) startEnd.setPosition(index);
   };

@@ -37,7 +37,7 @@ export function Piece({ piece }: PieceProps) {
       else if (piece.type === PieceType.KING) return pieceSrc.blackKing;
     }
   };
-  return <img className='object-cover' src={getPieceSrc()} />;
+  return <img className='max-h-8' src={getPieceSrc()} />;
 }
 
 const pieceSrc = {
