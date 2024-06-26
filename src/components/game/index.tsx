@@ -3,7 +3,7 @@ import { PlayerData } from '../player-data';
 
 export function Game() {
   return (
-    <div className='flex flex-col grow min-h-full min-w-sm justify-center items-center gap-2 max-w-sm'>
+    <div className='flex flex-col min-h-full justify-center gap-2'>
       <PlayerData isWhite={true} />
       <Board />
       <PlayerData isWhite={false} />
