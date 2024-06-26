@@ -60,7 +60,6 @@ export function useBoard() {
   };
 
   useEffect(() => {
-    console.log('start: ' + startEnd.startPos + ' end: ' + startEnd.endPos);
     // Handle reset - don't show any valid moves
     if (startEnd.startPos === null) clearIsValidSquares();
     // Handle first click - show the valid moves
@@ -72,7 +71,7 @@ export function useBoard() {
     else if (startEnd.startPos !== null && startEnd.endPos !== null) {
       const piece = getPieceAtPosition(startEnd.startPos);
       if (piece) {
-        const isSuccess = tryMove(piece, startEnd.startPos, startEnd.endPos);
+        tryMove(piece, startEnd.startPos, startEnd.endPos);
         startEnd.clear();
       }
     }
