@@ -14,6 +14,7 @@ export function useSquare(
   const classes = ['flex', 'justify-center', 'items-center', 'relative', bgColor];
 
   if (currentPiece && currentPiece.color === PieceColor.BLACK) classes.push('text-black');
+  if (isStartPos) classes.push('bg-green-500');
 
   const handleClick = () => {
     handleSquareClicked(index);

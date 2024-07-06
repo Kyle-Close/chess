@@ -5,9 +5,10 @@ export interface UseTimerReturn {
   stop: () => void;
   reset: (initialSeconds: number) => void;
   remainingSeconds: number;
+  isTimeOut: boolean;
 }
 
-export function useTimer(initialSeconds: number, isStart: boolean) {
+export function useTimer(initialSeconds: number, isStart: boolean, onComplete: () => void) {
   const [isOn, setIsOn] = useState(isStart);
   const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
 
@@ -30,15 +31,21 @@ export function useTimer(initialSeconds: number, isStart: boolean) {
 
     const interval = window.setInterval(() => {
       setRemainingSeconds((prevRemainingSeconds) => prevRemainingSeconds - 1);
+      if (remainingSeconds - 1 <= 0) {
+        onComplete();
+      }
     }, 1000);
 
     return () => window.clearInterval(interval);
   }, [isOn, setIsOn]);
+
+  const isTimeOut = remainingSeconds <= 0;
 
   return {
     start,
     stop,
     reset,
     remainingSeconds,
+    isTimeOut,
   };
 }

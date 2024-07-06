@@ -50,8 +50,8 @@ export const GameState = createContext<GameState>({
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE, true);
-  const blackPlayer = usePlayer('CPU', PieceColor.BLACK, false);
+  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE, true, handleTimerComplete);
+  const blackPlayer = usePlayer('CPU', PieceColor.BLACK, false, handleTimerComplete);
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
@@ -68,6 +68,10 @@ export function GameStateProvider({ children }: GameStateProps) {
     setMoveHistory(buildInitialMoveHistory());
     setMoveHistoryRedo([]);
     setEnpassantSquare(null);
+  };
+
+  const handleTimerComplete = (player: UsePlayerReturn) => {
+    updateMatchResult(player);
   };
 
   const updateEnPassantSquare = (val: number | null) => {
