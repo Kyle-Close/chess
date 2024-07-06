@@ -50,8 +50,8 @@ export const GameState = createContext<GameState>({
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE, true, handleTimerComplete);
-  const blackPlayer = usePlayer('CPU', PieceColor.BLACK, false, handleTimerComplete);
+  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE, true);
+  const blackPlayer = usePlayer('CPU', PieceColor.BLACK, false);
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
@@ -70,9 +70,10 @@ export function GameStateProvider({ children }: GameStateProps) {
     setEnpassantSquare(null);
   };
 
-  const handleTimerComplete = (player: UsePlayerReturn) => {
-    updateMatchResult(player);
-  };
+  function handleTimerComplete(timeoutColor: PieceColor) {
+    const winner = timeoutColor === PieceColor.WHITE ? blackPlayer : whitePlayer;
+    updateMatchResult(winner);
+  }
 
   const updateEnPassantSquare = (val: number | null) => {
     setEnpassantSquare(val);
@@ -123,10 +124,24 @@ export function GameStateProvider({ children }: GameStateProps) {
 
   useEffect(() => {
     if (matchResult !== null) {
+      reset();
       if (matchResult === 'DRAW') console.log('Game over, draw.');
       else console.log(`Game over! ${matchResult.name} has won.`);
     }
   }, [matchResult]);
+
+  useEffect(() => {
+    if (whitePlayer.timer.remainingSeconds == 0) {
+      handleTimerComplete(PieceColor.WHITE);
+      whitePlayer.timer.stop();
+      blackPlayer.timer.stop();
+    }
+    if (blackPlayer.timer.remainingSeconds == 0) {
+      handleTimerComplete(PieceColor.BLACK);
+      whitePlayer.timer.stop();
+      blackPlayer.timer.stop();
+    }
+  }, [whitePlayer.timer.remainingSeconds, blackPlayer.timer.remainingSeconds]);
 
   return (
     <GameState.Provider
