@@ -74,6 +74,9 @@ export function useMove(): UseMoveReturn {
     // Update turn
     gameState.toggleTurn();
 
+    // Flip the board for next player
+    gameState.toggleShowWhiteOnBottom();
+
     // Update player turns
     currentPlayer.updatePlayerTurn(false);
     waitingPlayer.updatePlayerTurn(true);

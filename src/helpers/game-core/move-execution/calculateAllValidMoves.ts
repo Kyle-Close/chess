@@ -14,7 +14,7 @@ export function calculateAllValidMoves(
   gameState: GameState
 ) {
   let validMoves = getStandardPieceMoves(board, piece, startPos);
-  if (!validMoves) return;
+  if (!validMoves || validMoves.length == 0) return;
 
   const currentPlayer = gameState.isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
   const canCastleKingSide = currentPlayer.castleRights.castleRights.canCastleKingSide;

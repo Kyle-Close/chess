@@ -5,7 +5,6 @@ import { convertSecondsToMin } from '../../helpers/utilities/convertSecondsToMin
 
 interface TimerProps {
   isWhite: boolean;
-  onComplete: () => void;
 }
 export function Timer({ isWhite }: TimerProps) {
   const gameState = useContext(GameState);

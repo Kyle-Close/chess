@@ -27,6 +27,8 @@ export interface GameState {
   enPassantSquare: null | number;
   updateEnPassantSquare: (val: number | null) => void;
   reset: () => void;
+  showWhiteOnBottom: boolean;
+  toggleShowWhiteOnBottom: () => void;
 }
 
 export const GameState = createContext<GameState>({
@@ -47,6 +49,8 @@ export const GameState = createContext<GameState>({
   enPassantSquare: null,
   updateEnPassantSquare: () => {},
   reset: () => {},
+  showWhiteOnBottom: true,
+  toggleShowWhiteOnBottom: () => {},
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
@@ -58,6 +62,7 @@ export function GameStateProvider({ children }: GameStateProps) {
   const [moveHistory, setMoveHistory] = useState<MoveHistory[]>(buildInitialMoveHistory());
   const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
   const [enPassantSquare, setEnpassantSquare] = useState<null | number>(null);
+  const [showWhiteOnBottom, setShowWhiteOnBottom] = useState(true);
 
   const reset = () => {
     whitePlayer.reset();
@@ -68,6 +73,10 @@ export function GameStateProvider({ children }: GameStateProps) {
     setMoveHistory(buildInitialMoveHistory());
     setMoveHistoryRedo([]);
     setEnpassantSquare(null);
+  };
+
+  const toggleShowWhiteOnBottom = () => {
+    setShowWhiteOnBottom((prev) => !prev);
   };
 
   function handleTimerComplete(timeoutColor: PieceColor) {
@@ -163,6 +172,8 @@ export function GameStateProvider({ children }: GameStateProps) {
         updateEnPassantSquare,
         clearMoveHistoryRedo,
         reset,
+        showWhiteOnBottom,
+        toggleShowWhiteOnBottom,
       }}
     >
       {children}

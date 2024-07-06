@@ -14,12 +14,16 @@ import blackKing from '../../assets/black-king.png';
 
 import { PieceColor } from '../../enums/PieceColor';
 import { PieceType } from '../../enums/PieceType';
+import { useContext } from 'react';
+import { GameState } from '../../context/game-state/GameState';
 
 interface PieceProps {
   piece: PieceInterface;
 }
 
 export function Piece({ piece }: PieceProps) {
+  const gameState = useContext(GameState);
+
   const getPieceSrc = () => {
     if (piece.color === PieceColor.WHITE) {
       if (piece.type === PieceType.PAWN) return pieceSrc.pawnWhite;
@@ -37,7 +41,15 @@ export function Piece({ piece }: PieceProps) {
       else if (piece.type === PieceType.KING) return pieceSrc.blackKing;
     }
   };
-  return <img className='max-h-8 md:max-h-10 md:max-w-10 bg-opacity-100' src={getPieceSrc()} />;
+  return <img className={getPieceClasses(gameState.showWhiteOnBottom)} src={getPieceSrc()} />;
+}
+
+function getPieceClasses(isShowWhiteOnBottom: boolean) {
+  // bg-opacity-100
+  const responsive = ['max-h-8', 'md:max-h-10', 'md:max-w-10'];
+  const flipped = isShowWhiteOnBottom ? ['rotate-180'] : [];
+
+  return [...responsive, ...flipped].join(' ');
 }
 
 const pieceSrc = {
