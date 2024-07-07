@@ -4,6 +4,7 @@ import { PieceColor } from '../../enums/PieceColor';
 import { MoveHistory } from '../types/MoveHistory';
 import { UseMoveReturn, useMove } from '../../hooks/useMove';
 import { buildInitialMoveHistory } from './buildInitialMoveHistory';
+import { useGameSettings } from '../../hooks/useGameSettings';
 
 interface GameStateProps {
   children: React.ReactNode;
@@ -54,8 +55,9 @@ export const GameState = createContext<GameState>({
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  const whitePlayer = usePlayer('Kyle', PieceColor.WHITE, true);
-  const blackPlayer = usePlayer('CPU', PieceColor.BLACK, false);
+  const settings = useGameSettings();
+  const whitePlayer = usePlayer(settings.whitePlayerName, PieceColor.WHITE, false);
+  const blackPlayer = usePlayer(settings.blackPlayerName, PieceColor.BLACK, false);
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);

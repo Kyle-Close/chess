@@ -30,7 +30,7 @@ export function usePlayer(
   const [color, setColor] = useState<PieceColor>(initialColor);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
-  const isTimerInitOn = color === PieceColor.WHITE ? true : false;
+  const isTimerInitOn = false;
   const timer = useTimer(300, isTimerInitOn);
   const castleRights = useCastleRights();
 
