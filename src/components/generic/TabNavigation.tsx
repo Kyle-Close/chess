@@ -28,7 +28,11 @@ export function TabNavigation({ tabData }: TabNavigationProps) {
     return (
       <TabPanels>
         {tabData.map((data, key) => {
-          return <TabPanel key={key}>{data.tabContent}</TabPanel>;
+          return (
+            <TabPanel paddingX={0} key={key}>
+              {data.tabContent}
+            </TabPanel>
+          );
         })}
       </TabPanels>
     );
