@@ -3,6 +3,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 export interface TabNavigation {
   tabName: string;
   tabContent: React.ReactNode;
+  isDisabled: boolean;
 }
 
 interface TabNavigationProps {
@@ -15,7 +16,7 @@ export function TabNavigation({ tabData }: TabNavigationProps) {
       <TabList borderBottomWidth={'1.5px'}>
         {tabData.map((data, key) => {
           return (
-            <Tab fontWeight={500} borderWidth={'2px'} key={key}>
+            <Tab isDisabled={data.isDisabled} fontWeight={500} borderWidth={'2px'} key={key}>
               {data.tabName}
             </Tab>
           );

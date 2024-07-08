@@ -10,9 +10,9 @@ export function GameSetup() {
         <h1 className='justify-self-center text-xl mb-5'>Game Setup</h1>
         <TabNavigation
           tabData={[
-            { tabName: 'Local', tabContent: <LocalSetup /> },
-            { tabName: 'Computer', tabContent: <ComputerSetup /> },
-            { tabName: 'Online', tabContent: <OnlineSetup /> },
+            { tabName: 'Local', tabContent: <LocalSetup />, isDisabled: false },
+            { tabName: 'Computer', tabContent: <ComputerSetup />, isDisabled: true },
+            { tabName: 'Online', tabContent: <OnlineSetup />, isDisabled: true },
           ]}
         />
       </div>
