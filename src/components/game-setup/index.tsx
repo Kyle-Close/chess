@@ -1,6 +1,6 @@
 import { TabNavigation } from '../generic/TabNavigation';
 import { ComputerSetup } from './ComputerSetup';
-import { LocalSetup } from './LocalSetup';
+import { LocalSetup } from './Local/LocalSetup';
 import { OnlineSetup } from './OnlineSetup';
 
 export function GameSetup() {
