@@ -27,10 +27,10 @@ export function TabNavigation({ tabData }: TabNavigationProps) {
 
   function createTabPanelList() {
     return (
-      <TabPanels>
+      <TabPanels display='flex' flexDir='column' flexGrow='1'>
         {tabData.map((data, key) => {
           return (
-            <TabPanel paddingX={0} key={key}>
+            <TabPanel display='flex' flexGrow='1' pb={0} paddingX={0} key={key}>
               {data.tabContent}
             </TabPanel>
           );
@@ -40,7 +40,7 @@ export function TabNavigation({ tabData }: TabNavigationProps) {
   }
 
   return (
-    <Tabs variant='enclosed'>
+    <Tabs display='flex' flexDir='column' flexGrow='1' variant='enclosed'>
       {createTabList()}
       {createTabPanelList()}
     </Tabs>

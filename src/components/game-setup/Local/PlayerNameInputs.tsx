@@ -1,32 +1,22 @@
 import { Box } from '@chakra-ui/react';
 import { Input, Text } from '@chakra-ui/react';
-import { UseLocalSetupReturn } from '../../../hooks/useLocalSetup';
-import { PieceColor } from '../../../enums/PieceColor';
+import { UseFormRegister } from 'react-hook-form';
+import { LocalGameSetupFormInputs } from '../../../hooks/useLocalGameSetup';
 
 interface PlayerNameInputsProps {
-  localSetup: UseLocalSetupReturn;
+  register: UseFormRegister<LocalGameSetupFormInputs>;
 }
 
-export function PlayerNameInputs({ localSetup }: PlayerNameInputsProps) {
+export function PlayerNameInputs({ register }: PlayerNameInputsProps) {
   return (
     <>
       <Box className='flex flex-col gap-2'>
         <Text>White</Text>
-        <Input
-          value={localSetup.whiteName}
-          onChange={(e) => localSetup.handleNameUpdate(PieceColor.WHITE, e.target.value)}
-          size='sm'
-          placeholder='Player name (optional)'
-        />
+        <Input size='sm' placeholder='Player name (optional)' {...register('whiteName')} />
       </Box>
       <Box className='flex flex-col gap-2'>
         <Text>Black</Text>
-        <Input
-          value={localSetup.blackName}
-          onChange={(e) => localSetup.handleNameUpdate(PieceColor.BLACK, e.target.value)}
-          size='sm'
-          placeholder='Player name (optional)'
-        />
+        <Input size='sm' placeholder='Player name (optional)' {...register('blackName')} />
       </Box>
     </>
   );

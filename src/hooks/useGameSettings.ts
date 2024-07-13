@@ -7,10 +7,10 @@ export enum GameType {
 }
 
 export enum TimeControl {
-  FREE_PLAY,
-  BLITZ,
-  RAPID,
-  CLASSICAL,
+  FREE_PLAY = 'FREE PLAY',
+  BLITZ = 'BLITZ',
+  RAPID = 'RAPID',
+  CLASSICAL = 'CLASSICAL',
 }
 
 export interface UseGameSettingsReturn {
