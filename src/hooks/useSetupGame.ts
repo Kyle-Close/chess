@@ -5,11 +5,17 @@ import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoa
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
+import { GameSettings, UseGameSettingsReturn } from './useGameSettings';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
   const { initializeBoard, board } = useContext(BoardContext);
 
+  /*
+      Sets up the following: board, white turn to move, game moves, castle rights, clear en passant square
+
+      REMAINING: player names, time control, increment time on move, undo/redo, fifty-move rule
+  */
   function setupFromFEN(fenString: string) {
     const fenSegments = parseFenString(fenString);
     const initialBoard = buildBoardFromFen(fenSegments.initialPositions);
@@ -36,5 +42,9 @@ export function useSetupGame() {
     gameState.updateEnPassantSquare(enPassantTargetSquare);
   }
 
-  return { setupFromFEN };
+  function setupGameSettings(settings: GameSettings) {
+    gameState.settings.update(settings);
+  }
+
+  return { setupFromFEN, setupGameSettings };
 }

@@ -34,23 +34,15 @@ export function buildAgebraicNotation(moveMetaData: MoveMetaData) {
 
   // Handle castle
   if (moveMetaData.isCastle) {
-    if (moveMetaData.castleMetaData === CastleMetaData.KING_SIDE)
-      return 'O-O' + checkNotation;
+    if (moveMetaData.castleMetaData === CastleMetaData.KING_SIDE) return 'O-O' + checkNotation;
     else if (moveMetaData.castleMetaData === CastleMetaData.QUEEN_SIDE)
       return 'O-O-O' + checkNotation;
   }
 
   // Handle pawn promotion
   if (moveMetaData.isPromotion && moveMetaData.promotionPiece) {
-    const promotedPieceNotationLetter = convertPieceToNotationLetter(
-      moveMetaData.promotionPiece
-    );
-    return (
-      pieceNotationLetter +
-      endSquareNotation +
-      promotedPieceNotationLetter +
-      checkNotation
-    );
+    const promotedPieceNotationLetter = convertPieceToNotationLetter(moveMetaData.promotionPiece);
+    return pieceNotationLetter + endSquareNotation + promotedPieceNotationLetter + checkNotation;
   }
 
   // Handle standard pawn move (not a capture, en passant or promotion)

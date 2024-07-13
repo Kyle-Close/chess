@@ -1,10 +1,11 @@
+import { DEFAULT_FEN_STRING } from '../../constants/defaultFen';
 import { MoveHistory } from '../types/MoveHistory';
 
 export function buildInitialMoveHistory(): MoveHistory[] {
   return [
     {
       chessNotation: '',
-      fenString: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      fenString: DEFAULT_FEN_STRING,
     },
   ];
 }

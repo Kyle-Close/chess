@@ -13,6 +13,16 @@ export enum TimeControl {
   CLASSICAL = 'CLASSICAL',
 }
 
+export interface GameSettings {
+  whitePlayerName: string;
+  blackPlayerName: string;
+  gameType: GameType;
+  timeControl: TimeControl;
+  isIncrement: boolean;
+  isUndoRedo: boolean;
+  isFiftyMoveRule: boolean;
+}
+
 export interface UseGameSettingsReturn {
   whitePlayerName: string;
   updateWhitePlayerName: (name: string) => void;
@@ -28,6 +38,7 @@ export interface UseGameSettingsReturn {
   updateIsUndoRedo: (isUndoRedo: boolean) => void;
   isFiftyMoveRule: boolean;
   updateIsFiftyMoveRule: (isFiftyMoveRule: boolean) => void;
+  update: (settings: GameSettings) => void;
 }
 
 export function useGameSettings(): UseGameSettingsReturn {
@@ -45,11 +56,13 @@ export function useGameSettings(): UseGameSettingsReturn {
   };
 
   const updateWhitePlayerName = (name: string) => {
-    setWhitePlayerName(name);
+    if (!name) setWhitePlayerName('WHITE');
+    else setWhitePlayerName(name);
   };
 
   const updateBlackPlayerName = (name: string) => {
-    setBlackPlayerName(name);
+    if (!name) setBlackPlayerName('BLACK');
+    else setBlackPlayerName(name);
   };
 
   const updateTimeControl = (timeControl: TimeControl) => {
@@ -68,6 +81,16 @@ export function useGameSettings(): UseGameSettingsReturn {
     setIsFiftyMoveRule(isFiftyMoveRule);
   };
 
+  const update = (settings: GameSettings) => {
+    updateWhitePlayerName(settings.whitePlayerName);
+    updateBlackPlayerName(settings.blackPlayerName);
+    updateGameType(settings.gameType);
+    updateTimeControl(settings.timeControl);
+    updateIsIncrement(settings.isIncrement);
+    updateIsUndoRedo(settings.isUndoRedo);
+    updateIsFiftyMoveRule(settings.isFiftyMoveRule);
+  };
+
   return {
     gameType,
     updateGameType,
@@ -83,5 +106,6 @@ export function useGameSettings(): UseGameSettingsReturn {
     updateIsUndoRedo,
     isFiftyMoveRule,
     updateIsFiftyMoveRule,
+    update,
   };
 }

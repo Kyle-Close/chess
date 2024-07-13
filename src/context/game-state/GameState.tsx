@@ -4,7 +4,7 @@ import { PieceColor } from '../../enums/PieceColor';
 import { MoveHistory } from '../types/MoveHistory';
 import { UseMoveReturn, useMove } from '../../hooks/useMove';
 import { buildInitialMoveHistory } from './buildInitialMoveHistory';
-import { useGameSettings } from '../../hooks/useGameSettings';
+import { UseGameSettingsReturn, useGameSettings } from '../../hooks/useGameSettings';
 
 interface GameStateProps {
   children: React.ReactNode;
@@ -30,6 +30,7 @@ export interface GameState {
   reset: () => void;
   showWhiteOnBottom: boolean;
   toggleShowWhiteOnBottom: () => void;
+  settings: UseGameSettingsReturn;
 }
 
 export const GameState = createContext<GameState>({
@@ -52,6 +53,7 @@ export const GameState = createContext<GameState>({
   reset: () => {},
   showWhiteOnBottom: true,
   toggleShowWhiteOnBottom: () => {},
+  settings: {} as UseGameSettingsReturn,
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
@@ -176,6 +178,7 @@ export function GameStateProvider({ children }: GameStateProps) {
         reset,
         showWhiteOnBottom,
         toggleShowWhiteOnBottom,
+        settings,
       }}
     >
       {children}
