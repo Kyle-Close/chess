@@ -5,6 +5,7 @@ import { MoveHistory } from '../types/MoveHistory';
 import { UseMoveReturn, useMove } from '../../hooks/useMove';
 import { buildInitialMoveHistory } from './buildInitialMoveHistory';
 import { UseGameSettingsReturn, useGameSettings } from '../../hooks/useGameSettings';
+import { getStartingTimeInSeconds } from '../../helpers/notation-setup/game-setup/getStartingTimeInSeconds';
 
 interface GameStateProps {
   children: React.ReactNode;
@@ -58,8 +59,20 @@ export const GameState = createContext<GameState>({
 
 export function GameStateProvider({ children }: GameStateProps) {
   const settings = useGameSettings();
-  const whitePlayer = usePlayer(settings.whitePlayerName, PieceColor.WHITE, false);
-  const blackPlayer = usePlayer(settings.blackPlayerName, PieceColor.BLACK, false);
+  const startingTimeInSeconds = getStartingTimeInSeconds(settings.timeControl);
+
+  const whitePlayer = usePlayer(
+    settings.whitePlayerName,
+    PieceColor.WHITE,
+    true,
+    startingTimeInSeconds
+  );
+  const blackPlayer = usePlayer(
+    settings.blackPlayerName,
+    PieceColor.BLACK,
+    false,
+    startingTimeInSeconds
+  );
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);

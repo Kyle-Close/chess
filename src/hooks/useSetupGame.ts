@@ -5,7 +5,7 @@ import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoa
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
-import { GameSettings, UseGameSettingsReturn } from './useGameSettings';
+import { GameSettings } from './useGameSettings';
 
 export function useSetupGame() {
   const gameState = useContext(GameState);
