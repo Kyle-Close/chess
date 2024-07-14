@@ -1,12 +1,9 @@
-import { Game } from './components/game';
-import { GameSetup } from './components/game-setup';
+interface AppProps {
+  children?: React.ReactNode;
+}
 
-function App() {
-  return (
-    <div className='flex flex-grow justify-center bg-gray-900 text-slate-50'>
-      <GameSetup />
-    </div>
-  );
+function App({ children }: AppProps) {
+  return <div className='flex flex-grow justify-center bg-gray-900 text-slate-50'>{children}</div>;
 }
 
 export default App;

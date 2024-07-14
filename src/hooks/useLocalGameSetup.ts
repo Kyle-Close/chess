@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { GameSettings, GameType, TimeControl } from './useGameSettings';
 import { useSetupGame } from './useSetupGame';
 import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
+import { useNavigate } from 'react-router-dom';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -13,6 +14,7 @@ export type LocalGameSetupFormInputs = {
 };
 
 export function useLocalGameSetup() {
+  const navigate = useNavigate();
   const gameSetup = useSetupGame();
   const { register, handleSubmit } = useForm<LocalGameSetupFormInputs>();
   const onSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) => setupGame(data);
@@ -20,6 +22,7 @@ export function useLocalGameSetup() {
   const setupGame = (data: LocalGameSetupFormInputs) => {
     gameSetup.setupGameSettings(buildSettingsObject(data));
     gameSetup.setupFromFEN(DEFAULT_FEN_STRING);
+    navigate('/game');
   };
 
   const buildSettingsObject = (data: LocalGameSetupFormInputs): GameSettings => {
