@@ -20,8 +20,8 @@ export function useLocalGameSetup() {
   const onSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) => setupGame(data);
 
   const setupGame = (data: LocalGameSetupFormInputs) => {
-    gameSetup.setupGameSettings(buildSettingsObject(data));
     gameSetup.setupFromFEN(DEFAULT_FEN_STRING);
+    gameSetup.setupAndStartGame(buildSettingsObject(data));
     navigate('/game');
   };
 

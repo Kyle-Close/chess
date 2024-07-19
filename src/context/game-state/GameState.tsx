@@ -4,7 +4,7 @@ import { PieceColor } from '../../enums/PieceColor';
 import { MoveHistory } from '../types/MoveHistory';
 import { UseMoveReturn, useMove } from '../../hooks/useMove';
 import { buildInitialMoveHistory } from './buildInitialMoveHistory';
-import { UseGameSettingsReturn, useGameSettings } from '../../hooks/useGameSettings';
+import { GameSettings } from '../../hooks/useGameSettings';
 import { getStartingTimeInSeconds } from '../../helpers/notation-setup/game-setup/getStartingTimeInSeconds';
 
 interface GameStateProps {
@@ -12,6 +12,8 @@ interface GameStateProps {
 }
 
 export interface GameState {
+  isGamePlaying: boolean;
+  setupAndStartGame: (settings: GameSettings) => void;
   whitePlayer: UsePlayerReturn;
   blackPlayer: UsePlayerReturn;
   matchResult: UsePlayerReturn | 'DRAW' | null;
@@ -31,10 +33,11 @@ export interface GameState {
   reset: () => void;
   showWhiteOnBottom: boolean;
   toggleShowWhiteOnBottom: () => void;
-  settings: UseGameSettingsReturn;
 }
 
 export const GameState = createContext<GameState>({
+  isGamePlaying: false,
+  setupAndStartGame: () => {},
   whitePlayer: {} as UsePlayerReturn,
   blackPlayer: {} as UsePlayerReturn,
   matchResult: null,
@@ -54,25 +57,12 @@ export const GameState = createContext<GameState>({
   reset: () => {},
   showWhiteOnBottom: true,
   toggleShowWhiteOnBottom: () => {},
-  settings: {} as UseGameSettingsReturn,
 });
 
 export function GameStateProvider({ children }: GameStateProps) {
-  const settings = useGameSettings();
-  const startingTimeInSeconds = getStartingTimeInSeconds(settings.timeControl);
-
-  const whitePlayer = usePlayer(
-    settings.whitePlayerName,
-    PieceColor.WHITE,
-    true,
-    startingTimeInSeconds
-  );
-  const blackPlayer = usePlayer(
-    settings.blackPlayerName,
-    PieceColor.BLACK,
-    false,
-    startingTimeInSeconds
-  );
+  const [isGamePlaying, setIsGamePlaying] = useState(false);
+  const whitePlayer = usePlayer('WHITE', PieceColor.WHITE);
+  const blackPlayer = usePlayer('BLACK', PieceColor.BLACK);
   const [matchResult, setMatchResult] = useState<UsePlayerReturn | 'DRAW' | null>(null);
   const move = useMove();
   const [isWhiteTurn, setIsWhiteTurn] = useState(true);
@@ -80,6 +70,17 @@ export function GameStateProvider({ children }: GameStateProps) {
   const [moveHistoryRedo, setMoveHistoryRedo] = useState<MoveHistory[]>([]);
   const [enPassantSquare, setEnpassantSquare] = useState<null | number>(null);
   const [showWhiteOnBottom, setShowWhiteOnBottom] = useState(true);
+
+  const setupAndStartGame = (settings: GameSettings) => {
+    whitePlayer.updateName(settings.whitePlayerName);
+    blackPlayer.updateName(settings.blackPlayerName);
+
+    const startingTimeInSeconds = getStartingTimeInSeconds(settings.timeControl);
+    whitePlayer.timer.updateRemainingSeconds(startingTimeInSeconds);
+    blackPlayer.timer.updateRemainingSeconds(startingTimeInSeconds);
+
+    setIsGamePlaying(true);
+  };
 
   const reset = () => {
     whitePlayer.reset();
@@ -172,6 +173,8 @@ export function GameStateProvider({ children }: GameStateProps) {
   return (
     <GameState.Provider
       value={{
+        isGamePlaying,
+        setupAndStartGame,
         whitePlayer,
         blackPlayer,
         matchResult,
@@ -191,7 +194,6 @@ export function GameStateProvider({ children }: GameStateProps) {
         reset,
         showWhiteOnBottom,
         toggleShowWhiteOnBottom,
-        settings,
       }}
     >
       {children}

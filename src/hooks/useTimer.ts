@@ -5,11 +5,12 @@ export interface UseTimerReturn {
   stop: () => void;
   reset: (initialSeconds: number) => void;
   remainingSeconds: number;
+  updateRemainingSeconds: (remainingSeconds: number) => void;
 }
 
-export function useTimer(initialSeconds: number, isStart: boolean) {
+export function useTimer(isStart: boolean): UseTimerReturn {
   const [isOn, setIsOn] = useState(isStart);
-  const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds);
+  const [remainingSeconds, setRemainingSeconds] = useState(99999);
 
   const start = () => {
     setIsOn(true);
@@ -22,6 +23,10 @@ export function useTimer(initialSeconds: number, isStart: boolean) {
   const reset = (initialSeconds: number) => {
     setIsOn(false);
     setRemainingSeconds(initialSeconds);
+  };
+
+  const updateRemainingSeconds = (remainingSeconds: number) => {
+    setRemainingSeconds(remainingSeconds);
   };
 
   useEffect(() => {
@@ -40,5 +45,6 @@ export function useTimer(initialSeconds: number, isStart: boolean) {
     stop,
     reset,
     remainingSeconds,
+    updateRemainingSeconds,
   };
 }

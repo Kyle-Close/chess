@@ -42,9 +42,9 @@ export function useSetupGame() {
     gameState.updateEnPassantSquare(enPassantTargetSquare);
   }
 
-  function setupGameSettings(settings: GameSettings) {
-    gameState.settings.update(settings);
+  function setupAndStartGame(settings: GameSettings) {
+    setupAndStartGame(settings);
   }
 
-  return { setupFromFEN, setupGameSettings };
+  return { setupFromFEN, setupAndStartGame };
 }

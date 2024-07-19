@@ -20,19 +20,14 @@ export interface UsePlayerReturn {
   timer: UseTimerReturn;
 }
 
-export function usePlayer(
-  initialName: string,
-  initialColor: PieceColor,
-  initialIsTurn: boolean,
-  startingTimeInSeconds: number
-): UsePlayerReturn {
+export function usePlayer(initialName: string, initialColor: PieceColor): UsePlayerReturn {
   const [name, setName] = useState(initialName);
-  const [isTurn, setIsTurn] = useState(initialIsTurn);
   const [color, setColor] = useState<PieceColor>(initialColor);
+  const [isTurn, setIsTurn] = useState(color === PieceColor.WHITE ? true : false);
   const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
   const [isInCheck, setIsInCheck] = useState(false);
   const isTimerInitOn = false;
-  const timer = useTimer(startingTimeInSeconds, isTimerInitOn);
+  const timer = useTimer(isTimerInitOn);
   const castleRights = useCastleRights();
 
   const reset = () => {
