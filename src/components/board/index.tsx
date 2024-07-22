@@ -1,10 +1,11 @@
 import { Square } from '../square';
-import { useBoard } from '../../hooks/useBoard';
+import { useAppSelector, useBoard } from '../../hooks/useBoard';
 import { useContext } from 'react';
 import { GameState } from '../../context/game-state/GameState';
 
 export function Board() {
-  const { board, startPos, handleSquareClicked, handleRightClickOnBoard } = useBoard();
+  const board = useAppSelector((state) => state.board);
+  const { startPos, handleSquareClicked, handleRightClickOnBoard } = useBoard();
   const gameState = useContext(GameState);
   const { isWhiteTurn } = gameState;
 

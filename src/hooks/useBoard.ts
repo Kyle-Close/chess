@@ -1,14 +1,23 @@
 import { useContext, useEffect } from 'react';
-import { BoardContext } from '../context/board/BoardContext';
 import { useStartEndAction } from './useStartEndAction';
 import { getInitialBoardState } from '../context/board/InitialState';
 import { GameState } from '../context/game-state/GameState';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { useMove } from './useMove';
 import { calculateAllValidMoves } from '../helpers/game-core/move-execution/calculateAllValidMoves';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { useDispatch } from 'react-redux';
+import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
+import { clearIsValidSquares, setupBoard } from '../redux/slices/board';
+
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export function useBoard() {
-  const { board, setBoard, getPieceAtPosition, clearIsValidSquares } = useContext(BoardContext);
+  const board = useAppSelector((state) => state.board);
+  const dispatch = useAppDispatch();
   const gameState = useContext(GameState);
   const startEnd = useStartEndAction();
   const { tryMove } = useMove();
@@ -17,11 +26,11 @@ export function useBoard() {
   const currentPlayer = isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
 
   function resetBoard() {
-    setBoard(getInitialBoardState());
+    dispatch(setupBoard(getInitialBoardState()));
   }
 
   function handleShowValidMoves(startPos: number) {
-    const currentPiece = getPieceAtPosition(startPos);
+    const currentPiece = board[startPos].piece;
     if (currentPiece) {
       const boardCopy = [...board];
       const validMoves = calculateAllValidMoves(boardCopy, currentPiece, startPos, gameState);
@@ -30,14 +39,14 @@ export function useBoard() {
   }
 
   function highlightValidMoves(validMoves: ValidMoves[]) {
-    setBoard((prevBoard) => {
-      const copy = [...prevBoard];
-      validMoves.forEach((move) => {
-        if (move.isCapture) copy[move.index].isCapture = true;
-        copy[move.index].isValidMove = true;
-      });
-      return copy;
+    const copy = deepCopyBoard(board);
+
+    validMoves.forEach((move) => {
+      if (move.isCapture) copy[move.index].isCapture = true;
+      copy[move.index].isValidMove = true;
     });
+
+    dispatch(setupBoard(copy));
   }
 
   const handleSquareClicked = (index: number) => {
@@ -50,11 +59,11 @@ export function useBoard() {
 
   const handleRightClickOnBoard = () => {
     startEnd.setStartPos(null);
-    clearIsValidSquares();
+    dispatch(clearIsValidSquares());
   };
 
   const isClickingValidSquare = (index: number, isFinalClick: boolean) => {
-    const piece = getPieceAtPosition(index);
+    const piece = board[index].piece;
     if ((piece && piece.color === currentPlayer.color) || !piece) return true;
     if (piece && piece.color !== currentPlayer.color && isFinalClick) return true;
     return false;
@@ -62,7 +71,7 @@ export function useBoard() {
 
   useEffect(() => {
     // Handle reset - don't show any valid moves
-    if (startEnd.startPos === null) clearIsValidSquares();
+    if (startEnd.startPos === null) dispatch(clearIsValidSquares());
     // Handle first click - show the valid moves
     else if (startEnd.startPos !== null && startEnd.endPos === null) {
       if (isClickingValidSquare(startEnd.startPos, true)) handleShowValidMoves(startEnd.startPos);
@@ -70,7 +79,7 @@ export function useBoard() {
 
     // Handle move execution
     else if (startEnd.startPos !== null && startEnd.endPos !== null) {
-      const piece = getPieceAtPosition(startEnd.startPos);
+      const piece = board[startEnd.startPos].piece;
       if (piece) {
         tryMove(piece, startEnd.startPos, startEnd.endPos);
         startEnd.clear();

@@ -1,15 +1,17 @@
 import { useContext } from 'react';
 import { GameState } from '../context/game-state/GameState';
-import { BoardContext } from '../context/board/BoardContext';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
 import { GameSettings } from './useGameSettings';
+import { useAppDispatch, useAppSelector } from './useBoard';
+import { setupBoard } from '../redux/slices/board';
 
 export function useSetupGame() {
+  const board = useAppSelector((state) => state.board);
+  const dispatch = useAppDispatch();
   const gameState = useContext(GameState);
-  const { initializeBoard, board } = useContext(BoardContext);
 
   /*
       Sets up the following: board, white turn to move, game moves, castle rights, clear en passant square
@@ -21,7 +23,7 @@ export function useSetupGame() {
     const initialBoard = buildBoardFromFen(fenSegments.initialPositions);
 
     // Set up board state.
-    initializeBoard(initialBoard);
+    dispatch(setupBoard(initialBoard));
 
     // Set turn
     if (fenSegments.turn === 'w' && !gameState.isWhiteTurn) gameState.toggleTurn();

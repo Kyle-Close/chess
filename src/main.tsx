@@ -8,6 +8,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { GameSetup } from './components/game-setup/index.tsx';
 import { Game } from './components/game/index.tsx';
+import { Provider } from 'react-redux';
+import store from './redux/store.ts';
 
 const router = createBrowserRouter([
   {
@@ -35,11 +37,13 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider>
-      <BoardProvider>
-        <GameStateProvider>
-          <RouterProvider router={router}></RouterProvider>
-        </GameStateProvider>
-      </BoardProvider>
+      <Provider store={store}>
+        <BoardProvider>
+          <GameStateProvider>
+            <RouterProvider router={router}></RouterProvider>
+          </GameStateProvider>
+        </BoardProvider>
+      </Provider>
     </ChakraProvider>
   </React.StrictMode>
 );

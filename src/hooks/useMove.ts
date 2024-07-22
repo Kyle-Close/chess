@@ -5,7 +5,6 @@ import {
   buildMoveMetaData,
 } from '../helpers/game-core/move-execution/buildMoveMetaData';
 import { GameState } from '../context/game-state/GameState';
-import { BoardContext } from '../context/board/BoardContext';
 import { executeMove } from '../helpers/game-core/move-execution/executeMove';
 import { PieceType } from '../enums/PieceType';
 import { getEnPassantCapturedPieceIndex } from '../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
@@ -28,6 +27,10 @@ import { updateIsValidMove } from '../helpers/game-core/move-utility/updateIsVal
 import { handlePawnPromotion } from '../helpers/game-core/move-utility/handlePawnPromotion';
 import { isInsufficientMaterial } from '../helpers/analysis/game-checks/isInsufficientMaterial';
 import { isStalemate } from '../helpers/analysis/game-checks/isStalemate';
+import { useAppDispatch, useAppSelector } from './useBoard';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../redux/store';
+import { setupBoard } from '../redux/slices/board';
 
 export interface UseMoveReturn {
   halfMoves: number;
@@ -39,8 +42,9 @@ export interface UseMoveReturn {
 }
 
 export function useMove(): UseMoveReturn {
+  const board = useAppSelector((state) => state.board);
+  const dispatch = useAppDispatch();
   const gameState = useContext(GameState);
-  const { board, setBoard } = useContext(BoardContext);
   const [halfMoves, setHalfMoves] = useState(0);
   const [fullMoves, setFullMoves] = useState(0);
 
@@ -85,7 +89,12 @@ export function useMove(): UseMoveReturn {
     updateMoveCounts(moveMetaData);
 
     // Update the moveMetaData board with the move being executed
-    executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
+    const boardAfterMove = executeMove(
+      moveMetaData.updatedBoard,
+      moveMetaData.startPosition,
+      moveMetaData.endPosition,
+      true
+    );
 
     // Handle pawn promotion (if applicable)
     handlePawnPromotion(moveMetaData);
@@ -106,7 +115,7 @@ export function useMove(): UseMoveReturn {
     handleGameIsOver(moveMetaData);
 
     // Finally, update global board state with updated board after move
-    setBoard(moveMetaData.updatedBoard);
+    dispatch(setupBoard(boardAfterMove));
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {

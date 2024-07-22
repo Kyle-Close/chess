@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from 'react';
-import { BoardContext } from '../context/board/BoardContext';
+import { useEffect, useState } from 'react';
+import { useAppSelector } from './useBoard';
 
 export function useStartEndAction() {
-  const { getPieceAtPosition } = useContext(BoardContext);
+  const board = useAppSelector((state) => state.board);
   const [startPos, setStartPos] = useState<number | null>(null);
   const [endPos, setEndPos] = useState<number | null>(null);
 
@@ -12,7 +12,7 @@ export function useStartEndAction() {
   };
 
   const setPosition = (index: number) => {
-    const piece = getPieceAtPosition(index);
+    const piece = board[index].piece;
     if (startPos === null && !piece) return; // Clicked an empty square as starting pos. Return
 
     if (startPos === null) setStartPos(index);
