@@ -1,50 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useAppSelector } from './useBoard';
+import { useDispatch } from 'react-redux';
+import { setRemainingSeconds, toggleTimerIsOn } from '../redux/slices/timer';
 
 export interface UseTimerReturn {
   start: () => void;
   stop: () => void;
   reset: (initialSeconds: number) => void;
-  remainingSeconds: number;
   updateRemainingSeconds: (remainingSeconds: number) => void;
 }
 
-export function useTimer(isStart: boolean): UseTimerReturn {
-  const [isOn, setIsOn] = useState(isStart);
-  const [remainingSeconds, setRemainingSeconds] = useState(99999);
+interface UseTimerProps {
+  id: string;
+}
+
+export function useTimer({ id }: UseTimerProps): UseTimerReturn {
+  const timer = useAppSelector((state) => state.timer);
+  const dispatch = useDispatch();
+  const thisTimer = timer.entities[id];
 
   const start = () => {
-    setIsOn(true);
+    if (!thisTimer.isOn) dispatch(toggleTimerIsOn({ id }));
   };
 
   const stop = () => {
-    setIsOn(false);
+    if (thisTimer.isOn) dispatch(toggleTimerIsOn({ id }));
   };
 
-  const reset = (initialSeconds: number) => {
-    setIsOn(false);
-    setRemainingSeconds(initialSeconds);
+  const reset = (remainingSeconds: number) => {
+    stop();
+    dispatch(setRemainingSeconds({ id, remainingSeconds }));
   };
 
   const updateRemainingSeconds = (remainingSeconds: number) => {
-    setRemainingSeconds(remainingSeconds);
+    dispatch(setRemainingSeconds({ id, remainingSeconds }));
   };
 
   useEffect(() => {
-    console.log(isOn);
-    if (!isOn) return;
+    if (!thisTimer.isOn) return;
 
     const interval = window.setInterval(() => {
-      setRemainingSeconds((prevRemainingSeconds) => prevRemainingSeconds - 1);
+      dispatch(setRemainingSeconds({ id, remainingSeconds: thisTimer.remainingSeconds - 1 }));
     }, 1000);
 
     return () => window.clearInterval(interval);
-  }, [isOn, setIsOn]);
+  }, [thisTimer.isOn]);
 
   return {
     start,
     stop,
     reset,
-    remainingSeconds,
     updateRemainingSeconds,
   };
 }

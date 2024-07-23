@@ -1,7 +1,6 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useStartEndAction } from './useStartEndAction';
 import { getInitialBoardState } from '../context/board/InitialState';
-import { GameState } from '../context/game-state/GameState';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
 import { useMove } from './useMove';
 import { calculateAllValidMoves } from '../helpers/game-core/move-execution/calculateAllValidMoves';
@@ -10,20 +9,23 @@ import { AppDispatch, RootState } from '../redux/store';
 import { useDispatch } from 'react-redux';
 import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { clearIsValidSquares, setupBoard } from '../redux/slices/board';
+import { selectPlayerById } from '../redux/slices/player';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export function useBoard() {
+  const gameInfo = useAppSelector((state) => state.gameInfo);
   const board = useAppSelector((state) => state.board);
+  const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
+  const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const dispatch = useAppDispatch();
-  const gameState = useContext(GameState);
   const startEnd = useStartEndAction();
   const { tryMove } = useMove();
 
-  const isWhiteTurn = gameState.isWhiteTurn;
-  const currentPlayer = isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
+  const isWhiteTurn = whitePlayer.isTurn;
+  const currentPlayer = isWhiteTurn ? whitePlayer : blackPlayer;
 
   function resetBoard() {
     dispatch(setupBoard(getInitialBoardState()));
@@ -33,7 +35,7 @@ export function useBoard() {
     const currentPiece = board[startPos].piece;
     if (currentPiece) {
       const boardCopy = [...board];
-      const validMoves = calculateAllValidMoves(boardCopy, currentPiece, startPos, gameState);
+      const validMoves = calculateAllValidMoves(boardCopy, currentPiece, startPos, gameInfo);
       if (validMoves) highlightValidMoves(validMoves);
     }
   }

@@ -1,82 +1,48 @@
-import { useEffect, useState } from 'react';
-import { PieceType } from '../enums/PieceType';
+import { useEffect } from 'react';
 import { PieceColor } from '../enums/PieceColor';
 import { UseCastleRightsReturn, useCastleRights } from './useCastleRights';
-import { UseTimerReturn, useTimer } from './useTimer';
+import { selectPlayerById, setColor, setIsInCheck, setName } from '../redux/slices/player';
+import { useAppDispatch, useAppSelector } from './useBoard';
+import { selectTimerById, setIsOn } from '../redux/slices/timer';
 
 export interface UsePlayerReturn {
-  name: string;
-  isTurn: boolean;
-  updatePlayerTurn: (isTurn: boolean) => void;
   updateName: (name: string) => void;
-  capturedPieces: PieceType[];
-  enemyPieceCaptured: (pieceType: PieceType) => void;
-  isInCheck: boolean;
   updateIsInCheck: (isCheck: boolean) => void;
-  color: PieceColor;
   updateColor: (color: PieceColor) => void;
   castleRights: UseCastleRightsReturn;
-  reset: () => void;
-  timer: UseTimerReturn;
 }
 
-export function usePlayer(initialName: string, initialColor: PieceColor): UsePlayerReturn {
-  const [name, setName] = useState(initialName);
-  const [color, setColor] = useState<PieceColor>(initialColor);
-  const [isTurn, setIsTurn] = useState(color === PieceColor.WHITE ? true : false);
-  const [capturedPieces, setCapturedPieces] = useState<PieceType[]>([]);
-  const [isInCheck, setIsInCheck] = useState(false);
-  const isTimerInitOn = false;
-  const timer = useTimer(isTimerInitOn);
-  const castleRights = useCastleRights();
+interface UsePlayerProps {
+  playerId: string;
+}
 
-  const reset = () => {
-    setName(initialName);
-    setIsTurn(false);
-    setColor(initialColor);
-    setCapturedPieces([]);
-    setIsInCheck(false);
-    castleRights.reset();
-  };
+export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
+  const castleRights = useCastleRights();
+  const player = useAppSelector((state) => selectPlayerById(state, playerId));
+  const timer = useAppSelector((state) => selectTimerById(state, player.timerId));
+  const dispatch = useAppDispatch();
 
   const updateName = (name: string) => {
-    setName(name);
+    dispatch(setName({ id: playerId, name }));
   };
 
   const updateColor = (color: PieceColor) => {
-    setColor(color);
+    dispatch(setColor({ id: playerId, color }));
   };
 
-  const updateIsInCheck = (isCheck: boolean) => {
-    setIsInCheck(isCheck);
-  };
-
-  const enemyPieceCaptured = (pieceType: PieceType) => {
-    setCapturedPieces((prevCapturedPieces) => [...prevCapturedPieces, pieceType]);
-  };
-
-  const updatePlayerTurn = (isTurn: boolean) => {
-    setIsTurn(isTurn);
+  const updateIsInCheck = (isInCheck: boolean) => {
+    dispatch(setIsInCheck({ id: playerId, isInCheck }));
   };
 
   useEffect(() => {
-    if (isTurn) timer.start();
-    else timer.stop();
-  }, [isTurn]);
+    if (player.isTurn) dispatch(setIsOn({ id: timer.id, isOn: true }));
+    else dispatch(setIsOn({ id: timer.id, isOn: false }));
+  }, [player.isTurn]);
 
   return {
-    name,
-    isTurn,
-    updatePlayerTurn,
     updateName,
-    capturedPieces,
-    enemyPieceCaptured,
-    isInCheck,
     updateIsInCheck,
-    color,
     updateColor,
     castleRights,
-    reset,
-    timer,
   };
 }
