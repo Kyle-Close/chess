@@ -1,45 +1,43 @@
-import { useState } from 'react';
 import { PieceColor } from '../enums/PieceColor';
 import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { BoardState } from '../context/board/InitialState';
 import { isSquaresAttacked } from '../helpers/game-core/move-utility/isSquaresAttacked';
 import { isPathObstructed } from '../helpers/game-core/move-utility/isPathObstructed';
-
-export interface CastleRights {
-  canCastleQueenSide: boolean;
-  canCastleKingSide: boolean;
-  queenSideIsAvailable: boolean;
-  kingSideIsAvailable: boolean;
-}
+import { useAppDispatch } from './useBoard';
+import { CastleRights, setCastleRights } from '../redux/slices/castleRights';
 
 export interface UseCastleRightsReturn {
-  castleRights: CastleRights;
   updateCastleRights: (board: BoardState, color: PieceColor) => void;
   reset: () => void;
 }
 
-const initialCastleRights = {
+export const initialCastleRights = {
   canCastleKingSide: true,
   canCastleQueenSide: true,
   kingSideIsAvailable: false,
   queenSideIsAvailable: false,
 };
 
-export function useCastleRights(): UseCastleRightsReturn {
-  const [castleRights, setCastleRights] = useState<CastleRights>(initialCastleRights);
+interface UseCastleRightsProps {
+  id: string;
+}
+
+export function useCastleRights({ id }: UseCastleRightsProps): UseCastleRightsReturn {
+  const dispatch = useAppDispatch();
 
   function reset() {
-    setCastleRights(initialCastleRights);
+    dispatch(setCastleRights({ castleRights: { ...initialCastleRights, id } }));
   }
 
   function updateCastleRights(board: BoardState, color: PieceColor) {
-    setCastleRights(getCastleRights(board, color));
+    const newCastleRights = getCastleRights(board, color);
+    dispatch(setCastleRights({ castleRights: { ...newCastleRights, id } }));
   }
 
-  return { castleRights, updateCastleRights, reset };
+  return { updateCastleRights, reset };
 }
 
-function getCastleRights(board: BoardState, color: PieceColor): CastleRights {
+function getCastleRights(board: BoardState, color: PieceColor): Omit<CastleRights, 'id'> {
   const kingIndex = getKingIndex(board, color);
   const king = board[kingIndex].piece;
 

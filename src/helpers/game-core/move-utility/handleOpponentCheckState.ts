@@ -1,5 +1,5 @@
-import { GameState } from '../../../context/game-state/GameState';
-import { UsePlayerReturn } from '../../../hooks/usePlayer';
+import { CastleRights } from '../../../redux/slices/castleRights';
+import { Player } from '../../../redux/slices/player';
 import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isCheckmate } from '../../analysis/game-checks/isCheckmate';
 import { isKingInCheck } from '../../analysis/game-checks/isKingInCheck';
@@ -8,8 +8,9 @@ import { getRemainingPiecesByColor } from '../piece-management/getRemainingPiece
 
 export function handleOpponentCheckState(
   moveMetaData: MoveMetaData,
-  gameState: GameState,
-  waitingPlayer: UsePlayerReturn
+  waitingPlayer: Player,
+  castleRights: CastleRights,
+  enPassantSquare: number | null
 ) {
   // See if move put opponent in check and/or checkmate
   const oppKingIndex = getKingIndex(moveMetaData.updatedBoard, waitingPlayer.color);
@@ -28,10 +29,11 @@ export function handleOpponentCheckState(
   if (
     isCheckmate(
       moveMetaData.updatedBoard,
-      gameState,
       oppKing,
       oppKingIndex,
-      oppRemainingPlayerPieces
+      oppRemainingPlayerPieces,
+      castleRights,
+      enPassantSquare
     )
   )
     moveMetaData.isCheckmate = true;

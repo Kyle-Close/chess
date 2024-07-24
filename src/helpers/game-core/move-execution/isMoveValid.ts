@@ -1,15 +1,17 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { GameState } from '../../../context/game-state/GameState';
+import { CastleRights } from '../../../redux/slices/castleRights';
 import { calculateAllValidMoves } from './calculateAllValidMoves';
 
 export function isMoveValid(
   board: BoardState,
-  gameState: GameState,
   piece: Piece,
   startPos: number,
-  endPos: number
+  endPos: number,
+  castleRights: CastleRights,
+  enPassantSquare: number | null
 ) {
-  const validMoves = calculateAllValidMoves(board, piece, startPos, gameState);
+  const validMoves = calculateAllValidMoves(board, piece, startPos, castleRights, enPassantSquare);
   if (!validMoves || validMoves.length === 0) return false;
   if (!validMoves.some((move) => move.index === endPos)) return false;
   return true;

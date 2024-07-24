@@ -3,10 +3,11 @@ import { boardSlice } from './slices/board';
 import { gameInfoSlice } from './slices/gameInfo';
 import { playerSlice } from './slices/player';
 import { timerSlice } from './slices/timer';
+import { castleRightsSlice } from './slices/castleRights';
 
 // Automatically adds the thunk middleware and the Redux DevTools extension
 const store = configureStore({
-  reducer: combineSlices(boardSlice, gameInfoSlice, playerSlice, timerSlice),
+  reducer: combineSlices(boardSlice, gameInfoSlice, playerSlice, timerSlice, castleRightsSlice),
 });
 
 export default store;

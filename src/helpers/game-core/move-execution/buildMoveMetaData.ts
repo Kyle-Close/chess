@@ -1,4 +1,3 @@
-import { GameState } from '../../../context/game-state/GameState';
 import { BoardState, Piece } from '../../../context/board/InitialState';
 import { getCapturedPiece } from '../piece-management/getCapturedPiece';
 import { CastleMetaData, getCastleMetaData } from './getCastleMetaData';
@@ -27,12 +26,12 @@ export interface MoveMetaData {
 
 export function buildMoveMetaData(
   board: BoardState,
-  gameState: GameState,
+  enPassantSquare: number | null,
   piece: Piece,
   startPosition: number,
   endPosition: number
 ): MoveMetaData {
-  const isEnPassant = isMoveEnPassant(piece, endPosition, gameState.enPassantSquare);
+  const isEnPassant = isMoveEnPassant(piece, endPosition, enPassantSquare);
   const isCastle = isMoveCastle(piece, startPosition, endPosition);
   const castleMetaData = isCastle ? getCastleMetaData(piece, startPosition, endPosition) : null;
   const isPromotion = isMovePawnPromotion(piece, endPosition);

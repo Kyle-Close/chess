@@ -1,16 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MoveHistory } from '../../context/types/MoveHistory';
 
-enum MatchResult {
+export enum MatchResult {
   ONGOING,
   DRAW,
   WHITE_WIN,
   BLACK_WIN,
 }
 
+export interface GameInfo {
+  matchResult: MatchResult;
+  halfMoves: number;
+  fullMoves: number;
+  moveHistory: MoveHistory[];
+  moveHistoryRedo: MoveHistory[];
+  enPassantSquare: number | null;
+  whitePlayerId: string;
+  blackPlayerId: string;
+}
+
 const initialGameInfo = {
   isPlaying: false,
   matchResult: MatchResult.ONGOING,
+  halfMoves: 0,
+  fullMoves: 0,
   moveHistory: [] as MoveHistory[],
   moveHistoryRedo: [] as MoveHistory[],
   enPassantSquare: null as number | null,
@@ -25,7 +38,7 @@ export const gameInfoSlice = createSlice({
     toggleIsPlaying(state) {
       state.isPlaying = !state.isPlaying;
     },
-    setEnPassantSquare(state, action: PayloadAction<number>) {
+    setEnPassantSquare(state, action: PayloadAction<number | null>) {
       state.enPassantSquare = action.payload;
     },
     clearEnPassantSquare(state) {
@@ -51,6 +64,12 @@ export const gameInfoSlice = createSlice({
     clearMoveHistoryRedo(state) {
       state.moveHistoryRedo = [];
     },
+    setHalfMoves(state, action: PayloadAction<number>) {
+      state.halfMoves = action.payload;
+    },
+    setFullMoves(state, action: PayloadAction<number>) {
+      state.fullMoves = action.payload;
+    },
     setPlayerIds(state, action: PayloadAction<{ whitePlayerId: string; blackPlayerId: string }>) {
       state.whitePlayerId = action.payload.whitePlayerId;
       state.blackPlayerId = action.payload.blackPlayerId;
@@ -68,5 +87,7 @@ export const {
   pushToMoveHistoryRedo,
   popMoveHistoryRedo,
   clearMoveHistoryRedo,
+  setHalfMoves,
+  setFullMoves,
   setPlayerIds,
 } = gameInfoSlice.actions;

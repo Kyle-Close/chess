@@ -4,21 +4,23 @@ import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
 import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
 import { buildFenCastleSegment } from './buildFenCastleSegment';
+import { CastleRights } from '../../../redux/slices/castleRights';
+import { GameInfo } from '../../../redux/slices/gameInfo';
 
 export function buildFenStringFromGame(
-  gameState: GameState,
   moveMetaData: MoveMetaData,
-  isBlackTurnEnding: boolean
+  isBlackTurnEnding: boolean,
+  gameInfo: GameInfo,
+  isWhiteTurn: boolean,
+  whiteCastleRights: CastleRights,
+  blackCastleRights: CastleRights
 ) {
   const piecePlacementString = buildPiecePlacementString(moveMetaData.updatedBoard);
-  const color = gameState.isWhiteTurn === true ? 'b' : 'w';
-  const castleSegment = buildFenCastleSegment(
-    gameState.whitePlayer.castleRights.castleRights,
-    gameState.blackPlayer.castleRights.castleRights
-  );
-  const fullMoves = isBlackTurnEnding ? gameState.move.fullMoves + 2 : gameState.move.fullMoves + 1;
+  const color = isWhiteTurn === true ? 'b' : 'w';
+  const castleSegment = buildFenCastleSegment(whiteCastleRights, blackCastleRights);
+  const fullMoves = isBlackTurnEnding ? gameInfo.fullMoves + 2 : gameInfo.fullMoves + 1;
 
-  return `${piecePlacementString} ${color} ${castleSegment} ${moveMetaData.enPassantNotation} ${gameState.move.halfMoves} ${fullMoves}`;
+  return `${piecePlacementString} ${color} ${castleSegment} ${moveMetaData.enPassantNotation} ${gameInfo.halfMoves} ${fullMoves}`;
 }
 
 function buildPiecePlacementString(board: BoardState) {

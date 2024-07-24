@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { PieceColor } from '../enums/PieceColor';
-import { UseCastleRightsReturn, useCastleRights } from './useCastleRights';
 import { selectPlayerById, setColor, setIsInCheck, setName } from '../redux/slices/player';
 import { useAppDispatch, useAppSelector } from './useBoard';
 import { selectTimerById, setIsOn } from '../redux/slices/timer';
@@ -9,7 +8,6 @@ export interface UsePlayerReturn {
   updateName: (name: string) => void;
   updateIsInCheck: (isCheck: boolean) => void;
   updateColor: (color: PieceColor) => void;
-  castleRights: UseCastleRightsReturn;
 }
 
 interface UsePlayerProps {
@@ -17,7 +15,7 @@ interface UsePlayerProps {
 }
 
 export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
-  const castleRights = useCastleRights();
+  if (!playerId) return {} as UsePlayerReturn;
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
   const timer = useAppSelector((state) => selectTimerById(state, player.timerId));
   const dispatch = useAppDispatch();
@@ -43,6 +41,5 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
     updateName,
     updateIsInCheck,
     updateColor,
-    castleRights,
   };
 }

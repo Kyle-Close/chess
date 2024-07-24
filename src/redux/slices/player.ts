@@ -2,13 +2,14 @@ import { createSlice, PayloadAction, createEntityAdapter } from '@reduxjs/toolki
 import { PieceColor } from '../../enums/PieceColor';
 import { nanoid } from 'nanoid';
 
-interface Player {
+export interface Player {
   id: string;
   name: string;
   color: PieceColor;
   isTurn: boolean;
   isInCheck: boolean;
   timerId: string;
+  castleRightsId: string;
 }
 
 // Create entity adaptor
@@ -50,10 +51,15 @@ export const playerSlice = createSlice({
       const { id } = action.payload;
       state.entities[id].isTurn = action.payload.isTurn;
     },
+    toggleIsTurn(state, action: PayloadAction<{ id: string }>) {
+      const { id } = action.payload;
+      state.entities[id].isTurn = !state.entities[id].isTurn;
+    },
   },
 });
 
-export const { createPlayer, setName, setColor, setIsInCheck, setIsTurn } = playerSlice.actions;
+export const { createPlayer, setName, setColor, setIsInCheck, setIsTurn, toggleIsTurn } =
+  playerSlice.actions;
 
 export default playerSlice.reducer;
 

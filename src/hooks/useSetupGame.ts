@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-import { GameState } from '../context/game-state/GameState';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
@@ -7,11 +5,18 @@ import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-
 import { GameSettings } from './useGameSettings';
 import { useAppDispatch, useAppSelector } from './useBoard';
 import { setupBoard } from '../redux/slices/board';
+import { useCastleRights } from './useCastleRights';
+import { setEnPassantSquare, setFullMoves, setHalfMoves } from '../redux/slices/gameInfo';
+import { selectPlayerById, setIsTurn } from '../redux/slices/player';
 
 export function useSetupGame() {
   const board = useAppSelector((state) => state.board);
+  const gameInfo = useAppSelector((state) => state.gameInfo);
   const dispatch = useAppDispatch();
-  const gameState = useContext(GameState);
+  const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
+  const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
+  const whiteCastleRights = useCastleRights({ id: whitePlayer.castleRightsId });
+  const blackCastleRights = useCastleRights({ id: blackPlayer.castleRightsId });
 
   /*
       Sets up the following: board, white turn to move, game moves, castle rights, clear en passant square
@@ -26,22 +31,29 @@ export function useSetupGame() {
     dispatch(setupBoard(initialBoard));
 
     // Set turn
-    if (fenSegments.turn === 'w' && !gameState.isWhiteTurn) gameState.toggleTurn();
-    else if (fenSegments.turn === 'b' && gameState.isWhiteTurn) gameState.toggleTurn();
+    if (fenSegments.turn === 'w') {
+      dispatch(setIsTurn({ id: whitePlayer.id, isTurn: true }));
+      dispatch(setIsTurn({ id: blackPlayer.id, isTurn: false }));
+    } else {
+      dispatch(setIsTurn({ id: whitePlayer.id, isTurn: false }));
+      dispatch(setIsTurn({ id: blackPlayer.id, isTurn: true }));
+    }
 
     // Set game half moves
-    gameState.move.updateHalfMoves(Number(fenSegments.halfMoves));
+    const halfMoves = Number(fenSegments.halfMoves);
+    dispatch(setHalfMoves(halfMoves));
 
     // Set game full moves
-    gameState.move.updateFullMoves(Number(fenSegments.fullMoves));
+    const fullMoves = Number(fenSegments.fullMoves);
+    dispatch(setFullMoves(fullMoves));
 
     // Set player castle rights
-    gameState.whitePlayer.castleRights.updateCastleRights(board, PieceColor.WHITE);
-    gameState.blackPlayer.castleRights.updateCastleRights(board, PieceColor.BLACK);
+    whiteCastleRights.updateCastleRights(board, PieceColor.WHITE);
+    blackCastleRights.updateCastleRights(board, PieceColor.BLACK);
 
     // Set en passant target square
     const enPassantTargetSquare = getEnPassantTargetSquareFromFen(fenSegments.enPassant);
-    gameState.updateEnPassantSquare(enPassantTargetSquare);
+    dispatch(setEnPassantSquare(enPassantTargetSquare));
   }
 
   function setupAndStartGame(settings: GameSettings) {

@@ -2,6 +2,7 @@ import { BoardState, Piece } from '../../../context/board/InitialState';
 import { GameState } from '../../../context/game-state/GameState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
+import { CastleRights } from '../../../redux/slices/castleRights';
 import { filterCheckMoves } from '../piece-validation/filterCheckMoves';
 import { ValidMoves } from '../piece-validation/kingMoveValidation';
 import { isEnpassantCapturePossible } from '../piece-validation/pawnMoveValidation';
@@ -11,15 +12,14 @@ export function calculateAllValidMoves(
   board: BoardState,
   piece: Piece,
   startPos: number,
-  gameState: GameState
+  castleRights: CastleRights,
+  enPassant: number | null
 ) {
   let validMoves = getStandardPieceMoves(board, piece, startPos);
   if (!validMoves || validMoves.length == 0) return;
 
-  const currentPlayer = gameState.isWhiteTurn ? gameState.whitePlayer : gameState.blackPlayer;
-  const canCastleKingSide = currentPlayer.castleRights.castleRights.canCastleKingSide;
-  const canCastleQueenSide = currentPlayer.castleRights.castleRights.canCastleQueenSide;
-  const enPassant = gameState.enPassantSquare;
+  const canCastleKingSide = castleRights.canCastleKingSide;
+  const canCastleQueenSide = castleRights.canCastleQueenSide;
 
   if (piece.type === PieceType.KING && canCastleKingSide)
     pushKingSideCastleIndex(piece.color, validMoves);

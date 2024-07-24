@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { clearIsValidSquares, setupBoard } from '../redux/slices/board';
 import { selectPlayerById } from '../redux/slices/player';
+import { selectCastleRightsById } from '../redux/slices/castleRights';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -26,6 +27,9 @@ export function useBoard() {
 
   const isWhiteTurn = whitePlayer.isTurn;
   const currentPlayer = isWhiteTurn ? whitePlayer : blackPlayer;
+  const currentPlayerCastleRights = useAppSelector((state) =>
+    selectCastleRightsById(state, currentPlayer.castleRightsId)
+  );
 
   function resetBoard() {
     dispatch(setupBoard(getInitialBoardState()));
@@ -35,7 +39,13 @@ export function useBoard() {
     const currentPiece = board[startPos].piece;
     if (currentPiece) {
       const boardCopy = [...board];
-      const validMoves = calculateAllValidMoves(boardCopy, currentPiece, startPos, gameInfo);
+      const validMoves = calculateAllValidMoves(
+        boardCopy,
+        currentPiece,
+        startPos,
+        currentPlayerCastleRights,
+        gameInfo.enPassantSquare
+      );
       if (validMoves) highlightValidMoves(validMoves);
     }
   }
@@ -52,8 +62,7 @@ export function useBoard() {
   }
 
   const handleSquareClicked = (index: number) => {
-    const isGameStarted = gameState.whitePlayer.isTurn || gameState.blackPlayer.isTurn;
-    if (!isGameStarted) return;
+    if (!gameInfo.isPlaying) return;
 
     const isValidClick = isClickingValidSquare(index, startEnd.startPos !== null);
     if (isValidClick) startEnd.setPosition(index);

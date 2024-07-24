@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useAppSelector } from './useBoard';
 import { useDispatch } from 'react-redux';
-import { setRemainingSeconds, toggleTimerIsOn } from '../redux/slices/timer';
+import { setIsOn, setRemainingSeconds } from '../redux/slices/timer';
 
 export interface UseTimerReturn {
   start: () => void;
@@ -20,11 +20,11 @@ export function useTimer({ id }: UseTimerProps): UseTimerReturn {
   const thisTimer = timer.entities[id];
 
   const start = () => {
-    if (!thisTimer.isOn) dispatch(toggleTimerIsOn({ id }));
+    dispatch(setIsOn({ id, isOn: true }));
   };
 
   const stop = () => {
-    if (thisTimer.isOn) dispatch(toggleTimerIsOn({ id }));
+    dispatch(setIsOn({ id, isOn: false }));
   };
 
   const reset = (remainingSeconds: number) => {

@@ -1,13 +1,12 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { GameState } from '../../../context/game-state/GameState';
 import { executeMove } from '../../game-core/move-execution/executeMove';
 import { calculateAllValidMoves } from '../../game-core/move-execution/calculateAllValidMoves';
 import { filterCheckMoves } from '../../game-core/piece-validation/filterCheckMoves';
 import { kingMoveValidation } from '../../game-core/piece-validation/kingMoveValidation';
-import { getStandardPieceMoves } from '../../game-core/move-execution/getStandardPieceMoves';
 import { deepCopyBoard } from '../../utilities/deepCopyBoard';
 import { getKingIndex } from './getKingIndex';
 import { isKingInCheck } from './isKingInCheck';
+import { CastleRights } from '../../../redux/slices/castleRights';
 
 export interface PieceWithIndex extends Piece {
   index: number;
@@ -15,10 +14,11 @@ export interface PieceWithIndex extends Piece {
 
 export function isCheckmate(
   board: BoardState,
-  gameState: GameState,
   kingPiece: Piece,
   currentIndex: number,
-  remainingPlayerPieces: PieceWithIndex[]
+  remainingPlayerPieces: PieceWithIndex[],
+  castleRights: CastleRights,
+  enPassantSquare: number | null
 ) {
   // This should only be called if the player is already in check
   let isCheckmate = false;
@@ -30,7 +30,13 @@ export function isCheckmate(
 
   const canBlock = remainingPlayerPieces.some((piece) => {
     let isInCheck = true;
-    const pieceMoves = calculateAllValidMoves(board, piece, piece.index, gameState);
+    const pieceMoves = calculateAllValidMoves(
+      board,
+      piece,
+      piece.index,
+      castleRights,
+      enPassantSquare
+    );
     if (!pieceMoves) return;
 
     pieceMoves.forEach((move) => {

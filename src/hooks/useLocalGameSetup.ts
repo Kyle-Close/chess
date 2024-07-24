@@ -11,6 +11,7 @@ import { PieceColor } from '../enums/PieceColor';
 import { setPlayerIds } from '../redux/slices/gameInfo';
 import { setupBoard } from '../redux/slices/board';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
+import { createCastleRights } from '../redux/slices/castleRights';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -24,7 +25,6 @@ export type LocalGameSetupFormInputs = {
 export function useLocalGameSetup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const gameSetup = useSetupGame();
   const { register, handleSubmit } = useForm<LocalGameSetupFormInputs>();
   const onSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) => setupGame(data);
 
@@ -32,6 +32,8 @@ export function useLocalGameSetup() {
     const settings = buildSettingsObject(data);
     const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
     const blackTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
+    const whiteCastleRights = dispatch(createCastleRights());
+    const blackCastleRights = dispatch(createCastleRights());
 
     dispatch(setupBoard(buildBoardFromFen(DEFAULT_FEN_STRING)));
 
@@ -40,7 +42,9 @@ export function useLocalGameSetup() {
         name: settings.whitePlayerName,
         color: PieceColor.WHITE,
         isInCheck: false,
+        isTurn: false,
         timerId: whiteTimer.payload.id,
+        castleRightsId: whiteCastleRights.payload.id,
       })
     );
 
@@ -49,7 +53,9 @@ export function useLocalGameSetup() {
         name: settings.blackPlayerName,
         color: PieceColor.BLACK,
         isInCheck: false,
+        isTurn: false,
         timerId: blackTimer.payload.id,
+        castleRightsId: blackCastleRights.payload.id,
       })
     );
 
