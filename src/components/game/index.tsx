@@ -1,21 +1,20 @@
-import { useContext } from 'react';
+import { useAppSelector } from '../../hooks/useBoard';
 import { Board } from '../board';
 import { PlayerData } from '../player-data';
-import { GameState } from '../../context/game-state/GameState';
 
 export function Game() {
-  const gameState = useContext(GameState);
-
+  const gameInfo = useAppSelector((state) => state.gameInfo);
+  if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
   return (
-    <div className={getGameClasses(gameState.showWhiteOnBottom)}>
-      <PlayerData isWhite={true} />
+    <div className={getGameClasses()}>
+      <PlayerData playerId={gameInfo.whitePlayerId} />
       <Board />
-      <PlayerData isWhite={false} />
+      <PlayerData playerId={gameInfo.blackPlayerId} />
     </div>
   );
 }
 
-function getGameClasses(isShowWhiteOnBottom: boolean) {
+function getGameClasses(isShowWhiteOnBottom = true) {
   const core = ['flex', 'flex-col', 'min-h-full', 'justify-center', 'gap-2'];
   const flipped = isShowWhiteOnBottom ? ['rotate-180'] : [];
 

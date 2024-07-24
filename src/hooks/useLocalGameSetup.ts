@@ -1,17 +1,17 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, set } from 'react-hook-form';
 import { GameSettings, GameType, TimeControl } from './useGameSettings';
-import { useSetupGame } from './useSetupGame';
 import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { createTimer } from '../redux/slices/timer';
+import { createTimer, setIsOn, setRemainingSeconds } from '../redux/slices/timer';
 import { getStartingTimeInSeconds } from '../helpers/notation-setup/game-setup/getStartingTimeInSeconds';
-import { createPlayer } from '../redux/slices/player';
+import { createPlayer, setIsTurn } from '../redux/slices/player';
 import { PieceColor } from '../enums/PieceColor';
-import { setPlayerIds } from '../redux/slices/gameInfo';
+import { setPlayerIds, toggleIsPlaying } from '../redux/slices/gameInfo';
 import { setupBoard } from '../redux/slices/board';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { createCastleRights } from '../redux/slices/castleRights';
+import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -35,7 +35,8 @@ export function useLocalGameSetup() {
     const whiteCastleRights = dispatch(createCastleRights());
     const blackCastleRights = dispatch(createCastleRights());
 
-    dispatch(setupBoard(buildBoardFromFen(DEFAULT_FEN_STRING)));
+    const fen = parseFenString(DEFAULT_FEN_STRING);
+    dispatch(setupBoard(buildBoardFromFen(fen.initialPositions)));
 
     const whitePlayer = dispatch(
       createPlayer({
@@ -62,6 +63,16 @@ export function useLocalGameSetup() {
     dispatch(
       setPlayerIds({ whitePlayerId: whitePlayer.payload.id, blackPlayerId: blackPlayer.payload.id })
     );
+
+    // Set timers up
+    const remainingSeconds = getStartingTimeInSeconds(settings.timeControl);
+    dispatch(setRemainingSeconds({ id: whiteTimer.payload.id, remainingSeconds }));
+    dispatch(setRemainingSeconds({ id: blackTimer.payload.id, remainingSeconds }));
+    dispatch(setIsOn({ id: whiteTimer.payload.id, isOn: true }));
+
+    // Start game
+    dispatch(toggleIsPlaying());
+    dispatch(setIsTurn({ id: whitePlayer.payload.id, isTurn: true }));
 
     navigate('/game');
   };

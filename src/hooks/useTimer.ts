@@ -1,23 +1,31 @@
 import { useEffect } from 'react';
 import { useAppSelector } from './useBoard';
 import { useDispatch } from 'react-redux';
-import { setIsOn, setRemainingSeconds } from '../redux/slices/timer';
+import {
+  decrementRemainingSeconds,
+  selectTimerById,
+  setIsOn,
+  setRemainingSeconds,
+} from '../redux/slices/timer';
+import { PieceColor } from '../enums/PieceColor';
+import { MatchResult, setMatchResult } from '../redux/slices/gameInfo';
 
 export interface UseTimerReturn {
   start: () => void;
   stop: () => void;
   reset: (initialSeconds: number) => void;
   updateRemainingSeconds: (remainingSeconds: number) => void;
+  remainingSeconds: number;
 }
 
 interface UseTimerProps {
   id: string;
+  color: PieceColor;
 }
 
-export function useTimer({ id }: UseTimerProps): UseTimerReturn {
-  const timer = useAppSelector((state) => state.timer);
+export function useTimer({ id, color }: UseTimerProps): UseTimerReturn {
+  const timer = useAppSelector((state) => selectTimerById(state, id));
   const dispatch = useDispatch();
-  const thisTimer = timer.entities[id];
 
   const start = () => {
     dispatch(setIsOn({ id, isOn: true }));
@@ -36,20 +44,33 @@ export function useTimer({ id }: UseTimerProps): UseTimerReturn {
     dispatch(setRemainingSeconds({ id, remainingSeconds }));
   };
 
+  function handleTimerComplete() {
+    const winner = color === PieceColor.WHITE ? MatchResult.BLACK_WIN : MatchResult.WHITE_WIN;
+    dispatch(setMatchResult(winner));
+  }
+
   useEffect(() => {
-    if (!thisTimer.isOn) return;
+    if (!timer.isOn) return;
 
     const interval = window.setInterval(() => {
-      dispatch(setRemainingSeconds({ id, remainingSeconds: thisTimer.remainingSeconds - 1 }));
+      dispatch(decrementRemainingSeconds({ id }));
     }, 1000);
 
     return () => window.clearInterval(interval);
-  }, [thisTimer.isOn]);
+  }, [timer.isOn]);
+
+  useEffect(() => {
+    if (timer.remainingSeconds === 0) {
+      handleTimerComplete();
+      dispatch(setIsOn({ id: timer.id, isOn: false }));
+    }
+  }, [timer.remainingSeconds]);
 
   return {
     start,
     stop,
     reset,
     updateRemainingSeconds,
+    remainingSeconds: timer.remainingSeconds,
   };
 }

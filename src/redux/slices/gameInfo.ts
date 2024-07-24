@@ -27,8 +27,8 @@ const initialGameInfo = {
   moveHistory: [] as MoveHistory[],
   moveHistoryRedo: [] as MoveHistory[],
   enPassantSquare: null as number | null,
-  whitePlayerId: 'player1',
-  blackPlayerId: 'player2',
+  whitePlayerId: '',
+  blackPlayerId: '',
 };
 
 export const gameInfoSlice = createSlice({

@@ -28,10 +28,15 @@ export const timerSlice = createSlice({
     setRemainingSeconds(state, action: PayloadAction<{ id: string; remainingSeconds: number }>) {
       state.entities[action.payload.id].remainingSeconds = action.payload.remainingSeconds;
     },
+    decrementRemainingSeconds(state, action: PayloadAction<{ id: string }>) {
+      const { id } = action.payload;
+      state.entities[id].remainingSeconds = state.entities[id].remainingSeconds - 1;
+    },
   },
 });
 
-export const { createTimer, setIsOn, setRemainingSeconds } = timerSlice.actions;
+export const { createTimer, setIsOn, setRemainingSeconds, decrementRemainingSeconds } =
+  timerSlice.actions;
 
 export default timerSlice.reducer;
 

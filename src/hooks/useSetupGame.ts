@@ -2,7 +2,6 @@ import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoa
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { PieceColor } from '../enums/PieceColor';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
-import { GameSettings } from './useGameSettings';
 import { useAppDispatch, useAppSelector } from './useBoard';
 import { setupBoard } from '../redux/slices/board';
 import { useCastleRights } from './useCastleRights';
@@ -56,9 +55,5 @@ export function useSetupGame() {
     dispatch(setEnPassantSquare(enPassantTargetSquare));
   }
 
-  function setupAndStartGame(settings: GameSettings) {
-    setupAndStartGame(settings);
-  }
-
-  return { setupFromFEN, setupAndStartGame };
+  return { setupFromFEN };
 }

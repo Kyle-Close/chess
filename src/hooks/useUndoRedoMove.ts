@@ -1,31 +1,39 @@
-import { useContext } from 'react';
-import { GameState } from '../context/game-state/GameState';
 import { useSetupGame } from './useSetupGame';
+import { useAppSelector } from './useBoard';
+import { useDispatch } from 'react-redux';
+import {
+  popMoveHistory,
+  popMoveHistoryRedo,
+  pushToMoveHistory,
+  pushToMoveHistoryRedo,
+} from '../redux/slices/gameInfo';
 
 export function useUndoRedoMove() {
-  const gameState = useContext(GameState);
+  const dispatch = useDispatch();
+  const gameInfo = useAppSelector((state) => state.gameInfo);
   const { setupFromFEN } = useSetupGame();
 
   const undo = () => {
-    const moveHistory = gameState.moveHistory;
+    const moveHistory = gameInfo.moveHistory;
     if (moveHistory.length > 1) {
       const lastMove = moveHistory[moveHistory.length - 2];
       if (!lastMove) return;
 
-      const popped = gameState.popMoveHistory();
-      gameState.pushToMoveHistoryRedo(popped);
+      const popped = gameInfo.moveHistory[-1];
+      dispatch(popMoveHistory());
+      dispatch(pushToMoveHistoryRedo(popped));
       setupFromFEN(lastMove.fenString);
     }
   };
 
   const redo = () => {
-    const redoMoveHistory = gameState.moveHistoryRedo;
+    const redoMoveHistory = gameInfo.moveHistoryRedo;
     if (redoMoveHistory.length > 0) {
       const lastRedo = redoMoveHistory[redoMoveHistory.length - 1];
       if (!lastRedo) return;
 
-      gameState.popMoveHistoryRedo();
-      gameState.pushToMoveHistory(lastRedo);
+      dispatch(popMoveHistoryRedo());
+      dispatch(pushToMoveHistory(lastRedo));
       setupFromFEN(lastRedo.fenString);
     }
   };

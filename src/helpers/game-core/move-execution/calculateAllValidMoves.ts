@@ -1,5 +1,4 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { GameState } from '../../../context/game-state/GameState';
 import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
 import { CastleRights } from '../../../redux/slices/castleRights';
