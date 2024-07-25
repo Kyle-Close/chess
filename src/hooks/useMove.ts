@@ -151,8 +151,10 @@ export function useMove(): UseMoveReturn {
       else dispatch(setMatchResult(MatchResult.BLACK_WIN));
     }
 
+    const isFiftyMoveRule = settings.isFiftyMoveRule ? gameInfo.halfMoves > 49 : false;
+
     const isDraw =
-      gameInfo.halfMoves >= 49 ||
+      isFiftyMoveRule ||
       isInsufficientMaterial(moveMetaData.updatedBoard) ||
       isStalemate(
         moveMetaData.updatedBoard,
