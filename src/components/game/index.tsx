@@ -14,7 +14,7 @@ export function Game() {
   );
 }
 
-function getGameClasses(isShowWhiteOnBottom = true) {
+function getGameClasses(isShowWhiteOnBottom = false) {
   const core = ['flex', 'flex-col', 'min-h-full', 'justify-center', 'gap-2'];
   const flipped = isShowWhiteOnBottom ? ['rotate-180'] : [];
 

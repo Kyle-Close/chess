@@ -1,4 +1,4 @@
-import { TimeControl } from '../../../hooks/useGameSettings';
+import { TimeControl } from '../../../redux/slices/gameSettings';
 
 export function getStartingTimeInSeconds(timeControl: TimeControl) {
   switch (timeControl) {

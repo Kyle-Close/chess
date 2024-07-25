@@ -21,7 +21,7 @@ export function PlayerData({ playerId }: PlayerDataProps) {
   );
 }
 
-function getPlayerDataClasses(isShowWhiteBottom = true) {
+function getPlayerDataClasses(isShowWhiteBottom = false) {
   const core = ['flex', 'w-full', 'justify-between', 'p-2', 'items-center'];
   const flipped = isShowWhiteBottom ? ['rotate-180'] : [];
 

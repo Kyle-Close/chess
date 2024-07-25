@@ -1,5 +1,4 @@
-import { useForm, SubmitHandler, set } from 'react-hook-form';
-import { GameSettings, GameType, TimeControl } from './useGameSettings';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -12,6 +11,15 @@ import { setupBoard } from '../redux/slices/board';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { createCastleRights } from '../redux/slices/castleRights';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
+import {
+  GameSettings,
+  GameType,
+  TimeControl,
+  setGameType,
+  setIsFiftyMoveRule,
+  setIsIncrement,
+  setIsUndoRedo,
+} from '../redux/slices/gameSettings';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -40,7 +48,7 @@ export function useLocalGameSetup() {
 
     const whitePlayer = dispatch(
       createPlayer({
-        name: settings.whitePlayerName,
+        name: data.whiteName,
         color: PieceColor.WHITE,
         isInCheck: false,
         isTurn: false,
@@ -51,7 +59,7 @@ export function useLocalGameSetup() {
 
     const blackPlayer = dispatch(
       createPlayer({
-        name: settings.blackPlayerName,
+        name: data.blackName,
         color: PieceColor.BLACK,
         isInCheck: false,
         isTurn: false,
@@ -74,13 +82,17 @@ export function useLocalGameSetup() {
     dispatch(toggleIsPlaying());
     dispatch(setIsTurn({ id: whitePlayer.payload.id, isTurn: true }));
 
+    // Handle game settings
+    dispatch(setGameType(settings.gameType));
+    dispatch(setIsFiftyMoveRule(settings.isFiftyMoveRule));
+    dispatch(setIsIncrement(settings.isIncrement));
+    dispatch(setIsUndoRedo(settings.isUndoRedo));
+
     navigate('/game');
   };
 
   const buildSettingsObject = (data: LocalGameSetupFormInputs): GameSettings => {
     return {
-      whitePlayerName: data.whiteName,
-      blackPlayerName: data.blackName,
       gameType: GameType.LOCAL,
       timeControl: data.selectedTimeControl,
       isIncrement: data.isIncrement,
