@@ -15,7 +15,6 @@ interface UsePlayerProps {
 }
 
 export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
-  if (!playerId) return {} as UsePlayerReturn;
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
   const dispatch = useAppDispatch();
 
@@ -32,7 +31,6 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
   };
 
   useEffect(() => {
-    console.log('changed turns: ' + player);
     if (player.isTurn) dispatch(setIsOn({ id: player.timerId, isOn: true }));
     else dispatch(setIsOn({ id: player.timerId, isOn: false }));
   }, [player.isTurn]);

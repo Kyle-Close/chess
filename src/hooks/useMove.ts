@@ -36,23 +36,28 @@ import {
   setHalfMoves,
   setMatchResult,
 } from '../redux/slices/gameInfo';
-import { selectPlayerById, toggleIsTurn } from '../redux/slices/player';
+import { toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { useCastleRights } from './useCastleRights';
+import { setIsOn } from '../redux/slices/timer';
+import { usePlayer } from './usePlayer';
+import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 
 export interface UseMoveReturn {
   tryMove: (piece: Piece, startPos: number, endPos: number) => boolean;
 }
 
 export function useMove(): UseMoveReturn {
+  const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board);
   const gameInfo = useAppSelector((state) => state.gameInfo);
-  const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
-  const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
-  if (!whitePlayer || !blackPlayer) return {} as UseMoveReturn;
-  const dispatch = useAppDispatch();
+
+  const whitePlayer = usePlayer({ playerId: gameInfo.whitePlayerId });
+  const blackPlayer = usePlayer({ playerId: gameInfo.blackPlayerId });
+
   const activePlayer = whitePlayer.isTurn ? whitePlayer : blackPlayer;
   const waitingPlayer = whitePlayer.isTurn ? blackPlayer : whitePlayer;
+
   const whiteCastleRights = useAppSelector((state) =>
     selectCastleRightsById(state, whitePlayer.castleRightsId)
   );
@@ -64,8 +69,9 @@ export function useMove(): UseMoveReturn {
   });
 
   function tryMove(piece: Piece, startPos: number, endPos: number): boolean {
+    const newBoard = deepCopyBoard(board);
     const moveMetaData = buildMoveMetaData(
-      board,
+      newBoard,
       gameInfo.enPassantSquare,
       piece,
       startPos,
@@ -80,6 +86,8 @@ export function useMove(): UseMoveReturn {
 
     handleSpecialMoves(moveMetaData);
     updateGameState(moveMetaData);
+
+    dispatch(setupBoard(moveMetaData.updatedBoard));
 
     return true;
   }
@@ -99,16 +107,15 @@ export function useMove(): UseMoveReturn {
     dispatch(toggleIsTurn({ id: gameInfo.whitePlayerId }));
     dispatch(toggleIsTurn({ id: gameInfo.blackPlayerId }));
 
+    // Update player timers
+    dispatch(setIsOn({ id: activePlayer.timerId, isOn: false }));
+    dispatch(setIsOn({ id: waitingPlayer.timerId, isOn: true }));
+
     // Update move counters
     updateMoveCounts(moveMetaData);
 
     // Update the moveMetaData board with the move being executed
-    const boardAfterMove = executeMove(
-      moveMetaData.updatedBoard,
-      moveMetaData.startPosition,
-      moveMetaData.endPosition,
-      true
-    );
+    executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
 
     // Handle pawn promotion (if applicable)
     handlePawnPromotion(moveMetaData);
@@ -129,9 +136,6 @@ export function useMove(): UseMoveReturn {
 
     // Check if game is over. Update gameState if true
     handleGameIsOver(moveMetaData);
-
-    // Finally, update global board state with updated board after move
-    dispatch(setupBoard(boardAfterMove));
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {
