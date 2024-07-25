@@ -32,11 +32,20 @@ export const timerSlice = createSlice({
       const { id } = action.payload;
       state.entities[id].remainingSeconds = state.entities[id].remainingSeconds - 1;
     },
+    addRemainingSeconds(state, action: PayloadAction<{ id: string; secondsToAdd: number }>) {
+      const { id, secondsToAdd } = action.payload;
+      state.entities[id].remainingSeconds = state.entities[id].remainingSeconds + secondsToAdd;
+    },
   },
 });
 
-export const { createTimer, setIsOn, setRemainingSeconds, decrementRemainingSeconds } =
-  timerSlice.actions;
+export const {
+  createTimer,
+  setIsOn,
+  setRemainingSeconds,
+  decrementRemainingSeconds,
+  addRemainingSeconds,
+} = timerSlice.actions;
 
 export default timerSlice.reducer;
 

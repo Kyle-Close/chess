@@ -26,8 +26,12 @@ export function Square({
   const file = getSquareFile(index);
   return (
     <div onClick={handleClick} className={classes.join(' ')}>
-      {rank === 1 && <div className='absolute text-orange-600 bottom-1 right-1'>{file}</div>}
-      {file === 'a' && <div className='absolute text-orange-600 top-1 left-1'>{rank}</div>}
+      {rank === 1 && (
+        <div className='absolute text-orange-600 bottom-0 right-0.5 text-xs'>{file}</div>
+      )}
+      {file === 'a' && (
+        <div className='absolute text-orange-600 top-0 left-0.5 text-xs'>{rank}</div>
+      )}
       {false && (
         <div className='absolute text-red-500 text-xs top-0 left-0 opacity-50'>{index}</div>
       )}

@@ -39,9 +39,10 @@ import {
 import { toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { useCastleRights } from './useCastleRights';
-import { setIsOn } from '../redux/slices/timer';
+import { addRemainingSeconds, setIsOn } from '../redux/slices/timer';
 import { usePlayer } from './usePlayer';
 import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
+import { getSecondsToIncrement } from '../helpers/game-core/move-utility/getSecondsToIncrement';
 
 export interface UseMoveReturn {
   tryMove: (piece: Piece, startPos: number, endPos: number) => boolean;
@@ -51,6 +52,7 @@ export function useMove(): UseMoveReturn {
   const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board);
   const gameInfo = useAppSelector((state) => state.gameInfo);
+  const settings = useAppSelector((state) => state.gameSettings);
 
   const whitePlayer = usePlayer({ playerId: gameInfo.whitePlayerId });
   const blackPlayer = usePlayer({ playerId: gameInfo.blackPlayerId });
@@ -189,6 +191,15 @@ export function useMove(): UseMoveReturn {
 
     // Update game full moves
     if (activePlayer.color === PieceColor.BLACK) dispatch(setFullMoves(gameInfo.fullMoves + 1));
+
+    // Handle specific game settings
+    if (settings.isIncrement)
+      dispatch(
+        addRemainingSeconds({
+          id: activePlayer.timerId,
+          secondsToAdd: getSecondsToIncrement(settings.timeControl),
+        })
+      );
   }
 
   function handlePawnMoves(moveMetaData: MoveMetaData) {

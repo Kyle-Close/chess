@@ -19,6 +19,7 @@ import {
   setIsFiftyMoveRule,
   setIsIncrement,
   setIsUndoRedo,
+  setTimeControl,
 } from '../redux/slices/gameSettings';
 
 export type LocalGameSetupFormInputs = {
@@ -84,6 +85,7 @@ export function useLocalGameSetup() {
 
     // Handle game settings
     dispatch(setGameType(settings.gameType));
+    dispatch(setTimeControl(settings.timeControl));
     dispatch(setIsFiftyMoveRule(settings.isFiftyMoveRule));
     dispatch(setIsIncrement(settings.isIncrement));
     dispatch(setIsUndoRedo(settings.isUndoRedo));
