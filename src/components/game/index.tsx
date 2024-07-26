@@ -7,9 +7,9 @@ export function Game() {
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
   return (
     <div className={getGameClasses()}>
-      <PlayerData playerId={gameInfo.whitePlayerId} />
-      <Board />
       <PlayerData playerId={gameInfo.blackPlayerId} />
+      <Board />
+      <PlayerData playerId={gameInfo.whitePlayerId} />
     </div>
   );
 }
