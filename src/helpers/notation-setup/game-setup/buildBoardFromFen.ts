@@ -9,12 +9,11 @@ export function buildBoardFromFen(fenPositionString: string) {
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
   const ranks = fenPositionString.split('/');
-  if (ranks.length !== 8)
-    throw Error('FEN position string must include exactly 8 ranks.');
+  if (ranks.length !== 8) throw Error('FEN position string must include exactly 8 ranks.');
 
   const initialBoard: BoardState = [];
 
-  for (let i = ranks.length - 1; i >= 0; i--) {
+  for (let i = 0; i < ranks.length; i++) {
     for (let j = 0; j < ranks[i].length; j++) {
       const char = ranks[i][j];
       if (isNumber(char)) {
@@ -75,6 +74,5 @@ function buildPiece(type: PieceType, color: PieceColor, hasMoved: boolean): Piec
 }
 
 function pushEmptySquares(count: number, board: BoardState) {
-  for (let i = 0; i < count; i++)
-    board.push({ piece: null, isCapture: false, isValidMove: false });
+  for (let i = 0; i < count; i++) board.push({ piece: null, isCapture: false, isValidMove: false });
 }

@@ -19,14 +19,14 @@ export function pawnMoveValidation(board: BoardState, piece: Piece, currentIndex
 
   if (!piece.hasMoved && !isBlockedOneSquareAhead && !isBlockedTwoSquaresAhead) {
     if (piece.color === PieceColor.WHITE)
-      validSquares.push({ index: currentIndex + 16, isCapture: false });
-    else validSquares.push({ index: currentIndex - 16, isCapture: false });
+      validSquares.push({ index: currentIndex - 16, isCapture: false });
+    else validSquares.push({ index: currentIndex + 16, isCapture: false });
   }
 
   if (!isBlockedOneSquareAhead) {
     if (piece.color === PieceColor.WHITE)
-      validSquares.push({ index: currentIndex + 8, isCapture: false });
-    else validSquares.push({ index: currentIndex - 8, isCapture: false });
+      validSquares.push({ index: currentIndex - 8, isCapture: false });
+    else validSquares.push({ index: currentIndex + 8, isCapture: false });
   }
 
   if (captureLeft) validSquares.push({ index: captureLeft.index, isCapture: true });
@@ -45,10 +45,10 @@ function isPawnBlocked(
   if (!pieceRank) return;
 
   if (piece.color === PieceColor.WHITE && pieceRank + squaresAhead <= 8) {
-    if (board[currentIndex + 8 * squaresAhead].piece !== null) return true;
+    if (board[currentIndex - 8 * squaresAhead].piece !== null) return true;
     else return false;
   } else if (piece.color === PieceColor.BLACK && pieceRank - squaresAhead > 0) {
-    if (board[currentIndex - 8 * squaresAhead].piece !== null) return true;
+    if (board[currentIndex + 8 * squaresAhead].piece !== null) return true;
     else return false;
   }
 }
@@ -69,33 +69,33 @@ function captureAvailable(
     if (
       isLeft &&
       pieceFile !== 'a' &&
-      board[currentIndex + 7].piece !== null &&
-      board[currentIndex + 7].piece?.color !== PieceColor.WHITE
+      board[currentIndex - 7].piece !== null &&
+      board[currentIndex - 7].piece?.color !== PieceColor.WHITE
     ) {
-      return { index: currentIndex + 7, piece: board[currentIndex + 7].piece };
+      return { index: currentIndex - 7, piece: board[currentIndex - 7].piece };
     } else if (
       !isLeft &&
       pieceFile !== 'h' &&
-      board[currentIndex + 9].piece !== null &&
-      board[currentIndex + 9].piece?.color !== PieceColor.WHITE
+      board[currentIndex - 9].piece !== null &&
+      board[currentIndex - 9].piece?.color !== PieceColor.WHITE
     ) {
-      return { index: currentIndex + 9, piece: board[currentIndex + 9].piece };
+      return { index: currentIndex - 9, piece: board[currentIndex - 9].piece };
     }
   } else {
     if (
       isLeft &&
       pieceFile !== 'a' &&
-      board[currentIndex - 9].piece !== null &&
-      board[currentIndex - 9].piece?.color !== PieceColor.BLACK
+      board[currentIndex + 9].piece !== null &&
+      board[currentIndex + 9].piece?.color !== PieceColor.BLACK
     ) {
-      return { index: currentIndex - 9, piece: board[currentIndex - 9].piece };
+      return { index: currentIndex + 9, piece: board[currentIndex + 9].piece };
     } else if (
       !isLeft &&
       pieceFile !== 'h' &&
-      board[currentIndex - 7].piece &&
-      board[currentIndex - 7].piece?.color !== PieceColor.BLACK
+      board[currentIndex + 7].piece &&
+      board[currentIndex + 7].piece?.color !== PieceColor.BLACK
     ) {
-      return { index: currentIndex - 7, piece: board[currentIndex - 7].piece };
+      return { index: currentIndex + 7, piece: board[currentIndex + 7].piece };
     }
   }
 }
