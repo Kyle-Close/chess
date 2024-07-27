@@ -10,12 +10,12 @@ export function buildFenStringFromGame(
   moveMetaData: MoveMetaData,
   isBlackTurnEnding: boolean,
   gameInfo: GameInfo,
-  isWhiteTurn: boolean,
+  isWhiteCurrentMove: boolean,
   whiteCastleRights: CastleRights,
   blackCastleRights: CastleRights
 ) {
   const piecePlacementString = buildPiecePlacementString(moveMetaData.updatedBoard);
-  const color = isWhiteTurn === true ? 'b' : 'w';
+  const color = isWhiteCurrentMove === true ? 'w' : 'b';
   const castleSegment = buildFenCastleSegment(whiteCastleRights, blackCastleRights);
   const fullMoves = isBlackTurnEnding ? gameInfo.fullMoves + 2 : gameInfo.fullMoves + 1;
 
@@ -26,7 +26,7 @@ function buildPiecePlacementString(board: BoardState) {
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
   let fenString = '';
 
-  for (let i = 7; i >= 0; i--) {
+  for (let i = 0; i < 8; i++) {
     let consecutiveEmptySquares = 0;
 
     for (let j = 0; j < 8; j++) {
@@ -44,7 +44,7 @@ function buildPiecePlacementString(board: BoardState) {
       }
     }
     if (consecutiveEmptySquares !== 0) fenString += consecutiveEmptySquares;
-    if (i !== 0) fenString += '/';
+    if (i !== 7) fenString += '/';
   }
 
   return fenString;

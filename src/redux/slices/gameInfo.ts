@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MoveHistory } from '../../context/types/MoveHistory';
+import { DEFAULT_FEN_STRING } from '../../constants/defaultFen';
 
 export enum MatchResult {
   ONGOING,
@@ -24,7 +25,7 @@ const initialGameInfo = {
   matchResult: MatchResult.ONGOING,
   halfMoves: 0,
   fullMoves: 0,
-  moveHistory: [] as MoveHistory[],
+  moveHistory: [{ fenString: DEFAULT_FEN_STRING, chessNotation: '' }] as MoveHistory[],
   moveHistoryRedo: [] as MoveHistory[],
   enPassantSquare: null as number | null,
   whitePlayerId: '',
@@ -51,15 +52,13 @@ export const gameInfoSlice = createSlice({
       state.moveHistory.push(action.payload);
     },
     popMoveHistory(state) {
-      const poppedMove = state.moveHistory.pop();
-      return { ...state, poppedMove };
+      state.moveHistory.pop();
     },
     pushToMoveHistoryRedo(state, action: PayloadAction<MoveHistory>) {
       state.moveHistoryRedo.push(action.payload);
     },
     popMoveHistoryRedo(state) {
-      const poppedMove = state.moveHistoryRedo.pop();
-      return { ...state, poppedMove };
+      state.moveHistoryRedo.pop();
     },
     clearMoveHistoryRedo(state) {
       state.moveHistoryRedo = [];

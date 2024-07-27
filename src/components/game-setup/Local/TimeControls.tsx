@@ -17,9 +17,10 @@ export function TimeControls({ register }: TimeControlsProps) {
   return (
     <Box className='flex flex-col my-2 gap-4'>
       <Text className='underline' fontWeight={500}>
-        Time Controls
+        Time Control
       </Text>
       <Select
+        iconColor='black'
         className='text-black font-semibold'
         bg=''
         size='sm'
@@ -28,11 +29,11 @@ export function TimeControls({ register }: TimeControlsProps) {
         <option className='font-semibold' value={freePlayString}>
           {freePlayString}
         </option>
-        <option className='font-semibold' value={rapidString}>
-          {rapidString}
-        </option>
         <option className='font-semibold' value={blitzString}>
           {blitzString}
+        </option>
+        <option className='font-semibold' value={rapidString}>
+          {rapidString}
         </option>
         <option className='font-semibold' value={classicalString}>
           {classicalString}

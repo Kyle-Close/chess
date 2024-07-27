@@ -19,10 +19,15 @@ export function useUndoRedoMove() {
       const lastMove = moveHistory[moveHistory.length - 2];
       if (!lastMove) return;
 
-      const popped = gameInfo.moveHistory[-1];
+      const popped = gameInfo.moveHistory[moveHistory.length - 1];
       dispatch(popMoveHistory());
       dispatch(pushToMoveHistoryRedo(popped));
       setupFromFEN(lastMove.fenString);
+    } else if (moveHistory.length === 2) {
+      // Handle case when we want to roll back first move
+      const popped = gameInfo.moveHistory[moveHistory.length - 1];
+      dispatch(pushToMoveHistoryRedo(popped));
+      dispatch(popMoveHistory());
     }
   };
 

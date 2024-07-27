@@ -5,7 +5,7 @@ import { OnlineSetup } from './OnlineSetup';
 
 export function GameSetup() {
   return (
-    <div className='grid min-w-full border-red-600 border-2 p-6 rounded-lg'>
+    <div className='grid min-w-full p-6 rounded-lg'>
       <div className='flex flex-col items-center gap-2'>
         <h1 className='justify-self-center text-xl mb-5'>Game Setup</h1>
         <TabNavigation
