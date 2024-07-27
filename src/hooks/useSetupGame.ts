@@ -13,7 +13,7 @@ export function useSetupGame() {
   const gameInfo = useAppSelector((state) => state.gameInfo);
   const dispatch = useAppDispatch();
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
-  const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
+  const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const whiteCastleRights = useCastleRights({ id: whitePlayer.castleRightsId });
   const blackCastleRights = useCastleRights({ id: blackPlayer.castleRightsId });
 

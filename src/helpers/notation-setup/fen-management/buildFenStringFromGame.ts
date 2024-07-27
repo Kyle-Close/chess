@@ -15,11 +15,11 @@ export function buildFenStringFromGame(
   blackCastleRights: CastleRights
 ) {
   const piecePlacementString = buildPiecePlacementString(moveMetaData.updatedBoard);
-  const color = isWhiteCurrentMove === true ? 'w' : 'b';
+  const color = isWhiteCurrentMove === true ? 'b' : 'w';
   const castleSegment = buildFenCastleSegment(whiteCastleRights, blackCastleRights);
-  const fullMoves = isBlackTurnEnding ? gameInfo.fullMoves + 2 : gameInfo.fullMoves + 1;
+  const fullMoves = isBlackTurnEnding ? gameInfo.fullMoves + 1 : gameInfo.fullMoves;
 
-  return `${piecePlacementString} ${color} ${castleSegment} ${moveMetaData.enPassantNotation} ${gameInfo.halfMoves} ${fullMoves}`;
+  return `${piecePlacementString} ${color} ${castleSegment} ${moveMetaData.enPassantNotation} ${moveMetaData.halfMoves} ${fullMoves}`;
 }
 
 function buildPiecePlacementString(board: BoardState) {

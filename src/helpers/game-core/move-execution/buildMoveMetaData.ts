@@ -22,6 +22,7 @@ export interface MoveMetaData {
   startPosition: number;
   endPosition: number;
   updatedBoard: BoardState;
+  halfMoves: number;
 }
 
 export function buildMoveMetaData(
@@ -55,5 +56,6 @@ export function buildMoveMetaData(
     startPosition,
     endPosition,
     updatedBoard: [...board],
+    halfMoves: 0,
   };
 }

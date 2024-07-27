@@ -186,10 +186,13 @@ export function useMove(): UseMoveReturn {
 
   function updateMoveCounts(moveMetaData: MoveMetaData) {
     // Update game half moves
+    moveMetaData.halfMoves = gameInfo.halfMoves + 1;
     dispatch(setHalfMoves(gameInfo.halfMoves + 1));
 
-    if (isHalfMoveResetCondition(moveMetaData.piece, board[moveMetaData.endPosition].isCapture))
+    if (isHalfMoveResetCondition(moveMetaData.piece, board[moveMetaData.endPosition].isCapture)) {
+      moveMetaData.halfMoves = 0;
       dispatch(setHalfMoves(0));
+    }
 
     // Update game full moves
     if (activePlayer.color === PieceColor.BLACK) dispatch(setFullMoves(gameInfo.fullMoves + 1));
