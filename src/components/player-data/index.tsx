@@ -5,12 +5,16 @@ import { useAppSelector } from '../../hooks/useBoard';
 import { selectPlayerById } from '../../redux/slices/player';
 import { PieceColor } from '../../enums/PieceColor';
 import { Box, Text } from '@chakra-ui/react';
+import { TimeControl } from '../../redux/slices/gameSettings';
 
 interface PlayerDataProps {
   playerId: string;
 }
 export function PlayerData({ playerId }: PlayerDataProps) {
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
+  const gameSettings = useAppSelector((state) => state.gameSettings);
+  const showTimer = gameSettings.timeControl !== TimeControl.FREE_PLAY;
+
   return (
     <Box className={getPlayerDataClasses()}>
       <Box className='flex gap-4 items-end'>
@@ -20,7 +24,7 @@ export function PlayerData({ playerId }: PlayerDataProps) {
         />
         <Text className=''>{player.name}</Text>
       </Box>
-      <Timer timerId={player.timerId} color={player.color} />
+      {showTimer && <Timer timerId={player.timerId} color={player.color} />}
     </Box>
   );
 }

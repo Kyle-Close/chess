@@ -34,11 +34,11 @@ export function calculateAllValidMoves(
 }
 
 function pushKingSideCastleIndex(color: PieceColor, validMoves: ValidMoves[]) {
-  if (color === PieceColor.WHITE) validMoves.push({ index: 6, isCapture: false });
-  else validMoves.push({ index: 62, isCapture: false });
+  if (color === PieceColor.WHITE) validMoves.push({ index: 62, isCapture: false });
+  else validMoves.push({ index: 6, isCapture: false });
 }
 
 function pushQueenSideCastleIndex(color: PieceColor, validMoves: ValidMoves[]) {
-  if (color === PieceColor.WHITE) validMoves.push({ index: 2, isCapture: false });
-  else validMoves.push({ index: 58, isCapture: false });
+  if (color === PieceColor.WHITE) validMoves.push({ index: 58, isCapture: false });
+  else validMoves.push({ index: 2, isCapture: false });
 }

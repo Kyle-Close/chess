@@ -11,6 +11,7 @@ export function Game() {
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const { undo, redo } = useUndoRedoMove();
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
+
   return (
     <div className={getGameClasses()}>
       <PlayerData playerId={gameInfo.blackPlayerId} />

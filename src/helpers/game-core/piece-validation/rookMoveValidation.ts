@@ -54,7 +54,7 @@ export function countForwardMoves(board: BoardState, piece: Piece, currentIndex:
   let count = 0;
 
   while (!foundPiece) {
-    currentIndex = piece.color === PieceColor.WHITE ? currentIndex + 8 : currentIndex - 8; // move up 1 square
+    currentIndex = piece.color === PieceColor.WHITE ? currentIndex - 8 : currentIndex + 8; // move up 1 square
     if (currentIndex < 0 || currentIndex > 63) break;
 
     if (board[currentIndex].piece !== null) {
@@ -136,27 +136,27 @@ function isOnStartRank(squareRank: SquareRank, currentIndex: number) {
 }
 
 function getMinIndexOnRank(squareRank: SquareRank) {
-  if (squareRank === 1) return 0;
-  else if (squareRank === 2) return 8;
-  else if (squareRank === 3) return 16;
-  else if (squareRank === 4) return 24;
-  else if (squareRank === 5) return 32;
-  else if (squareRank === 6) return 40;
-  else if (squareRank === 7) return 48;
-  else if (squareRank === 8) return 56;
+  if (squareRank === 8) return 0;
+  else if (squareRank === 7) return 8;
+  else if (squareRank === 6) return 16;
+  else if (squareRank === 5) return 24;
+  else if (squareRank === 4) return 32;
+  else if (squareRank === 3) return 40;
+  else if (squareRank === 2) return 48;
+  else if (squareRank === 1) return 56;
   else return 0;
 }
 
 function getMaxIndexOnRank(squareRank: SquareRank) {
-  if (squareRank === 1) return 7;
-  else if (squareRank === 2) return 15;
-  else if (squareRank === 3) return 23;
-  else if (squareRank === 4) return 31;
-  else if (squareRank === 5) return 39;
-  else if (squareRank === 6) return 47;
-  else if (squareRank === 7) return 55;
-  else if (squareRank === 8) return 63;
-  else return 7;
+  if (squareRank === 8) return 7;
+  else if (squareRank === 7) return 15;
+  else if (squareRank === 6) return 23;
+  else if (squareRank === 5) return 31;
+  else if (squareRank === 4) return 39;
+  else if (squareRank === 3) return 47;
+  else if (squareRank === 2) return 55;
+  else if (squareRank === 1) return 63;
+  else return 0;
 }
 
 type Direction = 'FORWARD' | 'BACKWARDS' | 'LEFT' | 'RIGHT';
@@ -171,8 +171,8 @@ export function addValidSquares(
   if (direction === 'FORWARD') {
     for (let i = 0; i < canSlide.count; i++) {
       if (piece.color === PieceColor.WHITE)
-        validSquares.push({ index: currentIndex + 8 * (i + 1), isCapture: false });
-      else validSquares.push({ index: currentIndex - 8 * (i + 1), isCapture: false });
+        validSquares.push({ index: currentIndex - 8 * (i + 1), isCapture: false });
+      else validSquares.push({ index: currentIndex + 8 * (i + 1), isCapture: false });
     }
   } else if (direction === 'RIGHT') {
     for (let i = 0; i < canSlide.count; i++) {
@@ -181,8 +181,8 @@ export function addValidSquares(
   } else if (direction === 'BACKWARDS') {
     for (let i = 0; i < canSlide.count; i++) {
       if (piece.color === PieceColor.WHITE)
-        validSquares.push({ index: currentIndex - 8 * (i + 1), isCapture: false });
-      else validSquares.push({ index: currentIndex + 8 * (i + 1), isCapture: false });
+        validSquares.push({ index: currentIndex + 8 * (i + 1), isCapture: false });
+      else validSquares.push({ index: currentIndex - 8 * (i + 1), isCapture: false });
     }
   } else if (direction === 'LEFT') {
     for (let i = 0; i < canSlide.count; i++) {

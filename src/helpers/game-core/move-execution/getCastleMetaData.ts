@@ -16,11 +16,11 @@ export function getCastleMetaData(piece: Piece, startPos: number, endPos: number
   if (squaresMoved !== 2) throw Error('Called CastleMetaData() when no castle.');
 
   if (color === PieceColor.WHITE) {
-    if (endPos === 6) return CastleMetaData.KING_SIDE;
-    else if (endPos === 2) return CastleMetaData.QUEEN_SIDE;
-  } else {
     if (endPos === 62) return CastleMetaData.KING_SIDE;
     else if (endPos === 58) return CastleMetaData.QUEEN_SIDE;
+  } else {
+    if (endPos === 6) return CastleMetaData.KING_SIDE;
+    else if (endPos === 2) return CastleMetaData.QUEEN_SIDE;
   }
 
   throw Error('Called CastleMetaData() when no castle.');

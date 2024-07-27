@@ -87,21 +87,21 @@ function getCastleRights(board: BoardState, color: PieceColor): Omit<CastleRight
 }
 
 function getQueenSideSquaresAlongPath(color: PieceColor) {
-  if (color === PieceColor.WHITE) return [0, 1, 2, 3, 4];
-  else return [56, 57, 58, 59, 60];
+  if (color === PieceColor.WHITE) return [56, 57, 58, 59, 60];
+  else return [0, 1, 2, 3, 4];
 }
 
 function getKingSideSquaresAlongPath(color: PieceColor) {
-  if (color === PieceColor.WHITE) return [4, 5, 6, 7];
-  else return [60, 61, 62, 63];
+  if (color === PieceColor.WHITE) return [60, 61, 62, 63];
+  else return [4, 5, 6, 7];
 }
 
 function getQueenSideRookSquare(board: BoardState, color: PieceColor) {
-  if (color === PieceColor.BLACK) return board[56];
+  if (color === PieceColor.WHITE) return board[56];
   else return board[0];
 }
 
 function getKingSideRookSquare(board: BoardState, color: PieceColor) {
-  if (color === PieceColor.BLACK) return board[63];
+  if (color === PieceColor.WHITE) return board[63];
   else return board[7];
 }

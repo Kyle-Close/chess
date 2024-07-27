@@ -3,7 +3,7 @@ import { TimeControl } from '../../../redux/slices/gameSettings';
 export function getStartingTimeInSeconds(timeControl: TimeControl) {
   switch (timeControl) {
     case TimeControl.FREE_PLAY:
-      return 0;
+      return 99999999;
     case TimeControl.BLITZ:
       return 180;
     case TimeControl.RAPID:
