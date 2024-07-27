@@ -7,7 +7,8 @@ interface RedoButtonProps {
 }
 export function RedoButton({ handleClick }: RedoButtonProps) {
   const gameInfo = useAppSelector((state) => state.gameInfo);
-  const isDisabled = gameInfo.moveHistoryRedo.length === 0;
+  const gameSettings = useAppSelector((state) => state.gameSettings);
+  const isDisabled = gameInfo.moveHistoryRedo.length === 0 || !gameSettings.isUndoRedo;
 
   return (
     <Button

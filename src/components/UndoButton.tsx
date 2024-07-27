@@ -7,7 +7,8 @@ interface UndoButtonProps {
 }
 export function UndoButton({ handleClick }: UndoButtonProps) {
   const gameInfo = useAppSelector((state) => state.gameInfo);
-  const isDisabled = gameInfo.moveHistory.length === 0;
+  const gameSettings = useAppSelector((state) => state.gameSettings);
+  const isDisabled = gameInfo.moveHistory.length === 0 || !gameSettings.isUndoRedo;
 
   return (
     <Button

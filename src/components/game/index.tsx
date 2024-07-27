@@ -8,6 +8,7 @@ import { RedoButton } from '../RedoButton';
 
 export function Game() {
   const gameInfo = useAppSelector((state) => state.gameInfo);
+  const gameSettings = useAppSelector((state) => state.gameSettings);
   const { undo, redo } = useUndoRedoMove();
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
   return (
@@ -15,10 +16,12 @@ export function Game() {
       <PlayerData playerId={gameInfo.blackPlayerId} />
       <Board />
       <PlayerData playerId={gameInfo.whitePlayerId} />
-      <Box className='flex justify-end gap-2 mr-6'>
-        <UndoButton handleClick={undo} />
-        <RedoButton handleClick={redo} />
-      </Box>
+      {gameSettings.isUndoRedo && (
+        <Box className='flex justify-end gap-2 mr-6'>
+          <UndoButton handleClick={undo} />
+          <RedoButton handleClick={redo} />
+        </Box>
+      )}
     </div>
   );
 }

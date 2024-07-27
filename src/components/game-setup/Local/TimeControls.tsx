@@ -26,9 +26,6 @@ export function TimeControls({ register }: TimeControlsProps) {
         size='sm'
         {...register('selectedTimeControl')}
       >
-        <option className='font-semibold' value={freePlayString}>
-          {freePlayString}
-        </option>
         <option className='font-semibold' value={blitzString}>
           {blitzString}
         </option>
@@ -37,6 +34,9 @@ export function TimeControls({ register }: TimeControlsProps) {
         </option>
         <option className='font-semibold' value={classicalString}>
           {classicalString}
+        </option>
+        <option className='font-semibold' value={freePlayString}>
+          {freePlayString}
         </option>
       </Select>
     </Box>
