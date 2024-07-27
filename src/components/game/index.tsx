@@ -15,7 +15,7 @@ export function Game() {
       <PlayerData playerId={gameInfo.blackPlayerId} />
       <Board />
       <PlayerData playerId={gameInfo.whitePlayerId} />
-      <Box>
+      <Box className='flex justify-end gap-2 mr-6'>
         <UndoButton handleClick={undo} />
         <RedoButton handleClick={redo} />
       </Box>
