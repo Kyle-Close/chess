@@ -22,12 +22,12 @@ function appendSurroundingSquares(currentIndex: number) {
   const result: ValidMoves[] = [];
   const file = getSquareFile(currentIndex);
 
-  if (file !== 'a') {
+  if (file !== 'h') {
     result.push({ index: currentIndex + 7, isCapture: false });
     result.push({ index: currentIndex - 1, isCapture: false });
     result.push({ index: currentIndex - 9, isCapture: false });
   }
-  if (file !== 'h') {
+  if (file !== 'a') {
     result.push({ index: currentIndex - 7, isCapture: false });
     result.push({ index: currentIndex + 1, isCapture: false });
     result.push({ index: currentIndex + 9, isCapture: false });

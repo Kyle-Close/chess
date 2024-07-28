@@ -31,7 +31,7 @@ export function countBackwardsMoves(board: BoardState, piece: Piece, currentInde
   let count = 0;
 
   while (!foundPiece) {
-    currentIndex = piece.color === PieceColor.WHITE ? currentIndex - 8 : currentIndex + 8; // move up 1 square
+    currentIndex = piece.color === PieceColor.WHITE ? currentIndex + 8 : currentIndex - 8; // move up 1 square
     if (currentIndex < 0 || currentIndex > 63) break;
 
     if (board[currentIndex].piece !== null) {

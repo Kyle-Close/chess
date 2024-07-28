@@ -2,7 +2,7 @@ import { SquareFile } from '../../../enums/SquareFile';
 import { SquareRank } from '../../../enums/SquareRank';
 
 export function translatePositionToIndex(rank: SquareRank, file: SquareFile) {
-  const rankMultiplier = rank - 1;
+  const rankMultiplier = 8 - rank;
   const fileAdder = getFileAdder(file);
 
   return rankMultiplier * 8 + fileAdder;

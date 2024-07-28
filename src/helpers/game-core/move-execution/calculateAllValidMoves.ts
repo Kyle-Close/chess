@@ -14,8 +14,15 @@ export function calculateAllValidMoves(
   castleRights: CastleRights,
   enPassant: number | null
 ) {
-  let validMoves = getStandardPieceMoves(board, piece, startPos);
-  if (!validMoves || validMoves.length == 0) return;
+  console.log(enPassant);
+  let validMoves: ValidMoves[] = [];
+  let standardMoves = getStandardPieceMoves(board, piece, startPos);
+  if (standardMoves && standardMoves.length > 0) validMoves = standardMoves;
+
+  if (enPassant && isEnpassantCapturePossible(piece.color, startPos, enPassant))
+    validMoves.push({ index: enPassant, isCapture: true });
+
+  if (validMoves.length == 0) return;
 
   const canCastleKingSide = castleRights.canCastleKingSide;
   const canCastleQueenSide = castleRights.canCastleQueenSide;
@@ -24,9 +31,6 @@ export function calculateAllValidMoves(
     pushKingSideCastleIndex(piece.color, validMoves);
   if (piece.type === PieceType.KING && canCastleQueenSide)
     pushQueenSideCastleIndex(piece.color, validMoves);
-
-  if (enPassant && isEnpassantCapturePossible(piece.color, startPos, enPassant))
-    validMoves.push({ index: enPassant, isCapture: true });
 
   validMoves = filterCheckMoves(validMoves, board, piece, startPos);
 
