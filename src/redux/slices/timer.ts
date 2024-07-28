@@ -13,6 +13,7 @@ export const timerSlice = createSlice({
   name: 'timer',
   initialState: timerAdapter.getInitialState(),
   reducers: {
+    removeAllTimers: timerAdapter.removeAll,
     createTimer: {
       reducer: (state, action: PayloadAction<Timer>) => {
         timerAdapter.addOne(state, action.payload);
@@ -41,6 +42,7 @@ export const timerSlice = createSlice({
 
 export const {
   createTimer,
+  removeAllTimers,
   setIsOn,
   setRemainingSeconds,
   decrementRemainingSeconds,

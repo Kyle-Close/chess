@@ -17,11 +17,6 @@ export function useSetupGame() {
   const whiteCastleRights = useCastleRights({ id: whitePlayer.castleRightsId });
   const blackCastleRights = useCastleRights({ id: blackPlayer.castleRightsId });
 
-  /*
-      Sets up the following: board, white turn to move, game moves, castle rights, clear en passant square
-
-      REMAINING: player names, time control, increment time on move, undo/redo, fifty-move rule
-  */
   function setupFromFEN(fenString: string) {
     const fenSegments = parseFenString(fenString);
     const initialBoard = buildBoardFromFen(fenSegments.initialPositions);

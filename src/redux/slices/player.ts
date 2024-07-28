@@ -21,6 +21,7 @@ export const playerSlice = createSlice({
   name: 'player',
   initialState,
   reducers: {
+    removeAllPlayers: playerAdapter.removeAll,
     createPlayer: {
       reducer: (state, action: PayloadAction<Player>) => {
         playerAdapter.addOne(state, action.payload);
@@ -58,8 +59,15 @@ export const playerSlice = createSlice({
   },
 });
 
-export const { createPlayer, setName, setColor, setIsInCheck, setIsTurn, toggleIsTurn } =
-  playerSlice.actions;
+export const {
+  createPlayer,
+  removeAllPlayers,
+  setName,
+  setColor,
+  setIsInCheck,
+  setIsTurn,
+  toggleIsTurn,
+} = playerSlice.actions;
 
 export default playerSlice.reducer;
 

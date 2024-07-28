@@ -35,8 +35,8 @@ export const gameInfoSlice = createSlice({
   name: 'gameInfo',
   initialState: initialGameInfo,
   reducers: {
-    toggleIsPlaying(state) {
-      state.isPlaying = !state.isPlaying;
+    setIsPlaying(state, action: PayloadAction<boolean>) {
+      state.isPlaying = action.payload;
     },
     setEnPassantSquare(state, action: PayloadAction<number | null>) {
       state.enPassantSquare = action.payload;
@@ -72,11 +72,14 @@ export const gameInfoSlice = createSlice({
       state.whitePlayerId = action.payload.whitePlayerId;
       state.blackPlayerId = action.payload.blackPlayerId;
     },
+    resetGameInfo() {
+      return { ...initialGameInfo };
+    },
   },
 });
 
 export const {
-  toggleIsPlaying,
+  setIsPlaying,
   setEnPassantSquare,
   clearEnPassantSquare,
   setMatchResult,
@@ -88,4 +91,5 @@ export const {
   setHalfMoves,
   setFullMoves,
   setPlayerIds,
+  resetGameInfo,
 } = gameInfoSlice.actions;

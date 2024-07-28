@@ -5,6 +5,8 @@ import { playerSlice } from './slices/player';
 import { timerSlice } from './slices/timer';
 import { castleRightsSlice } from './slices/castleRights';
 import { gameSettingsSlice } from './slices/gameSettings';
+import { saveStateToLS } from './saveStateToLS';
+import { getStateFromLS } from './getStateFromLS';
 
 // Automatically adds the thunk middleware and the Redux DevTools extension
 const store = configureStore({
@@ -16,6 +18,13 @@ const store = configureStore({
     castleRightsSlice,
     gameSettingsSlice
   ),
+  preloadedState: getStateFromLS(),
+});
+
+store.subscribe(() => {
+  const state = store.getState();
+
+  saveStateToLS(state);
 });
 
 export default store;

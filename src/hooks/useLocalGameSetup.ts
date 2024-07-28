@@ -2,14 +2,14 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { createTimer, setIsOn, setRemainingSeconds } from '../redux/slices/timer';
+import { createTimer, removeAllTimers, setIsOn, setRemainingSeconds } from '../redux/slices/timer';
 import { getStartingTimeInSeconds } from '../helpers/notation-setup/game-setup/getStartingTimeInSeconds';
-import { createPlayer, setIsTurn } from '../redux/slices/player';
+import { createPlayer, removeAllPlayers, setIsTurn } from '../redux/slices/player';
 import { PieceColor } from '../enums/PieceColor';
-import { setPlayerIds, toggleIsPlaying } from '../redux/slices/gameInfo';
+import { setPlayerIds, setIsPlaying, resetGameInfo } from '../redux/slices/gameInfo';
 import { setupBoard } from '../redux/slices/board';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
-import { createCastleRights } from '../redux/slices/castleRights';
+import { createCastleRights, removeAllCastleRights } from '../redux/slices/castleRights';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import {
   GameSettings,
@@ -38,6 +38,14 @@ export function useLocalGameSetup() {
   const onSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) => setupGame(data);
 
   const setupGame = (data: LocalGameSetupFormInputs) => {
+    // Clear previous settings
+    dispatch(resetGameInfo());
+
+    // Remove any previous entities
+    dispatch(removeAllPlayers());
+    dispatch(removeAllCastleRights());
+    dispatch(removeAllTimers());
+
     const settings = buildSettingsObject(data);
     const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
     const blackTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
@@ -80,7 +88,7 @@ export function useLocalGameSetup() {
     dispatch(setIsOn({ id: whiteTimer.payload.id, isOn: true }));
 
     // Start game
-    dispatch(toggleIsPlaying());
+    dispatch(setIsPlaying(true));
     dispatch(setIsTurn({ id: whitePlayer.payload.id, isTurn: true }));
 
     // Handle game settings

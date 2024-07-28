@@ -16,6 +16,7 @@ export const castleRightsSlice = createSlice({
   name: 'castleRights',
   initialState: castleRightsAdapter.getInitialState(),
   reducers: {
+    removeAllCastleRights: castleRightsAdapter.removeAll,
     createCastleRights: {
       reducer: (state, action: PayloadAction<CastleRights>) => {
         castleRightsAdapter.addOne(state, action.payload);
@@ -32,7 +33,8 @@ export const castleRightsSlice = createSlice({
   },
 });
 
-export const { createCastleRights, setCastleRights } = castleRightsSlice.actions;
+export const { createCastleRights, removeAllCastleRights, setCastleRights } =
+  castleRightsSlice.actions;
 
 export default castleRightsSlice.reducer;
 
