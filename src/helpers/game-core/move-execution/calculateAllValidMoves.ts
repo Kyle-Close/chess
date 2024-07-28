@@ -14,7 +14,6 @@ export function calculateAllValidMoves(
   castleRights: CastleRights,
   enPassant: number | null
 ) {
-  console.log(enPassant);
   let validMoves: ValidMoves[] = [];
   let standardMoves = getStandardPieceMoves(board, piece, startPos);
   if (standardMoves && standardMoves.length > 0) validMoves = standardMoves;
