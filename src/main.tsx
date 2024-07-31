@@ -8,11 +8,12 @@ import { GameSetup } from './components/game-setup/index.tsx';
 import { Game } from './components/game/index.tsx';
 import { Provider } from 'react-redux';
 import store from './redux/store.ts';
+import { BaseModal } from './components/generic/BaseModal.tsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <BaseModal />,
   },
   {
     path: '/setup',
