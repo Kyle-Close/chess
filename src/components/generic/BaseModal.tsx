@@ -1,12 +1,18 @@
-import { Modal, ModalBody, ModalContent, ModalOverlay, Text } from '@chakra-ui/react';
+import { Box, Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react';
 
-export function BaseModal() {
+interface BaseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
+}
+
+export function BaseModal({ isOpen, onClose, children }: BaseModalProps) {
   return (
-    <Modal isOpen={true} onClose={() => console.log('closed')}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalBody>
-          <Text>Test</Text>
+        <ModalBody p={0} className='rounded-lg'>
+          {children}
         </ModalBody>
       </ModalContent>
     </Modal>

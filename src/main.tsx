@@ -8,12 +8,12 @@ import { GameSetup } from './components/game-setup/index.tsx';
 import { Game } from './components/game/index.tsx';
 import { Provider } from 'react-redux';
 import store from './redux/store.ts';
-import { BaseModal } from './components/generic/BaseModal.tsx';
+import { GameOver } from './components/game-over/index.tsx';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <BaseModal />,
+    element: <GameOver />,
   },
   {
     path: '/setup',
