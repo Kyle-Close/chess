@@ -10,6 +10,17 @@ import { Provider } from 'react-redux';
 import store from './redux/store.ts';
 import { GameOver } from './components/game-over/index.tsx';
 
+import { extendTheme } from '@chakra-ui/react';
+import '@fontsource/caveat';
+
+const theme = extendTheme({
+  fonts: {
+    heading: `'Caveat'`,
+  },
+});
+
+export default theme;
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -35,7 +46,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Provider store={store}>
         <RouterProvider router={router}></RouterProvider>
       </Provider>

@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Montserrat Alternates', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Montserrat Alternates', 'Caveat', Inter, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -20,6 +21,10 @@
   font-family: 'Montserrat Alternates';
   height: 100vh;
   display: flex;
+}
+
+.caveat {
+  font-family: 'caveat';
 }
 
 h1,
