@@ -1,4 +1,4 @@
-import { Box, Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react';
+import { Modal, ModalBody, ModalContent, ModalOverlay } from '@chakra-ui/react';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -10,7 +10,7 @@ export function BaseModal({ isOpen, onClose, children }: BaseModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent className='mx-4'>
         <ModalBody p={0} className='rounded-lg'>
           {children}
         </ModalBody>

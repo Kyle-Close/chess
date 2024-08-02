@@ -7,6 +7,7 @@ export function GameOver() {
     <BaseModal isOpen={true} onClose={() => console.log('')}>
       <Box className='flex p-6 bg-gray-300 justify-center rounded-lg caveat'>
         <Result />
+        <Stats />
       </Box>
     </BaseModal>
   );
