@@ -10,10 +10,8 @@ export function BaseModal({ isOpen, onClose, children }: BaseModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent className='mx-4'>
-        <ModalBody p={0} className='rounded-lg'>
-          {children}
-        </ModalBody>
+      <ModalContent borderRadius='1rem' className='mx-4'>
+        <ModalBody p={0}>{children}</ModalBody>
       </ModalContent>
     </Modal>
   );

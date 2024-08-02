@@ -3,6 +3,12 @@ import { useAppSelector } from '../../hooks/useBoard';
 import { selectPlayerById } from '../../redux/slices/player';
 import { selectTimerById } from '../../redux/slices/timer';
 
+interface GameOverDataRow {
+  title: string;
+  whiteData: string;
+  blackData: string;
+}
+
 export function Stats() {
   const gameInfo = useAppSelector((state) => state.gameInfo);
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
@@ -10,22 +16,65 @@ export function Stats() {
   const whiteTimer = useAppSelector((state) => selectTimerById(state, whitePlayer.timerId));
   const blackTimer = useAppSelector((state) => selectTimerById(state, blackPlayer.timerId));
 
-  function buildTimeRemaining() {
+  const titleClass = 'text-white';
+  const dataClass = 'text-green-200';
+
+  function buildDataRow(data: GameOverDataRow) {
     return (
       <>
-        <Text>Time Remaining</Text>
-        <Text>{whiteTimer.remainingSeconds}</Text>
-        <Text>{blackTimer.remainingSeconds}</Text>
+        <Text fontWeight='bold' fontSize='large' fontFamily='caveat' className={titleClass}>
+          {data.title}
+        </Text>
+        <Box borderRight='1px solid white' className='flex flex-grow justify-center'>
+          <Text
+            alignSelf='center'
+            justifySelf='center'
+            fontFamily='Montserrat Alternates'
+            className={dataClass}
+          >
+            {data.whiteData}
+          </Text>
+        </Box>
+        <Box className='flex flex-grow justify-center'>
+          <Text
+            alignSelf='center'
+            justifySelf='center'
+            fontFamily='Montserrat Alternates'
+            className={dataClass}
+          >
+            {data.blackData}
+          </Text>
+        </Box>
       </>
     );
   }
 
   return (
-    <Box className='bg-black grid grid-cols-3 gap-4'>
-      <Box />
-      <Text>White</Text>
-      <Text>Black</Text>
-      {buildTimeRemaining()}
+    <Box borderRadius='0 0 1rem 1rem' className='bg-black grid grid-cols-3 p-4 py-6'>
+      <Box mb='1rem' />
+      <Text
+        mb='1rem'
+        fontWeight='bold'
+        justifySelf='center'
+        fontSize='x-large'
+        fontFamily='caveat'
+        className={titleClass}
+      >
+        White
+      </Text>
+      <Text
+        mb='1rem'
+        fontWeight='bold'
+        justifySelf='center'
+        fontSize='x-large'
+        fontFamily='caveat'
+        className={titleClass}
+      >
+        Black
+      </Text>
+      {buildDataRow({ title: 'Clock', whiteData: '3:00', blackData: '0:20' })}
+      {buildDataRow({ title: 'Captures', whiteData: '12', blackData: '10' })}
+      {buildDataRow({ title: 'Total Moves', whiteData: '25', blackData: '25' })}
     </Box>
   );
 }
