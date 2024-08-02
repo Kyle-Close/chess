@@ -3,7 +3,7 @@ import ChessPlayerImg from '../../assets/profile-white.png';
 
 export function Result() {
   return (
-    <Box borderRadius='1rem 1rem 0 0' className='flex flex-col bg-gray-300 gap-6 p-12'>
+    <Box borderRadius='1rem 1rem 0 0' className='flex flex-col bg-gray-300 gap-6 p-8'>
       <Heading as='h1' textAlign='center' fontFamily='Montserrat Alternates' fontSize='large'>
         White Win by Checkmate!
       </Heading>
