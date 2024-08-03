@@ -8,7 +8,12 @@ import {
   setRemainingSeconds,
 } from '../redux/slices/timer';
 import { PieceColor } from '../enums/PieceColor';
-import { MatchResult, setMatchResult } from '../redux/slices/gameInfo';
+import {
+  MatchResult,
+  MatchResultSubType,
+  setMatchResult,
+  setMatchResultSubType,
+} from '../redux/slices/gameInfo';
 
 export interface UseTimerReturn {
   start: () => void;
@@ -47,6 +52,7 @@ export function useTimer({ id, color }: UseTimerProps): UseTimerReturn {
   function handleTimerComplete() {
     const winner = color === PieceColor.WHITE ? MatchResult.BLACK_WIN : MatchResult.WHITE_WIN;
     dispatch(setMatchResult(winner));
+    dispatch(setMatchResultSubType(MatchResultSubType.TIME));
   }
 
   useEffect(() => {

@@ -4,7 +4,7 @@ import { CastleRights } from '../../../redux/slices/castleRights';
 import { calculateAllValidMoves } from '../../game-core/move-execution/calculateAllValidMoves';
 import { getRemainingPiecesByColor } from '../../game-core/piece-management/getRemainingPiecesByColor';
 
-export function isStalemate(
+export function checkStalemate(
   board: BoardState,
   isInCheck: boolean,
   color: PieceColor,

@@ -1,5 +1,5 @@
 import { BaseModal } from '../generic/BaseModal';
-import { Result } from './Result';
+import { Result } from './result';
 import { Stats } from './Stats';
 
 export function GameOver() {

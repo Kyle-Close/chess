@@ -31,7 +31,8 @@ export const timerSlice = createSlice({
     },
     decrementRemainingSeconds(state, action: PayloadAction<{ id: string }>) {
       const { id } = action.payload;
-      state.entities[id].remainingSeconds = state.entities[id].remainingSeconds - 1;
+      if (state.entities[id].remainingSeconds !== 0)
+        state.entities[id].remainingSeconds = state.entities[id].remainingSeconds - 1;
     },
     addRemainingSeconds(state, action: PayloadAction<{ id: string; secondsToAdd: number }>) {
       const { id, secondsToAdd } = action.payload;

@@ -8,8 +8,21 @@ export enum MatchResult {
   BLACK_WIN,
 }
 
+export enum MatchResultSubType {
+  ONGOING,
+  CHECKMATE,
+  TIME,
+  RESIGNATION,
+  STALEMATE,
+  THREE_FOLD_REPITITION,
+  FIFTY_MOVE_RULE,
+  INSUFFICIENT_MATERIAL,
+  MUTUAL_AGREEMENT,
+}
+
 export interface GameInfo {
   matchResult: MatchResult;
+  matchResultSubType: MatchResultSubType;
   halfMoves: number;
   fullMoves: number;
   moveHistory: MoveHistory[];
@@ -22,6 +35,7 @@ export interface GameInfo {
 const initialGameInfo = {
   isPlaying: false,
   matchResult: MatchResult.ONGOING,
+  matchResultSubType: MatchResultSubType.ONGOING,
   halfMoves: 0,
   fullMoves: 1,
   moveHistory: [] as MoveHistory[],
@@ -46,6 +60,9 @@ export const gameInfoSlice = createSlice({
     },
     setMatchResult(state, action: PayloadAction<MatchResult>) {
       state.matchResult = action.payload;
+    },
+    setMatchResultSubType(state, action: PayloadAction<MatchResultSubType>) {
+      state.matchResultSubType = action.payload;
     },
     pushToMoveHistory(state, action: PayloadAction<MoveHistory>) {
       state.moveHistory.push(action.payload);
@@ -83,6 +100,7 @@ export const {
   setEnPassantSquare,
   clearEnPassantSquare,
   setMatchResult,
+  setMatchResultSubType,
   pushToMoveHistory,
   popMoveHistory,
   pushToMoveHistoryRedo,

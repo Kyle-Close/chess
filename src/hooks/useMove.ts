@@ -23,18 +23,20 @@ import { handleEnPassant } from '../helpers/game-core/move-utility/handleEnPassa
 import { handleCastle } from '../helpers/game-core/move-utility/handleCastle';
 import { updateIsValidMove } from '../helpers/game-core/move-utility/updateIsValidMove';
 import { handlePawnPromotion } from '../helpers/game-core/move-utility/handlePawnPromotion';
-import { isInsufficientMaterial } from '../helpers/analysis/game-checks/isInsufficientMaterial';
-import { isStalemate } from '../helpers/analysis/game-checks/isStalemate';
+import { checkInsufficientMaterial } from '../helpers/analysis/game-checks/checkInsufficientMaterial';
+import { checkStalemate } from '../helpers/analysis/game-checks/checkStalemate';
 import { useAppDispatch, useAppSelector } from './useBoard';
 import { setupBoard } from '../redux/slices/board';
 import {
   MatchResult,
+  MatchResultSubType,
   clearMoveHistoryRedo,
   pushToMoveHistory,
   setEnPassantSquare,
   setFullMoves,
   setHalfMoves,
   setMatchResult,
+  setMatchResultSubType,
 } from '../redux/slices/gameInfo';
 import { toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
@@ -147,23 +149,28 @@ export function useMove(): UseMoveReturn {
 
   function handleGameIsOver(moveMetaData: MoveMetaData) {
     if (moveMetaData.isCheckmate) {
+      dispatch(setMatchResultSubType(MatchResultSubType.CHECKMATE));
       if (activePlayer.color === PieceColor.WHITE) dispatch(setMatchResult(MatchResult.WHITE_WIN));
       else dispatch(setMatchResult(MatchResult.BLACK_WIN));
     }
 
     const isFiftyMoveRule = settings.isFiftyMoveRule ? gameInfo.halfMoves > 49 : false;
+    const isInsufficientMaterial = checkInsufficientMaterial(moveMetaData.updatedBoard);
+    const isStalemate = checkStalemate(
+      moveMetaData.updatedBoard,
+      moveMetaData.isCheck,
+      waitingPlayer.color,
+      whitePlayer.isTurn ? whiteCastleRights : blackCastleRights,
+      gameInfo.enPassantSquare
+    );
 
-    const isDraw =
-      isFiftyMoveRule ||
-      isInsufficientMaterial(moveMetaData.updatedBoard) ||
-      isStalemate(
-        moveMetaData.updatedBoard,
-        moveMetaData.isCheck,
-        waitingPlayer.color,
-        whitePlayer.isTurn ? whiteCastleRights : blackCastleRights,
-        gameInfo.enPassantSquare
-      );
-    if (isDraw) dispatch(setMatchResult(MatchResult.DRAW));
+    if (isFiftyMoveRule) dispatch(setMatchResultSubType(MatchResultSubType.FIFTY_MOVE_RULE));
+    else if (isInsufficientMaterial)
+      dispatch(setMatchResultSubType(MatchResultSubType.INSUFFICIENT_MATERIAL));
+    else if (isStalemate) dispatch(setMatchResultSubType(MatchResultSubType.STALEMATE));
+
+    if (isFiftyMoveRule || isInsufficientMaterial || isStalemate)
+      dispatch(setMatchResult(MatchResult.DRAW));
   }
 
   function updateMoveHistory(moveMetaData: MoveMetaData) {

@@ -2,6 +2,9 @@ import { Box, Text } from '@chakra-ui/react';
 import { useAppSelector } from '../../hooks/useBoard';
 import { selectPlayerById } from '../../redux/slices/player';
 import { selectTimerById } from '../../redux/slices/timer';
+import { convertSecondsToMin } from '../../helpers/utilities/convertSecondsToMin';
+import { getRemainingPiecesByColor } from '../../helpers/game-core/piece-management/getRemainingPiecesByColor';
+import { PieceColor } from '../../enums/PieceColor';
 
 interface GameOverDataRow {
   title: string;
@@ -10,6 +13,7 @@ interface GameOverDataRow {
 }
 
 export function Stats() {
+  const board = useAppSelector((state) => state.board);
   const gameInfo = useAppSelector((state) => state.gameInfo);
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
@@ -18,6 +22,16 @@ export function Stats() {
 
   const titleClass = 'text-white';
   const dataClass = 'text-green-200';
+
+  const whiteTimeRemaining = convertSecondsToMin(whiteTimer.remainingSeconds);
+  const blackTimeRemaining = convertSecondsToMin(blackTimer.remainingSeconds);
+
+  const totalMoves = gameInfo.fullMoves.toString();
+  const whiteRemainingPieces = getRemainingPiecesByColor(board, PieceColor.WHITE);
+  const blackRemainingPieces = getRemainingPiecesByColor(board, PieceColor.BLACK);
+
+  const whiteCaptureCount = 16 - blackRemainingPieces.length;
+  const blackCaptureCount = 16 - whiteRemainingPieces.length;
 
   function buildDataRow(data: GameOverDataRow) {
     return (
@@ -72,9 +86,17 @@ export function Stats() {
       >
         Black
       </Text>
-      {buildDataRow({ title: 'Clock', whiteData: '3:00', blackData: '0:20' })}
-      {buildDataRow({ title: 'Captures', whiteData: '12', blackData: '10' })}
-      {buildDataRow({ title: 'Total Moves', whiteData: '25', blackData: '25' })}
+      {buildDataRow({
+        title: 'Clock',
+        whiteData: whiteTimeRemaining,
+        blackData: blackTimeRemaining,
+      })}
+      {buildDataRow({
+        title: 'Captures',
+        whiteData: whiteCaptureCount.toString(),
+        blackData: blackCaptureCount.toString(),
+      })}
+      {buildDataRow({ title: 'Total Moves', whiteData: totalMoves, blackData: totalMoves })}
     </Box>
   );
 }

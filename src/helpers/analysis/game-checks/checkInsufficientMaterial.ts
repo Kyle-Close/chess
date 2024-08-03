@@ -3,7 +3,7 @@ import { PieceColor } from '../../../enums/PieceColor';
 import { PieceType } from '../../../enums/PieceType';
 import { getRemainingPiecesByColor } from '../../game-core/piece-management/getRemainingPiecesByColor';
 
-export function isInsufficientMaterial(board: BoardState) {
+export function checkInsufficientMaterial(board: BoardState) {
   const remainingWhitePieces = getRemainingPiecesByColor(board, PieceColor.WHITE);
   const remainingBlackPieces = getRemainingPiecesByColor(board, PieceColor.BLACK);
 
