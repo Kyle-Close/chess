@@ -5,15 +5,23 @@ import { UndoButton } from '../UndoButton';
 import { Board } from '../board';
 import { PlayerData } from '../player-data';
 import { RedoButton } from '../RedoButton';
+import { GameOver } from '../game-over';
+import { MatchResult } from '../../redux/slices/gameInfo';
+import { useEffect, useState } from 'react';
 
 export function Game() {
   const gameInfo = useAppSelector((state) => state.gameInfo);
+  const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const { undo, redo } = useUndoRedoMove();
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
+  useEffect(() => {
+    if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
+  }, [gameInfo.matchResult]);
 
   return (
     <div className={getGameClasses()}>
+      <GameOver isOpen={showModal} handleClose={() => setShowModal(false)} />
       <PlayerData playerId={gameInfo.blackPlayerId} />
       <Board />
       <PlayerData playerId={gameInfo.whitePlayerId} />

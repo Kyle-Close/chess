@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppSelector } from './useBoard';
 
 export function useStartEndAction() {
+  const gameInfo = useAppSelector((state) => state.gameInfo);
   const board = useAppSelector((state) => state.board);
   const [startPos, setStartPos] = useState<number | null>(null);
   const [endPos, setEndPos] = useState<number | null>(null);
@@ -12,6 +13,7 @@ export function useStartEndAction() {
   };
 
   const setPosition = (index: number) => {
+    if (!gameInfo.isPlaying) return;
     const piece = board[index].piece;
     if (startPos === null && !piece) return; // Clicked an empty square as starting pos. Return
 

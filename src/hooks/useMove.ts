@@ -35,6 +35,7 @@ import {
   setEnPassantSquare,
   setFullMoves,
   setHalfMoves,
+  setIsPlaying,
   setMatchResult,
   setMatchResultSubType,
 } from '../redux/slices/gameInfo';
@@ -139,7 +140,12 @@ export function useMove(): UseMoveReturn {
     updateMoveHistory(moveMetaData);
 
     // Check if game is over. Update gameState if true
-    handleGameIsOver(moveMetaData);
+    const isOver = handleGameIsOver(moveMetaData);
+    if (isOver) {
+      dispatch(setIsPlaying(false));
+      activePlayer.stopTimer();
+      waitingPlayer.stopTimer();
+    }
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {
@@ -148,7 +154,9 @@ export function useMove(): UseMoveReturn {
   }
 
   function handleGameIsOver(moveMetaData: MoveMetaData) {
+    let isOver = false;
     if (moveMetaData.isCheckmate) {
+      isOver = true;
       dispatch(setMatchResultSubType(MatchResultSubType.CHECKMATE));
       if (activePlayer.color === PieceColor.WHITE) dispatch(setMatchResult(MatchResult.WHITE_WIN));
       else dispatch(setMatchResult(MatchResult.BLACK_WIN));
@@ -169,8 +177,12 @@ export function useMove(): UseMoveReturn {
       dispatch(setMatchResultSubType(MatchResultSubType.INSUFFICIENT_MATERIAL));
     else if (isStalemate) dispatch(setMatchResultSubType(MatchResultSubType.STALEMATE));
 
-    if (isFiftyMoveRule || isInsufficientMaterial || isStalemate)
+    if (isFiftyMoveRule || isInsufficientMaterial || isStalemate) {
+      isOver = true;
       dispatch(setMatchResult(MatchResult.DRAW));
+    }
+
+    return isOver;
   }
 
   function updateMoveHistory(moveMetaData: MoveMetaData) {

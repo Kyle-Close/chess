@@ -24,7 +24,7 @@ export default theme;
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <GameOver />,
+    element: <App />,
   },
   {
     path: '/setup',

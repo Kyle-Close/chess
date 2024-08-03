@@ -8,6 +8,7 @@ export interface UsePlayerReturn extends Player {
   updateName: (name: string) => void;
   updateIsInCheck: (isCheck: boolean) => void;
   updateColor: (color: PieceColor) => void;
+  stopTimer: () => void;
 }
 
 interface UsePlayerProps {
@@ -15,8 +16,13 @@ interface UsePlayerProps {
 }
 
 export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
+  const gameInfo = useAppSelector((state) => state.gameInfo);
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
   const dispatch = useAppDispatch();
+
+  const stopTimer = () => {
+    dispatch(setIsOn({ id: player.timerId, isOn: false }));
+  };
 
   const updateName = (name: string) => {
     dispatch(setName({ id: playerId, name }));
@@ -31,6 +37,7 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
   };
 
   useEffect(() => {
+    if (!gameInfo.isPlaying) return;
     if (player.isTurn) dispatch(setIsOn({ id: player.timerId, isOn: true }));
     else dispatch(setIsOn({ id: player.timerId, isOn: false }));
   }, [player.isTurn]);
@@ -39,6 +46,7 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
     updateName,
     updateIsInCheck,
     updateColor,
+    stopTimer,
     ...player,
   };
 }
