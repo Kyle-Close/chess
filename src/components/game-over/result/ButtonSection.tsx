@@ -1,6 +1,8 @@
 import { Box, Button } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 export function ButtonSection() {
+  const navigate = useNavigate();
   return (
     <Box className='flex-grow flex flex-col gap-2'>
       <Button
@@ -12,6 +14,7 @@ export function ButtonSection() {
         Rematch
       </Button>
       <Button
+        onClick={() => navigate('/setup')}
         fontSize='large'
         colorScheme='blue'
         borderRadius='99999px'
