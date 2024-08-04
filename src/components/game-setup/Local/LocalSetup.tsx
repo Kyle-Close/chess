@@ -2,19 +2,19 @@ import { Box, Button } from '@chakra-ui/react';
 import { PlayerNameInputs } from './PlayerNameInputs';
 import { TimeControls } from './TimeControls';
 import { AdditionalOptions } from './AdditionalOptions';
-import { useLocalGameSetup } from '../../../hooks/useLocalGameSetup';
+import { useGameSettings } from '../../../hooks/useGameSettings';
 
 export function LocalSetup() {
-  const localSetup = useLocalGameSetup();
+  const gameSettings = useGameSettings();
   return (
     <Box
       as='form'
       className='flex flex-col my-2 gap-4 flex-grow'
-      onSubmit={localSetup.handleSubmit(localSetup.onSubmit)}
+      onSubmit={gameSettings.handleSubmit(gameSettings.onLocalFormSubmit)}
     >
-      <PlayerNameInputs register={localSetup.register} />
-      <TimeControls register={localSetup.register} />
-      <AdditionalOptions register={localSetup.register} />
+      <PlayerNameInputs register={gameSettings.register} />
+      <TimeControls register={gameSettings.register} />
+      <AdditionalOptions register={gameSettings.register} />
       <Button mt='auto' type='submit' colorScheme='green'>
         Play
       </Button>

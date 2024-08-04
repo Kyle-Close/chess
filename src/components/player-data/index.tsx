@@ -6,11 +6,13 @@ import { selectPlayerById } from '../../redux/slices/player';
 import { PieceColor } from '../../enums/PieceColor';
 import { Box, Text } from '@chakra-ui/react';
 import { TimeControl } from '../../redux/slices/gameSettings';
+import { ResignButton } from '../resign/ResignButton';
 
 interface PlayerDataProps {
   playerId: string;
+  openModal: () => void;
 }
-export function PlayerData({ playerId }: PlayerDataProps) {
+export function PlayerData({ playerId, openModal }: PlayerDataProps) {
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const showTimer = gameSettings.timeControl !== TimeControl.FREE_PLAY;
@@ -24,7 +26,10 @@ export function PlayerData({ playerId }: PlayerDataProps) {
         />
         <Text className=''>{player.name}</Text>
       </Box>
-      {showTimer && <Timer timerId={player.timerId} color={player.color} />}
+      <Box className='flex gap-4 items-center'>
+        <ResignButton playerId={playerId} openModal={openModal} />
+        {showTimer && <Timer timerId={player.timerId} color={player.color} />}
+      </Box>
     </Box>
   );
 }

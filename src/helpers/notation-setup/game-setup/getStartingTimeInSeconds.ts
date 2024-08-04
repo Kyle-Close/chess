@@ -5,7 +5,7 @@ export function getStartingTimeInSeconds(timeControl: TimeControl) {
     case TimeControl.FREE_PLAY:
       return 99999999;
     case TimeControl.BLITZ:
-      return 3; //180;
+      return 180;
     case TimeControl.RAPID:
       return 600;
     case TimeControl.CLASSICAL:

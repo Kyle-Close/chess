@@ -4,13 +4,13 @@ import { Stats } from './Stats';
 
 interface GameOverProps {
   isOpen: boolean;
-  handleClose: () => void;
+  closeModal: () => void;
 }
 
-export function GameOver({ isOpen, handleClose }: GameOverProps) {
+export function GameOver({ isOpen, closeModal }: GameOverProps) {
   return (
-    <BaseModal isOpen={isOpen} onClose={handleClose}>
-      <Result />
+    <BaseModal isOpen={isOpen} onClose={() => {}}>
+      <Result closeModal={closeModal} />
       <Stats />
     </BaseModal>
   );

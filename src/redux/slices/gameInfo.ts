@@ -89,7 +89,14 @@ export const gameInfoSlice = createSlice({
       state.whitePlayerId = action.payload.whitePlayerId;
       state.blackPlayerId = action.payload.blackPlayerId;
     },
-    resetGameInfo() {
+    resetGameInfo(state, action: PayloadAction<{ resetIds: boolean }>) {
+      const { resetIds } = action.payload;
+      if (!resetIds)
+        return {
+          ...initialGameInfo,
+          whitePlayerId: state.whitePlayerId,
+          blackPlayerId: state.blackPlayerId,
+        };
       return { ...initialGameInfo };
     },
   },

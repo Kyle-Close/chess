@@ -14,17 +14,21 @@ export function Game() {
   const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const { undo, redo } = useUndoRedoMove();
+
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
   useEffect(() => {
     if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
   }, [gameInfo.matchResult]);
 
+  const closeModal = () => setShowModal(false);
+  const openModal = () => setShowModal(true);
+
   return (
     <div className={getGameClasses()}>
-      <GameOver isOpen={showModal} handleClose={() => setShowModal(false)} />
-      <PlayerData playerId={gameInfo.blackPlayerId} />
+      <GameOver isOpen={showModal} closeModal={closeModal} />
+      <PlayerData playerId={gameInfo.blackPlayerId} openModal={openModal} />
       <Board />
-      <PlayerData playerId={gameInfo.whitePlayerId} />
+      <PlayerData playerId={gameInfo.whitePlayerId} openModal={openModal} />
       {gameSettings.isUndoRedo && (
         <Box className='flex justify-end gap-2 mr-6'>
           <UndoButton handleClick={undo} />
