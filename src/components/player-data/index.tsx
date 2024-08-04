@@ -7,6 +7,7 @@ import { PieceColor } from '../../enums/PieceColor';
 import { Box, Text } from '@chakra-ui/react';
 import { TimeControl } from '../../redux/slices/gameSettings';
 import { ResignButton } from '../resign/ResignButton';
+import { OfferDrawButton } from '../offer-draw';
 
 interface PlayerDataProps {
   playerId: string;
@@ -27,6 +28,7 @@ export function PlayerData({ playerId, openModal }: PlayerDataProps) {
         <Text className=''>{player.name}</Text>
       </Box>
       <Box className='flex gap-4 items-center'>
+        <OfferDrawButton playerId={playerId} openModal={openModal} />
         <ResignButton playerId={playerId} openModal={openModal} />
         {showTimer && <Timer timerId={player.timerId} color={player.color} />}
       </Box>
