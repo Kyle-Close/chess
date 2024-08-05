@@ -11,8 +11,9 @@ export function PlayerNameInputs({ register }: PlayerNameInputsProps) {
   return (
     <>
       <Box className='flex gap-2 items-end'>
-        <Text className='basis-1/5'>White</Text>
+        <Text className='basis-1/5 font-semibold'>White</Text>
         <Input
+          variant='flushed'
           className='basis-4/5'
           size='sm'
           placeholder='Player name (optional)'
@@ -20,8 +21,9 @@ export function PlayerNameInputs({ register }: PlayerNameInputsProps) {
         />
       </Box>
       <Box className='flex gap-2 items-end'>
-        <Text className='basis-1/5'>Black</Text>
+        <Text className='basis-1/5 font-semibold'>Black</Text>
         <Input
+          variant='flushed'
           className='basis-4/5'
           size='sm'
           placeholder='Player name (optional)'

@@ -1,7 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
+    screens: {
+      ['2xs']: '350px',
+      ['xs']: '400px',
+      ...defaultTheme.screens,
+    },
     extend: {
       spacing: {
         128: '32rem',

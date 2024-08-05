@@ -42,7 +42,7 @@ export function Piece({ piece }: PieceProps) {
 
 function getPieceClasses(isShowWhiteOnBottom = false) {
   // bg-opacity-100
-  const responsive = ['max-h-8', 'md:max-h-10', 'md:max-w-10'];
+  const responsive = ['max-h-6', 'xs:max-h-8', 'md:max-h-10'];
   const flipped = isShowWhiteOnBottom ? ['rotate-180'] : [];
 
   return [...responsive, ...flipped].join(' ');

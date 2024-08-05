@@ -7,5 +7,5 @@ interface FenInputProps {
 }
 
 export function FenInput({ register }: FenInputProps) {
-  return <Input size='sm' placeholder='FEN string' {...register('fen')} />;
+  return <Input size='sm' placeholder='FEN string (optional)' {...register('fen')} />;
 }
