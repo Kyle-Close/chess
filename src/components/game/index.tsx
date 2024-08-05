@@ -16,6 +16,7 @@ export function Game() {
   const { undo, redo } = useUndoRedoMove();
 
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
+
   useEffect(() => {
     if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
   }, [gameInfo.matchResult]);
