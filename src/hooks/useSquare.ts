@@ -4,6 +4,7 @@ import { getSquareRank } from '../helpers/analysis/board-mapping/getSquareRank';
 
 export function useSquare(
   index: number,
+  checkSquare: boolean,
   currentPiece: Piece | null,
   isStartPos: boolean,
   handleSquareClicked: (index: number) => void
@@ -15,6 +16,7 @@ export function useSquare(
 
   if (currentPiece && currentPiece.color === PieceColor.BLACK) classes.push('text-black');
   if (isStartPos) classes.push('bg-green-500');
+  if (checkSquare) classes.push('bg-red-400');
 
   const handleClick = () => {
     handleSquareClicked(index);

@@ -25,13 +25,14 @@ import {
 } from '../redux/slices/castleRights';
 import { createTimer, removeAllTimers, setIsOn, setRemainingSeconds } from '../redux/slices/timer';
 import { getStartingTimeInSeconds } from '../helpers/notation-setup/game-setup/getStartingTimeInSeconds';
-import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
+import { isValidFEN, parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
 import { setupBoard } from '../redux/slices/board';
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { PieceColor } from '../enums/PieceColor';
 import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
 import { useNavigate } from 'react-router-dom';
-import { initialCastleRights } from './useCastleRights';
+import { initialCastleRights, useCastleRights } from './useCastleRights';
+import { BoardState } from '../context/board/InitialState';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -40,6 +41,7 @@ export type LocalGameSetupFormInputs = {
   isIncrement: boolean;
   isUndoRedo: boolean;
   isFiftyMoveRule: boolean;
+  fen: string;
 };
 
 export function useGameSettings() {
@@ -47,6 +49,7 @@ export function useGameSettings() {
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
+  const castleRights = useCastleRights();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<LocalGameSetupFormInputs>();
@@ -65,11 +68,20 @@ export function useGameSettings() {
     const settings = buildSettingsObject(data);
     const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
     const blackTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
-    const whiteCastleRights = dispatch(createCastleRights());
-    const blackCastleRights = dispatch(createCastleRights());
+    const whiteCastleRightsRedux = dispatch(createCastleRights());
+    const blackCastleRightsRedux = dispatch(createCastleRights());
 
-    const fen = parseFenString(DEFAULT_FEN_STRING);
-    dispatch(setupBoard(buildBoardFromFen(fen.initialPositions)));
+    let board: BoardState = [];
+
+    if (isValidFEN(data.fen)) {
+      const fen = parseFenString(data.fen);
+      board = buildBoardFromFen(fen.initialPositions);
+    } else {
+      const fen = parseFenString(DEFAULT_FEN_STRING);
+      board = buildBoardFromFen(fen.initialPositions);
+    }
+
+    dispatch(setupBoard(board));
 
     const whitePlayer = dispatch(
       createPlayer({
@@ -78,7 +90,7 @@ export function useGameSettings() {
         isInCheck: false,
         isTurn: false,
         timerId: whiteTimer.payload.id,
-        castleRightsId: whiteCastleRights.payload.id,
+        castleRightsId: whiteCastleRightsRedux.payload.id,
       })
     );
 
@@ -89,9 +101,12 @@ export function useGameSettings() {
         isInCheck: false,
         isTurn: false,
         timerId: blackTimer.payload.id,
-        castleRightsId: blackCastleRights.payload.id,
+        castleRightsId: blackCastleRightsRedux.payload.id,
       })
     );
+
+    castleRights.updateCastleRights(board, PieceColor.WHITE, whitePlayer.payload.castleRightsId);
+    castleRights.updateCastleRights(board, PieceColor.BLACK, blackPlayer.payload.castleRightsId);
 
     dispatch(
       setPlayerIds({ whitePlayerId: whitePlayer.payload.id, blackPlayerId: blackPlayer.payload.id })

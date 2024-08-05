@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStartEndAction } from './useStartEndAction';
 import { getInitialBoardState } from '../context/board/InitialState';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
@@ -11,6 +11,8 @@ import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { clearIsValidSquares, setupBoard } from '../redux/slices/board';
 import { selectPlayerById } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
+import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
+import { PieceColor } from '../enums/PieceColor';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -24,6 +26,16 @@ export function useBoard() {
   const dispatch = useAppDispatch();
   const startEnd = useStartEndAction();
   const { tryMove } = useMove();
+  let checkIndex: number | null = null;
+  // Look for check square - for highlighting
+  if (whitePlayer.isInCheck) {
+    const whiteKingIndex = getKingIndex(board, PieceColor.WHITE);
+    checkIndex = whiteKingIndex;
+  }
+  if (blackPlayer.isInCheck) {
+    const blackKingIndex = getKingIndex(board, PieceColor.BLACK);
+    checkIndex = blackKingIndex;
+  }
 
   const isWhiteTurn = whitePlayer.isTurn;
   const currentPlayer = isWhiteTurn ? whitePlayer : blackPlayer;
@@ -104,5 +116,6 @@ export function useBoard() {
     handleSquareClicked,
     handleRightClickOnBoard,
     resetBoard,
+    checkIndex,
   };
 }

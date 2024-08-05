@@ -39,7 +39,7 @@ import {
   setMatchResult,
   setMatchResultSubType,
 } from '../redux/slices/gameInfo';
-import { toggleIsTurn } from '../redux/slices/player';
+import { setIsInCheck, toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { useCastleRights } from './useCastleRights';
 import { addRemainingSeconds, setIsOn } from '../redux/slices/timer';
@@ -138,6 +138,14 @@ export function useMove(): UseMoveReturn {
 
     // Add latest move to game move history
     updateMoveHistory(moveMetaData);
+
+    // Update player check state if in check
+    if (moveMetaData.isCheck) {
+      dispatch(setIsInCheck({ id: waitingPlayer.id, isInCheck: true }));
+    } else {
+      dispatch(setIsInCheck({ id: activePlayer.id, isInCheck: false }));
+      dispatch(setIsInCheck({ id: waitingPlayer.id, isInCheck: false }));
+    }
 
     // Check if game is over. Update gameState if true
     const isOver = handleGameIsOver(moveMetaData);

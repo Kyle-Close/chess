@@ -2,7 +2,7 @@ import { FormLabel, Text } from '@chakra-ui/react';
 import { Switch } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
 import { UseFormRegister } from 'react-hook-form';
-import { LocalGameSetupFormInputs } from '../../../hooks/useLocalGameSetup';
+import { LocalGameSetupFormInputs } from '../../../hooks/useGameSettings';
 
 interface AdditionalOptionsProps {
   register: UseFormRegister<LocalGameSetupFormInputs>;

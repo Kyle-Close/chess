@@ -3,16 +3,18 @@ import { useAppSelector, useBoard } from '../../hooks/useBoard';
 
 export function Board() {
   const board = useAppSelector((state) => state.board);
-  const { startPos, handleSquareClicked, handleRightClickOnBoard } = useBoard();
+  const { startPos, handleSquareClicked, handleRightClickOnBoard, checkIndex } = useBoard();
 
   return (
     <div onAuxClick={handleRightClickOnBoard} className={getBoardClasses()}>
       <div className='grid grid-cols-8 grid-rows-8 grow'>
         {board.map((square, key) => {
           const isStart = startPos === key;
+          const isCheck = checkIndex === key;
           return (
             <Square
               currentPiece={square.piece}
+              isCheck={isCheck}
               index={key}
               key={key}
               handleSquareClicked={handleSquareClicked}

@@ -3,6 +3,7 @@ import { PlayerNameInputs } from './PlayerNameInputs';
 import { TimeControls } from './TimeControls';
 import { AdditionalOptions } from './AdditionalOptions';
 import { useGameSettings } from '../../../hooks/useGameSettings';
+import { FenInput } from './FenInput';
 
 export function LocalSetup() {
   const gameSettings = useGameSettings();
@@ -15,6 +16,7 @@ export function LocalSetup() {
       <PlayerNameInputs register={gameSettings.register} />
       <TimeControls register={gameSettings.register} />
       <AdditionalOptions register={gameSettings.register} />
+      <FenInput register={gameSettings.register} />
       <Button mt='auto' type='submit' colorScheme='green'>
         Play
       </Button>

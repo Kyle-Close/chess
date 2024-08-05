@@ -5,6 +5,7 @@ import { selectTimerById } from '../../redux/slices/timer';
 import { convertSecondsToMin } from '../../helpers/utilities/convertSecondsToMin';
 import { getRemainingPiecesByColor } from '../../helpers/game-core/piece-management/getRemainingPiecesByColor';
 import { PieceColor } from '../../enums/PieceColor';
+import { TimeControl } from '../../redux/slices/gameSettings';
 
 interface GameOverDataRow {
   title: string;
@@ -15,6 +16,7 @@ interface GameOverDataRow {
 export function Stats() {
   const board = useAppSelector((state) => state.board);
   const gameInfo = useAppSelector((state) => state.gameInfo);
+  const gameSettings = useAppSelector((state) => state.gameSettings);
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const whiteTimer = useAppSelector((state) => selectTimerById(state, whitePlayer.timerId));
@@ -23,8 +25,14 @@ export function Stats() {
   const titleClass = 'text-white';
   const dataClass = 'text-green-200';
 
-  const whiteTimeRemaining = convertSecondsToMin(whiteTimer.remainingSeconds);
-  const blackTimeRemaining = convertSecondsToMin(blackTimer.remainingSeconds);
+  const whiteTimeRemaining =
+    gameSettings.timeControl === TimeControl.FREE_PLAY
+      ? '∞'
+      : convertSecondsToMin(whiteTimer.remainingSeconds);
+  const blackTimeRemaining =
+    gameSettings.timeControl === TimeControl.FREE_PLAY
+      ? '∞'
+      : convertSecondsToMin(blackTimer.remainingSeconds);
 
   const totalMoves = gameInfo.fullMoves.toString();
   const whiteRemainingPieces = getRemainingPiecesByColor(board, PieceColor.WHITE);

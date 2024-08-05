@@ -7,8 +7,8 @@ import { useAppDispatch } from './useBoard';
 import { CastleRights, setCastleRights } from '../redux/slices/castleRights';
 
 export interface UseCastleRightsReturn {
-  updateCastleRights: (board: BoardState, color: PieceColor) => void;
-  reset: () => void;
+  updateCastleRights: (board: BoardState, color: PieceColor, castleRightsId: string) => void;
+  reset: (castleRightsId: string) => void;
 }
 
 export const initialCastleRights = {
@@ -18,20 +18,16 @@ export const initialCastleRights = {
   queenSideIsAvailable: false,
 };
 
-interface UseCastleRightsProps {
-  id: string;
-}
-
-export function useCastleRights({ id }: UseCastleRightsProps): UseCastleRightsReturn {
+export function useCastleRights(): UseCastleRightsReturn {
   const dispatch = useAppDispatch();
 
-  function reset() {
-    dispatch(setCastleRights({ castleRights: { ...initialCastleRights, id } }));
+  function reset(castleRightsId: string) {
+    dispatch(setCastleRights({ castleRights: { ...initialCastleRights, id: castleRightsId } }));
   }
 
-  function updateCastleRights(board: BoardState, color: PieceColor) {
+  function updateCastleRights(board: BoardState, color: PieceColor, castleRightsId: string) {
     const newCastleRights = getCastleRights(board, color);
-    dispatch(setCastleRights({ castleRights: { ...newCastleRights, id } }));
+    dispatch(setCastleRights({ castleRights: { ...newCastleRights, id: castleRightsId } }));
   }
 
   return { updateCastleRights, reset };

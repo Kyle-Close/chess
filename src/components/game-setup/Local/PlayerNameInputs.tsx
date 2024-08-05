@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import { Input, Text } from '@chakra-ui/react';
 import { UseFormRegister } from 'react-hook-form';
-import { LocalGameSetupFormInputs } from '../../../hooks/useLocalGameSetup';
+import { LocalGameSetupFormInputs } from '../../../hooks/useGameSettings';
 
 interface PlayerNameInputsProps {
   register: UseFormRegister<LocalGameSetupFormInputs>;
@@ -10,13 +10,23 @@ interface PlayerNameInputsProps {
 export function PlayerNameInputs({ register }: PlayerNameInputsProps) {
   return (
     <>
-      <Box className='flex flex-col gap-2'>
-        <Text>White</Text>
-        <Input size='sm' placeholder='Player name (optional)' {...register('whiteName')} />
+      <Box className='flex gap-2 items-end'>
+        <Text className='basis-1/5'>White</Text>
+        <Input
+          className='basis-4/5'
+          size='sm'
+          placeholder='Player name (optional)'
+          {...register('whiteName')}
+        />
       </Box>
-      <Box className='flex flex-col gap-2'>
-        <Text>Black</Text>
-        <Input size='sm' placeholder='Player name (optional)' {...register('blackName')} />
+      <Box className='flex gap-2 items-end'>
+        <Text className='basis-1/5'>Black</Text>
+        <Input
+          className='basis-4/5'
+          size='sm'
+          placeholder='Player name (optional)'
+          {...register('blackName')}
+        />
       </Box>
     </>
   );

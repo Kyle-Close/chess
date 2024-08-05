@@ -28,8 +28,10 @@ export function PlayerData({ playerId, openModal }: PlayerDataProps) {
         <Text className=''>{player.name}</Text>
       </Box>
       <Box className='flex gap-4 items-center'>
-        <OfferDrawButton playerId={playerId} openModal={openModal} />
-        <ResignButton playerId={playerId} openModal={openModal} />
+        <Box className='flex gap-2 items-center'>
+          <OfferDrawButton playerId={playerId} openModal={openModal} />
+          <ResignButton playerId={playerId} openModal={openModal} />
+        </Box>
         {showTimer && <Timer timerId={player.timerId} color={player.color} />}
       </Box>
     </Box>

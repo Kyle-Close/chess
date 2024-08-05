@@ -1,10 +1,10 @@
 import { PieceColor } from '../../../enums/PieceColor';
-import { CastleRights } from '../../../hooks/useCastleRights';
+import { CastleRights } from '../../../redux/slices/castleRights';
 
 export function getPlayerCastleRightsFromFen(
   castleRights: string,
   color: PieceColor
-): CastleRights {
+): Omit<CastleRights, 'id'> {
   const KING_CHAR = color === PieceColor.WHITE ? 'K' : 'k';
   const QUEEN_CHAR = color === PieceColor.WHITE ? 'Q' : 'q';
 

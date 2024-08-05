@@ -1,7 +1,10 @@
 import { Piece } from '../../context/board/InitialState';
 import { getSquareFile } from '../../helpers/analysis/board-mapping/getSquareFile';
 import { getSquareRank } from '../../helpers/analysis/board-mapping/getSquareRank';
+import { getKingIndex } from '../../helpers/analysis/game-checks/getKingIndex';
+import { useAppSelector } from '../../hooks/useBoard';
 import { useSquare } from '../../hooks/useSquare';
+import { selectPlayerById } from '../../redux/slices/player';
 import { Piece as PieceComponent } from '../piece';
 
 interface SquareProps {
@@ -11,6 +14,7 @@ interface SquareProps {
   isStartPos: boolean;
   isValidMove: boolean;
   isCapture: boolean;
+  isCheck: boolean;
 }
 
 export function Square({
@@ -20,10 +24,41 @@ export function Square({
   isStartPos,
   isValidMove,
   isCapture,
+  isCheck,
 }: SquareProps) {
-  const { handleClick, classes } = useSquare(index, currentPiece, isStartPos, handleSquareClicked);
+  const { handleClick, classes } = useSquare(
+    index,
+    isCheck,
+    currentPiece,
+    isStartPos,
+    handleSquareClicked
+  );
+
   const rank = getSquareRank(index);
   const file = getSquareFile(index);
+
+  const buildCircleClasses = () => {
+    const circleClasses = [
+      'rounded-full',
+      'flex',
+      'max-w-4',
+      'min-h-4',
+      'min-w-4',
+      'max-h-4',
+      'left-1/2',
+      'top-1/2',
+      'absolute',
+      'transform',
+      '-translate-x-1/2',
+      '-translate-y-1/2',
+    ];
+
+    if (isValidMove && !isCapture) circleClasses.push('bg-green-600');
+    else if (isValidMove && isCapture) circleClasses.push('bg-red-500');
+
+    return circleClasses.join(' ');
+  };
+
   return (
     <div onClick={handleClick} className={classes.join(' ')}>
       {rank === 1 && (
@@ -32,17 +67,9 @@ export function Square({
       {file === 'a' && (
         <div className='absolute text-orange-600 top-0 left-0.5 text-xs'>{rank}</div>
       )}
-      {false && (
-        <div className='absolute text-red-500 text-xs top-0 left-0 opacity-50'>{index}</div>
-      )}
       <div className='flex p-2 max-w-1/2 max-h-1/2 relative z-10'>
         {currentPiece !== null && <PieceComponent piece={currentPiece} />}
-        {isValidMove && !isCapture && (
-          <div className='bg-green-600 rounded-full flex max-w-4 min-h-4 min-w-4 max-h-4 left-1/2 top-1/2 absolute transform -translate-x-1/2 -translate-y-1/2'></div>
-        )}
-        {isValidMove && isCapture && (
-          <div className='bg-red-500 rounded-full flex max-w-4 min-h-4 min-w-4 max-h-4 left-1/2 top-1/2 absolute transform -translate-x-1/2 -translate-y-1/2'></div>
-        )}
+        {isValidMove && <div className={buildCircleClasses()}></div>}
       </div>
     </div>
   );
