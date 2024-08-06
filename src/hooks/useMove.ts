@@ -46,7 +46,7 @@ import { addRemainingSeconds, setIsOn } from '../redux/slices/timer';
 import { usePlayer } from './usePlayer';
 import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { getSecondsToIncrement } from '../helpers/game-core/move-utility/getSecondsToIncrement';
-
+import { socket } from '../main';
 export interface UseMoveReturn {
   tryMove: (piece: Piece, startPos: number, endPos: number) => boolean;
 }
@@ -93,6 +93,15 @@ export function useMove(): UseMoveReturn {
     updateGameState(moveMetaData);
 
     dispatch(setupBoard(moveMetaData.updatedBoard));
+    const newBoardFen = buildFenStringFromGame(
+      moveMetaData,
+      activePlayer.color === PieceColor.BLACK,
+      gameInfo,
+      activePlayer.color === PieceColor.WHITE,
+      whiteCastleRights,
+      blackCastleRights
+    );
+    socket.emit('go', newBoardFen);
 
     return true;
   }

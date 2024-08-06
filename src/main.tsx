@@ -8,10 +8,20 @@ import { GameSetup } from './components/game-setup/index.tsx';
 import { Game } from './components/game/index.tsx';
 import { Provider } from 'react-redux';
 import store from './redux/store.ts';
-import { GameOver } from './components/game-over/index.tsx';
+import { io } from 'socket.io-client';
 
 import { extendTheme } from '@chakra-ui/react';
 import '@fontsource/caveat';
+
+export const socket = io('http://localhost:3000');
+
+socket.on('connect', () => {
+  socket.send('Hello Server');
+});
+
+socket.on('bestmove', (message) => {
+  console.log('Best Move:', message);
+});
 
 const theme = extendTheme({
   fonts: {

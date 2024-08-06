@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useStartEndAction } from './useStartEndAction';
 import { getInitialBoardState } from '../context/board/InitialState';
 import { ValidMoves } from '../helpers/game-core/piece-validation/kingMoveValidation';
@@ -13,6 +13,7 @@ import { selectPlayerById } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { PieceColor } from '../enums/PieceColor';
+import { socket } from '../main';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
