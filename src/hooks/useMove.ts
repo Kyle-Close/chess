@@ -38,6 +38,7 @@ import {
   setIsPlaying,
   setMatchResult,
   setMatchResultSubType,
+  setPawnPromotionSquare,
 } from '../redux/slices/gameInfo';
 import { setIsInCheck, toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
@@ -69,9 +70,7 @@ export function useMove(): UseMoveReturn {
   const blackCastleRights = useAppSelector((state) =>
     selectCastleRightsById(state, blackPlayer.castleRightsId)
   );
-  const castleRights = useCastleRights({
-    id: whitePlayer.isTurn ? whiteCastleRights.id : blackCastleRights.id,
-  });
+  const castleRights = useCastleRights();
 
   function tryMove(piece: Piece, startPos: number, endPos: number): boolean {
     const newBoard = deepCopyBoard(board);
@@ -114,9 +113,6 @@ export function useMove(): UseMoveReturn {
     const isEnPassant = handleEnPassant(moveMetaData);
     if (!isEnPassant) dispatch(setEnPassantSquare(null));
 
-    // Flip the board for next player
-    //gameState.toggleShowWhiteOnBottom();
-
     // Update player turns
     dispatch(toggleIsTurn({ id: gameInfo.whitePlayerId }));
     dispatch(toggleIsTurn({ id: gameInfo.blackPlayerId }));
@@ -143,7 +139,11 @@ export function useMove(): UseMoveReturn {
     );
 
     // Update castle rights
-    castleRights.updateCastleRights(moveMetaData.updatedBoard, moveMetaData.piece.color);
+    castleRights.updateCastleRights(
+      moveMetaData.updatedBoard,
+      moveMetaData.piece.color,
+      activePlayer.castleRightsId
+    );
 
     // Add latest move to game move history
     updateMoveHistory(moveMetaData);
@@ -151,6 +151,7 @@ export function useMove(): UseMoveReturn {
     // Update player check state if in check
     if (moveMetaData.isCheck) {
       dispatch(setIsInCheck({ id: waitingPlayer.id, isInCheck: true }));
+      dispatch(setIsInCheck({ id: activePlayer.id, isInCheck: false }));
     } else {
       dispatch(setIsInCheck({ id: activePlayer.id, isInCheck: false }));
       dispatch(setIsInCheck({ id: waitingPlayer.id, isInCheck: false }));
@@ -268,16 +269,14 @@ export function useMove(): UseMoveReturn {
 
     // Handle pawn promotion logic
     if (moveMetaData.isPromotion) {
-      const input = prompt('Promote your pawn');
-      if (!input || moveMetaData.piece.color === null) return;
-
-      const newPiece = convertStringToPiece(input, moveMetaData.piece.color);
+      dispatch(setPawnPromotionSquare(moveMetaData.endPosition));
+      //const newPiece = convertStringToPiece(input, moveMetaData.piece.color);
 
       // Update moveMetaData promotion piece
-      moveMetaData.promotionPiece = newPiece;
+      //moveMetaData.promotionPiece = newPiece;
 
       // Update the game board with promoted piece
-      assignPieceToSquare(moveMetaData.updatedBoard, newPiece, moveMetaData.endPosition);
+      //assignPieceToSquare(moveMetaData.updatedBoard, newPiece, moveMetaData.endPosition);
     }
   }
 

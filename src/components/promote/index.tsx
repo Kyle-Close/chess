@@ -16,10 +16,26 @@ export function PromotePawnModal({ isOpen, onClose }: PromotePawnModalProps) {
       <Box className='flex flex-col gap-2 items-center bg-red-400'>
         <Heading>Pawn Promotion</Heading>
         <Box className='flex gap-2'>
-          <IconButton colorScheme='green' aria-label='Black Queen Piece' icon={<BlackQueen />} />
-          <IconButton colorScheme='green' aria-label='Black Bishop Piece' icon={<BlackBishop />} />
-          <IconButton colorScheme='green' aria-label='Black Knight Piece' icon={<BlackKnight />} />
-          <IconButton colorScheme='green' aria-label='Black Rook Piece' icon={<BlackRook />} />
+          <IconButton
+            colorScheme='green'
+            aria-label='Black Queen'
+            icon={<Box maxW='1.5rem' as='img' src={BlackQueen} />}
+          />
+          <IconButton
+            colorScheme='green'
+            aria-label='Black Bishop'
+            icon={<Box maxW='1rem' as='img' src={BlackBishop} />}
+          />
+          <IconButton
+            colorScheme='green'
+            aria-label='Black Knight'
+            icon={<Box maxW='1.2rem' as='img' src={BlackKnight} />}
+          />
+          <IconButton
+            colorScheme='green'
+            aria-label='Black Rook'
+            icon={<Box maxW='1rem' as='img' src={BlackRook} />}
+          />
         </Box>
       </Box>
     </BaseModal>

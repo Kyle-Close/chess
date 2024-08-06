@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MoveHistory } from '../../context/types/MoveHistory';
 
+type PawnPromotionSquare = number | null;
+
 export enum MatchResult {
   ONGOING,
   DRAW,
@@ -21,6 +23,7 @@ export enum MatchResultSubType {
 }
 
 export interface GameInfo {
+  isPlaying: boolean;
   matchResult: MatchResult;
   matchResultSubType: MatchResultSubType;
   halfMoves: number;
@@ -30,6 +33,7 @@ export interface GameInfo {
   enPassantSquare: number | null;
   whitePlayerId: string;
   blackPlayerId: string;
+  pawnPromotionSquare: PawnPromotionSquare;
 }
 
 const initialGameInfo = {
@@ -43,11 +47,12 @@ const initialGameInfo = {
   enPassantSquare: null as number | null,
   whitePlayerId: '',
   blackPlayerId: '',
+  pawnPromotionSquare: null,
 };
 
 export const gameInfoSlice = createSlice({
   name: 'gameInfo',
-  initialState: initialGameInfo,
+  initialState: initialGameInfo as GameInfo,
   reducers: {
     setIsPlaying(state, action: PayloadAction<boolean>) {
       state.isPlaying = action.payload;
@@ -89,6 +94,12 @@ export const gameInfoSlice = createSlice({
       state.whitePlayerId = action.payload.whitePlayerId;
       state.blackPlayerId = action.payload.blackPlayerId;
     },
+    setPawnPromotionSquare(state, action: PayloadAction<PawnPromotionSquare>) {
+      state.pawnPromotionSquare = action.payload;
+    },
+    clearPawnPromotionSquare(state) {
+      state.pawnPromotionSquare = null;
+    },
     resetGameInfo(state, action: PayloadAction<{ resetIds: boolean }>) {
       const { resetIds } = action.payload;
       if (!resetIds)
@@ -116,5 +127,7 @@ export const {
   setHalfMoves,
   setFullMoves,
   setPlayerIds,
+  setPawnPromotionSquare,
+  clearPawnPromotionSquare,
   resetGameInfo,
 } = gameInfoSlice.actions;

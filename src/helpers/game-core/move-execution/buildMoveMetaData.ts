@@ -16,7 +16,6 @@ export interface MoveMetaData {
   isCastle: boolean;
   castleMetaData: CastleMetaData | null;
   isPromotion: boolean;
-  promotionPiece: Piece | null;
   isCapture: boolean;
   capturedPiece: Piece | null;
   startPosition: number;
@@ -50,7 +49,6 @@ export function buildMoveMetaData(
     isCastle,
     castleMetaData,
     isPromotion,
-    promotionPiece: null,
     isCapture,
     capturedPiece,
     startPosition,
