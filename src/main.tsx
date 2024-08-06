@@ -16,7 +16,7 @@ import '@fontsource/caveat';
 export const socket = io('http://localhost:3000');
 
 socket.on('connect', () => {
-  socket.send('Hello Server');
+  socket.emit('difficulty', 1);
 });
 
 socket.on('bestmove', (message) => {

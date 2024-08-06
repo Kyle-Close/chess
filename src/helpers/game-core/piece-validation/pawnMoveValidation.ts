@@ -68,14 +68,14 @@ function captureAvailable(
   if (piece.color === PieceColor.WHITE) {
     if (
       isLeft &&
-      pieceFile !== 'a' &&
+      pieceFile !== 'h' &&
       board[currentIndex - 7].piece !== null &&
       board[currentIndex - 7].piece?.color !== PieceColor.WHITE
     ) {
       return { index: currentIndex - 7, piece: board[currentIndex - 7].piece };
     } else if (
       !isLeft &&
-      pieceFile !== 'h' &&
+      pieceFile !== 'a' &&
       board[currentIndex - 9].piece !== null &&
       board[currentIndex - 9].piece?.color !== PieceColor.WHITE
     ) {
@@ -84,14 +84,14 @@ function captureAvailable(
   } else {
     if (
       isLeft &&
-      pieceFile !== 'a' &&
+      pieceFile !== 'h' &&
       board[currentIndex + 9].piece !== null &&
       board[currentIndex + 9].piece?.color !== PieceColor.BLACK
     ) {
       return { index: currentIndex + 9, piece: board[currentIndex + 9].piece };
     } else if (
       !isLeft &&
-      pieceFile !== 'h' &&
+      pieceFile !== 'a' &&
       board[currentIndex + 7].piece &&
       board[currentIndex + 7].piece?.color !== PieceColor.BLACK
     ) {
