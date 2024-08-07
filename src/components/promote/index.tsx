@@ -21,6 +21,15 @@ export function PromotePawnModal({ isOpen, onClose }: PromotePawnModalProps) {
   const handleClick = (pieceType: PieceType) => {
     if (!gameInfo.pawnPromotionSquare) return;
 
+    // INSTEAD NEED TO UPDATE MOVE META DATA BOARD
+    // 1. Update board with chosen piece on end square
+    // 2. clear pawn promotion square in state
+    // 3. set is playing to true in state
+    // 4. trigger transition to run with new move meta data
+    // OR
+    // deep copy moveMeta data so we aren't manipulating state
+    // then we can pass it to transition
+    HERE;
     replacePieceAtPosition(gameInfo.pawnPromotionSquare, pieceType);
     dispatch(clearPawnPromotionSquare());
     dispatch(setIsPlaying(true));

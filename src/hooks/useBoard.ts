@@ -16,6 +16,7 @@ import { PieceColor } from '../enums/PieceColor';
 import { PieceType } from '../enums/PieceType';
 import { useTransitionTurn } from './useTransitionTurn';
 import { setMoveMetaData } from '../redux/slices/move';
+import { setEnPassantSquare, setPawnPromotionSquare } from '../redux/slices/gameInfo';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -47,13 +48,16 @@ export function useBoard() {
     selectCastleRightsById(state, currentPlayer.castleRightsId)
   );
 
-  function replacePieceAtPosition(pos: number, type: PieceType) {
+  function replacePieceAtPosition(pos: number, type: PieceType, useOppositeColor = false) {
     const copy = deepCopyBoard(board);
     const piece = copy[pos].piece;
 
     if (!piece) throw Error('No piece found at position: ' + pos);
 
-    const color = piece.color;
+    const currentColor = piece.color;
+    const oppositeColor = currentColor === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+
+    const color = useOppositeColor ? oppositeColor : currentColor;
     copy[pos].piece = { type, color, hasMoved: true };
     dispatch(setupBoard(copy));
   }
@@ -120,8 +124,15 @@ export function useBoard() {
       const piece = board[startEnd.startPos].piece;
       if (piece) {
         const moveMetaData = buildInitMoveMetaData(piece, startEnd.startPos, startEnd.endPos);
-        if (moveMetaData?.isMoveValid) dispatch(setMoveMetaData(moveMetaData));
-        console.log(moveMetaData);
+
+        if (moveMetaData && moveMetaData.isMoveValid) {
+          console.log(moveMetaData);
+          dispatch(setMoveMetaData(moveMetaData));
+
+          if (!moveMetaData.isPromotion) transition(moveMetaData);
+          else dispatch(setPawnPromotionSquare(moveMetaData.endPosition));
+        }
+
         startEnd.clear();
       }
     }

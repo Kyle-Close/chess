@@ -9,7 +9,7 @@ import { GameOver } from '../game-over';
 import { MatchResult, setIsPlaying } from '../../redux/slices/gameInfo';
 import { useEffect, useState } from 'react';
 import { PromotePawnModal } from '../promote';
-import { pauseAllTimers, setIsOn } from '../../redux/slices/timer';
+import { setIsOn } from '../../redux/slices/timer';
 import { selectPlayerById } from '../../redux/slices/player';
 
 export function Game() {
