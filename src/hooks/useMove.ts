@@ -36,7 +36,6 @@ import {
   setIsPlaying,
   setMatchResult,
   setMatchResultSubType,
-  setPawnPromotionSquare,
 } from '../redux/slices/gameInfo';
 import { setIsInCheck, toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
@@ -75,6 +74,7 @@ export function useMove(): UseMoveReturn {
     const moveMetaData = buildMoveMetaData(
       newBoard,
       gameInfo.enPassantSquare,
+      activePlayer.color,
       piece,
       startPos,
       endPos
@@ -86,7 +86,7 @@ export function useMove(): UseMoveReturn {
     );
     if (!moveMetaData.isMoveValid) return false;
 
-    handleSpecialMoves(moveMetaData);
+    handleSpecialMoves(moveMetaData); // good
     updateGameState(moveMetaData);
 
     dispatch(setupBoard(moveMetaData.updatedBoard));
@@ -104,16 +104,12 @@ export function useMove(): UseMoveReturn {
   }
 
   function updateGameState(moveMetaData: MoveMetaData) {
-    // Clear the redo queue
-    dispatch(clearMoveHistoryRedo());
+    // Update enPassantNotation & enPassantTargetSquare
+    handleEnPassant(moveMetaData);
 
-    // Handle en passant
-    const isEnPassant = handleEnPassant(moveMetaData);
-    if (!isEnPassant) dispatch(setEnPassantSquare(null));
-
-    // Update player turns
-    dispatch(toggleIsTurn({ id: gameInfo.whitePlayerId }));
-    dispatch(toggleIsTurn({ id: gameInfo.blackPlayerId }));
+    // Update turn data
+    moveMetaData.activePlayerId = activePlayer.id;
+    moveMetaData.waitingPlayerId = waitingPlayer.id;
 
     // Update move counters
     updateMoveCounts(moveMetaData);
@@ -218,24 +214,19 @@ export function useMove(): UseMoveReturn {
   function updateMoveCounts(moveMetaData: MoveMetaData) {
     // Update game half moves
     moveMetaData.halfMoves = gameInfo.halfMoves + 1;
-    dispatch(setHalfMoves(gameInfo.halfMoves + 1));
-
     if (isHalfMoveResetCondition(moveMetaData.piece, board[moveMetaData.endPosition].isCapture)) {
       moveMetaData.halfMoves = 0;
-      dispatch(setHalfMoves(0));
     }
 
     // Update game full moves
-    if (activePlayer.color === PieceColor.BLACK) dispatch(setFullMoves(gameInfo.fullMoves + 1));
+    if (activePlayer.color === PieceColor.BLACK) moveMetaData.fullMoves += 1;
 
-    // Handle specific game settings
+    // Handle increment when enabled
     if (settings.isIncrement)
-      dispatch(
-        addRemainingSeconds({
-          id: activePlayer.timerId,
-          secondsToAdd: getSecondsToIncrement(settings.timeControl),
-        })
-      );
+      moveMetaData.increment = {
+        timerId: activePlayer.timerId,
+        secondsToIncrement: getSecondsToIncrement(settings.timeControl),
+      };
   }
 
   function handlePawnMoves(moveMetaData: MoveMetaData) {
@@ -251,27 +242,14 @@ export function useMove(): UseMoveReturn {
       clearSquare(moveMetaData.updatedBoard, capturedPawnIndex);
     }
 
-    // Set or clear gameState en passant state
+    // Set enPassantSquare or null it
     if (isPawnAdvancingTwoSquares(moveMetaData.startPosition, moveMetaData.endPosition)) {
       const rank = (getSquareRank(moveMetaData.startPosition) +
         (moveMetaData.piece.color === PieceColor.WHITE ? 1 : -1)) as SquareRank;
       const file = getSquareFile(moveMetaData.startPosition);
       const enPassantSquare = translatePositionToIndex(rank, file);
-
-      dispatch(setEnPassantSquare(enPassantSquare));
-    } else dispatch(setEnPassantSquare(null));
-
-    // Handle pawn promotion logic
-    if (moveMetaData.isPromotion) {
-      dispatch(setPawnPromotionSquare(moveMetaData.endPosition));
-      //const newPiece = convertStringToPiece(input, moveMetaData.piece.color);
-
-      // Update moveMetaData promotion piece
-      //moveMetaData.promotionPiece = newPiece;
-
-      // Update the game board with promoted piece
-      //assignPieceToSquare(moveMetaData.updatedBoard, newPiece, moveMetaData.endPosition);
-    }
+      moveMetaData.enPassantSquare = enPassantSquare;
+    } else moveMetaData.enPassantSquare = null;
   }
 
   return {

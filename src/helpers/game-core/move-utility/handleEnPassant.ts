@@ -10,6 +10,7 @@ export function handleEnPassant(moveMetaData: MoveMetaData): boolean {
   if (piece.type === PieceType.PAWN && isPawnAdvancingTwoSquares(startPosition, endPosition)) {
     const enPassantSquareIndex = getEnPassantCapturedPieceIndex(endPosition, piece.color);
     moveMetaData.enPassantNotation = buildEnPassantForFen(enPassantSquareIndex);
+    moveMetaData.enPassantSquare = enPassantSquareIndex;
     return true;
   } else {
     return false;
