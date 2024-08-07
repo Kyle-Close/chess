@@ -14,49 +14,31 @@ import { getSquareFile } from '../helpers/analysis/board-mapping/getSquareFile';
 import { PieceColor } from '../enums/PieceColor';
 import { SquareRank } from '../enums/SquareRank';
 import { isHalfMoveResetCondition } from '../helpers/game-core/move-execution/isHalfMoveResetCondition';
-import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
-import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
 import { handleOpponentCheckState } from '../helpers/game-core/move-utility/handleOpponentCheckState';
 import { handleEnPassant } from '../helpers/game-core/move-utility/handleEnPassant';
 import { handleCastle } from '../helpers/game-core/move-utility/handleCastle';
 import { updateIsValidMove } from '../helpers/game-core/move-utility/updateIsValidMove';
 import { handlePawnPromotion } from '../helpers/game-core/move-utility/handlePawnPromotion';
-import { checkInsufficientMaterial } from '../helpers/analysis/game-checks/checkInsufficientMaterial';
-import { checkStalemate } from '../helpers/analysis/game-checks/checkStalemate';
-import { useAppDispatch, useAppSelector } from './useBoard';
-import { setupBoard } from '../redux/slices/board';
-import {
-  MatchResult,
-  MatchResultSubType,
-  clearMoveHistoryRedo,
-  pushToMoveHistory,
-  setEnPassantSquare,
-  setFullMoves,
-  setHalfMoves,
-  setIsPlaying,
-  setMatchResult,
-  setMatchResultSubType,
-} from '../redux/slices/gameInfo';
-import { setIsInCheck, toggleIsTurn } from '../redux/slices/player';
+import { useAppSelector } from './useBoard';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
-import { useCastleRights } from './useCastleRights';
-import { addRemainingSeconds } from '../redux/slices/timer';
 import { usePlayer } from './usePlayer';
 import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { getSecondsToIncrement } from '../helpers/game-core/move-utility/getSecondsToIncrement';
-import { socket } from '../main';
+import { useCastleRights } from './useCastleRights';
+
 export interface UseMoveReturn {
-  tryMove: (piece: Piece, startPos: number, endPos: number) => boolean;
+  buildInitMoveMetaData: (piece: Piece, startPos: number, endPos: number) => MoveMetaData | null;
 }
 
 export function useMove(): UseMoveReturn {
-  const dispatch = useAppDispatch();
   const board = useAppSelector((state) => state.board);
   const gameInfo = useAppSelector((state) => state.gameInfo);
   const settings = useAppSelector((state) => state.gameSettings);
 
   const whitePlayer = usePlayer({ playerId: gameInfo.whitePlayerId });
   const blackPlayer = usePlayer({ playerId: gameInfo.blackPlayerId });
+
+  const { getNewCastleRights } = useCastleRights();
 
   const activePlayer = whitePlayer.isTurn ? whitePlayer : blackPlayer;
   const waitingPlayer = whitePlayer.isTurn ? blackPlayer : whitePlayer;
@@ -67,40 +49,35 @@ export function useMove(): UseMoveReturn {
   const blackCastleRights = useAppSelector((state) =>
     selectCastleRightsById(state, blackPlayer.castleRightsId)
   );
-  const castleRights = useCastleRights();
 
-  function tryMove(piece: Piece, startPos: number, endPos: number): boolean {
+  function buildInitMoveMetaData(
+    piece: Piece,
+    startPos: number,
+    endPos: number
+  ): MoveMetaData | null {
     const newBoard = deepCopyBoard(board);
     const moveMetaData = buildMoveMetaData(
       newBoard,
       gameInfo.enPassantSquare,
-      activePlayer.color,
+      activePlayer.id,
+      waitingPlayer.id,
       piece,
       startPos,
       endPos
     );
+
     updateIsValidMove(
       moveMetaData,
       whitePlayer.isTurn ? whiteCastleRights : blackCastleRights,
       gameInfo.enPassantSquare
     );
-    if (!moveMetaData.isMoveValid) return false;
 
-    handleSpecialMoves(moveMetaData); // good
+    if (!moveMetaData.isMoveValid) return null;
+
+    handleSpecialMoves(moveMetaData);
     updateGameState(moveMetaData);
 
-    dispatch(setupBoard(moveMetaData.updatedBoard));
-    const newBoardFen = buildFenStringFromGame(
-      moveMetaData,
-      activePlayer.color === PieceColor.BLACK,
-      gameInfo,
-      activePlayer.color === PieceColor.WHITE,
-      whiteCastleRights,
-      blackCastleRights
-    );
-    socket.emit('go', newBoardFen);
-
-    return true;
+    return moveMetaData;
   }
 
   function updateGameState(moveMetaData: MoveMetaData) {
@@ -117,6 +94,17 @@ export function useMove(): UseMoveReturn {
     // Update the moveMetaData board with the move being executed
     executeMove(moveMetaData.updatedBoard, moveMetaData.startPosition, moveMetaData.endPosition);
 
+    // Update player castle rights
+    const updatedCastleRights = getNewCastleRights(moveMetaData.updatedBoard);
+    moveMetaData.updatedWhiteCastleRights = {
+      ...updatedCastleRights.whiteCastleRights,
+      id: whitePlayer.castleRightsId,
+    };
+    moveMetaData.updatedWhiteCastleRights = {
+      ...updatedCastleRights.blackCastleRights,
+      id: blackPlayer.castleRightsId,
+    };
+
     // Handle pawn promotion (if applicable)
     handlePawnPromotion(moveMetaData);
 
@@ -127,88 +115,11 @@ export function useMove(): UseMoveReturn {
       whitePlayer.isTurn ? whiteCastleRights : blackCastleRights,
       gameInfo.enPassantSquare
     );
-
-    // Update castle rights
-    castleRights.updateCastleRights(
-      moveMetaData.updatedBoard,
-      moveMetaData.piece.color,
-      activePlayer.castleRightsId
-    );
-
-    // Add latest move to game move history
-    updateMoveHistory(moveMetaData);
-
-    // Update player check state if in check
-    if (moveMetaData.isCheck) {
-      dispatch(setIsInCheck({ id: waitingPlayer.id, isInCheck: true }));
-      dispatch(setIsInCheck({ id: activePlayer.id, isInCheck: false }));
-    } else {
-      dispatch(setIsInCheck({ id: activePlayer.id, isInCheck: false }));
-      dispatch(setIsInCheck({ id: waitingPlayer.id, isInCheck: false }));
-    }
-
-    // Check if game is over. Update gameState if true
-    const isOver = handleGameIsOver(moveMetaData);
-    if (isOver) {
-      dispatch(setIsPlaying(false));
-      activePlayer.stopTimer();
-      waitingPlayer.stopTimer();
-    }
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {
     if (moveMetaData.isCastle) handleCastle(moveMetaData);
     if (moveMetaData.piece.type === PieceType.PAWN) handlePawnMoves(moveMetaData);
-  }
-
-  function handleGameIsOver(moveMetaData: MoveMetaData) {
-    let isOver = false;
-    if (moveMetaData.isCheckmate) {
-      isOver = true;
-      dispatch(setMatchResultSubType(MatchResultSubType.CHECKMATE));
-      if (activePlayer.color === PieceColor.WHITE) dispatch(setMatchResult(MatchResult.WHITE_WIN));
-      else dispatch(setMatchResult(MatchResult.BLACK_WIN));
-    }
-
-    const isFiftyMoveRule = settings.isFiftyMoveRule ? gameInfo.halfMoves > 49 : false;
-    const isInsufficientMaterial = checkInsufficientMaterial(moveMetaData.updatedBoard);
-    const isStalemate = checkStalemate(
-      moveMetaData.updatedBoard,
-      moveMetaData.isCheck,
-      waitingPlayer.color,
-      whitePlayer.isTurn ? whiteCastleRights : blackCastleRights,
-      gameInfo.enPassantSquare
-    );
-
-    if (isFiftyMoveRule) dispatch(setMatchResultSubType(MatchResultSubType.FIFTY_MOVE_RULE));
-    else if (isInsufficientMaterial)
-      dispatch(setMatchResultSubType(MatchResultSubType.INSUFFICIENT_MATERIAL));
-    else if (isStalemate) dispatch(setMatchResultSubType(MatchResultSubType.STALEMATE));
-
-    if (isFiftyMoveRule || isInsufficientMaterial || isStalemate) {
-      isOver = true;
-      dispatch(setMatchResult(MatchResult.DRAW));
-    }
-
-    return isOver;
-  }
-
-  function updateMoveHistory(moveMetaData: MoveMetaData) {
-    const isBlackTurnEnding = whitePlayer.isTurn === false;
-
-    dispatch(
-      pushToMoveHistory({
-        fenString: buildFenStringFromGame(
-          moveMetaData,
-          isBlackTurnEnding,
-          gameInfo,
-          whitePlayer.isTurn,
-          whiteCastleRights,
-          blackCastleRights
-        ),
-        chessNotation: buildAgebraicNotation(moveMetaData),
-      })
-    );
   }
 
   function updateMoveCounts(moveMetaData: MoveMetaData) {
@@ -253,6 +164,6 @@ export function useMove(): UseMoveReturn {
   }
 
   return {
-    tryMove,
+    buildInitMoveMetaData,
   };
 }

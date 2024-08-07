@@ -1,6 +1,6 @@
 import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
+import { initialCastleRights } from '../../../hooks/useCastleRights';
+import { CastleRights } from '../../../redux/slices/castleRights';
 import { getCapturedPiece } from '../piece-management/getCapturedPiece';
 import { CastleMetaData, getCastleMetaData } from './getCastleMetaData';
 import { isMoveCapture } from './isMoveCapture';
@@ -25,12 +25,14 @@ export interface MoveMetaData {
   isCastle: boolean;
   castleMetaData: CastleMetaData | null;
   isPromotion: boolean;
-  promotionPiece: PieceType | null;
+  promotionPiece: Piece | null;
   isCapture: boolean;
   capturedPiece: Piece | null;
   startPosition: number;
   endPosition: number;
   updatedBoard: BoardState;
+  updatedWhiteCastleRights: CastleRights;
+  updatedBlackCastleRights: CastleRights;
   halfMoves: number;
   fullMoves: number;
   increment: Increment | null;
@@ -52,6 +54,7 @@ export function buildMoveMetaData(
   const isCapture = isMoveCapture(board, endPosition);
   const capturedPiece = getCapturedPiece(board, endPosition);
   const isMoveValid = false;
+  const initCastleRights = { ...initialCastleRights, id: '' };
 
   return {
     activePlayerId,
@@ -72,6 +75,8 @@ export function buildMoveMetaData(
     startPosition,
     endPosition,
     updatedBoard: [...board],
+    updatedWhiteCastleRights: initCastleRights,
+    updatedBlackCastleRights: initCastleRights,
     halfMoves: 0,
     fullMoves: 1,
     increment: null,

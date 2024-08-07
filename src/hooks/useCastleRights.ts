@@ -6,9 +6,19 @@ import { isPathObstructed } from '../helpers/game-core/move-utility/isPathObstru
 import { useAppDispatch } from './useBoard';
 import { CastleRights, setCastleRights } from '../redux/slices/castleRights';
 
+interface NewCastleRightsReturn {
+  whiteCastleRights: Omit<CastleRights, 'id'>;
+  blackCastleRights: Omit<CastleRights, 'id'>;
+}
+
 export interface UseCastleRightsReturn {
-  updateCastleRights: (board: BoardState, color: PieceColor, castleRightsId: string) => void;
+  updateCastleRights: (
+    newCastleRights: NewCastleRightsReturn,
+    whiteCastleRightsId: string,
+    blackCastleRightsId: string
+  ) => void;
   reset: (castleRightsId: string) => void;
+  getNewCastleRights: (board: BoardState) => NewCastleRightsReturn;
 }
 
 export const initialCastleRights = {
@@ -25,12 +35,23 @@ export function useCastleRights(): UseCastleRightsReturn {
     dispatch(setCastleRights({ castleRights: { ...initialCastleRights, id: castleRightsId } }));
   }
 
-  function updateCastleRights(board: BoardState, color: PieceColor, castleRightsId: string) {
-    const newCastleRights = getCastleRights(board, color);
-    dispatch(setCastleRights({ castleRights: { ...newCastleRights, id: castleRightsId } }));
+  function updateCastleRights(
+    newCastleRights: NewCastleRightsReturn,
+    whiteCastleRightsId: string,
+    blackCastleRightsId: string
+  ) {
+    const { whiteCastleRights, blackCastleRights } = newCastleRights;
+    dispatch(setCastleRights({ castleRights: { ...whiteCastleRights, id: whiteCastleRightsId } }));
+    dispatch(setCastleRights({ castleRights: { ...blackCastleRights, id: blackCastleRightsId } }));
   }
 
-  return { updateCastleRights, reset };
+  function getNewCastleRights(board: BoardState): NewCastleRightsReturn {
+    const whiteCastleRights = getCastleRights(board, PieceColor.WHITE);
+    const blackCastleRights = getCastleRights(board, PieceColor.BLACK);
+    return { whiteCastleRights, blackCastleRights };
+  }
+
+  return { updateCastleRights, reset, getNewCastleRights };
 }
 
 function getCastleRights(board: BoardState, color: PieceColor): Omit<CastleRights, 'id'> {

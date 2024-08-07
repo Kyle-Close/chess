@@ -14,6 +14,7 @@ import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { PieceColor } from '../enums/PieceColor';
 import { PieceType } from '../enums/PieceType';
+import { useTransitionTurn } from './useTransitionTurn';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -26,7 +27,8 @@ export function useBoard() {
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const dispatch = useAppDispatch();
   const startEnd = useStartEndAction();
-  const { tryMove } = useMove();
+  const { buildInitMoveMetaData } = useMove();
+  const {} = useTransitionTurn();
   let checkIndex: number | null = null;
   // Look for check square - for highlighting
   if (whitePlayer.isInCheck) {
@@ -116,7 +118,8 @@ export function useBoard() {
     else if (startEnd.startPos !== null && startEnd.endPos !== null) {
       const piece = board[startEnd.startPos].piece;
       if (piece) {
-        tryMove(piece, startEnd.startPos, startEnd.endPos);
+        const moveMetaData = buildInitMoveMetaData(piece, startEnd.startPos, startEnd.endPos);
+        console.log(moveMetaData);
         startEnd.clear();
       }
     }
