@@ -15,6 +15,7 @@ import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { PieceColor } from '../enums/PieceColor';
 import { PieceType } from '../enums/PieceType';
 import { useTransitionTurn } from './useTransitionTurn';
+import { setMoveMetaData } from '../redux/slices/move';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -28,7 +29,7 @@ export function useBoard() {
   const dispatch = useAppDispatch();
   const startEnd = useStartEndAction();
   const { buildInitMoveMetaData } = useMove();
-  const {} = useTransitionTurn();
+  const { transition } = useTransitionTurn();
   let checkIndex: number | null = null;
   // Look for check square - for highlighting
   if (whitePlayer.isInCheck) {
@@ -119,6 +120,7 @@ export function useBoard() {
       const piece = board[startEnd.startPos].piece;
       if (piece) {
         const moveMetaData = buildInitMoveMetaData(piece, startEnd.startPos, startEnd.endPos);
+        if (moveMetaData?.isMoveValid) dispatch(setMoveMetaData(moveMetaData));
         console.log(moveMetaData);
         startEnd.clear();
       }
