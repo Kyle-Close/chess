@@ -1,19 +1,24 @@
 import { Box } from '@chakra-ui/react';
-import { useAppSelector } from '../../hooks/useBoard';
+import { useAppDispatch, useAppSelector } from '../../hooks/useBoard';
 import { useUndoRedoMove } from '../../hooks/useUndoRedoMove';
 import { UndoButton } from '../UndoButton';
 import { Board } from '../board';
 import { PlayerData } from '../player-data';
 import { RedoButton } from '../RedoButton';
 import { GameOver } from '../game-over';
-import { MatchResult } from '../../redux/slices/gameInfo';
+import { MatchResult, setIsPlaying } from '../../redux/slices/gameInfo';
 import { useEffect, useState } from 'react';
 import { PromotePawnModal } from '../promote';
+import { pauseAllTimers, setIsOn } from '../../redux/slices/timer';
+import { selectPlayerById } from '../../redux/slices/player';
 
 export function Game() {
+  const dispatch = useAppDispatch();
   const gameInfo = useAppSelector((state) => state.gameInfo);
+  const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
+  const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
-  //const [showPromotion, setShowPromotion] = useState(!!gameInfo.pawnPromotionSquare);
+  const [showPromotion, setShowPromotion] = useState(!!gameInfo.pawnPromotionSquare);
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const { undo, redo } = useUndoRedoMove();
 
@@ -23,13 +28,32 @@ export function Game() {
     if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
   }, [gameInfo.matchResult]);
 
+  useEffect(() => {
+    if (gameInfo.pawnPromotionSquare !== null) {
+      dispatch(setIsPlaying(false));
+      setShowPromotion(true);
+    } else setShowPromotion(false);
+  }, [gameInfo.pawnPromotionSquare]);
+
+  useEffect(() => {
+    if (!gameInfo.isPlaying) return;
+
+    if (whitePlayer.isTurn) {
+      dispatch(setIsOn({ id: whitePlayer.id, isOn: true }));
+      dispatch(setIsOn({ id: blackPlayer.id, isOn: false }));
+    } else {
+      dispatch(setIsOn({ id: whitePlayer.id, isOn: false }));
+      dispatch(setIsOn({ id: blackPlayer.id, isOn: true }));
+    }
+  }, [gameInfo.isPlaying]);
+
   const closeModal = () => setShowModal(false);
   const openModal = () => setShowModal(true);
 
   return (
     <div className={getGameClasses()}>
       <GameOver isOpen={showModal} closeModal={closeModal} />
-      <PromotePawnModal isOpen={true} onClose={() => {}} />
+      <PromotePawnModal isOpen={showPromotion} onClose={() => {}} />
       <PlayerData playerId={gameInfo.blackPlayerId} openModal={openModal} />
       <Board />
       <PlayerData playerId={gameInfo.whitePlayerId} openModal={openModal} />

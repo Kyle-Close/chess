@@ -13,7 +13,7 @@ import { selectPlayerById } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { getKingIndex } from '../helpers/analysis/game-checks/getKingIndex';
 import { PieceColor } from '../enums/PieceColor';
-import { socket } from '../main';
+import { PieceType } from '../enums/PieceType';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -43,6 +43,17 @@ export function useBoard() {
   const currentPlayerCastleRights = useAppSelector((state) =>
     selectCastleRightsById(state, currentPlayer.castleRightsId)
   );
+
+  function replacePieceAtPosition(pos: number, type: PieceType) {
+    const copy = deepCopyBoard(board);
+    const piece = copy[pos].piece;
+
+    if (!piece) throw Error('No piece found at position: ' + pos);
+
+    const color = piece.color;
+    copy[pos].piece = { type, color, hasMoved: true };
+    dispatch(setupBoard(copy));
+  }
 
   function resetBoard() {
     dispatch(setupBoard(getInitialBoardState()));
@@ -118,5 +129,6 @@ export function useBoard() {
     handleRightClickOnBoard,
     resetBoard,
     checkIndex,
+    replacePieceAtPosition,
   };
 }

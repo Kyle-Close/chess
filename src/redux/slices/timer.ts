@@ -23,20 +23,40 @@ export const timerSlice = createSlice({
       }),
     },
     setIsOn(state, action: PayloadAction<{ id: string; isOn: boolean }>) {
-      const { id } = action.payload;
-      state.entities[id].isOn = action.payload.isOn;
+      const { id, isOn } = action.payload;
+      const entity = state.entities[id];
+      if (entity) {
+        entity.isOn = isOn;
+      }
     },
     setRemainingSeconds(state, action: PayloadAction<{ id: string; remainingSeconds: number }>) {
-      state.entities[action.payload.id].remainingSeconds = action.payload.remainingSeconds;
+      const { id, remainingSeconds } = action.payload;
+      const entity = state.entities[id];
+      if (entity) {
+        entity.remainingSeconds = remainingSeconds;
+      }
     },
     decrementRemainingSeconds(state, action: PayloadAction<{ id: string }>) {
       const { id } = action.payload;
-      if (state.entities[id].remainingSeconds !== 0)
-        state.entities[id].remainingSeconds = state.entities[id].remainingSeconds - 1;
+      const entity = state.entities[id];
+      if (entity && entity.remainingSeconds !== 0) {
+        entity.remainingSeconds -= 1;
+      }
     },
     addRemainingSeconds(state, action: PayloadAction<{ id: string; secondsToAdd: number }>) {
       const { id, secondsToAdd } = action.payload;
-      state.entities[id].remainingSeconds = state.entities[id].remainingSeconds + secondsToAdd;
+      const entity = state.entities[id];
+      if (entity) {
+        entity.remainingSeconds += secondsToAdd;
+      }
+    },
+    pauseAllTimers(state) {
+      const updated = state.ids.map((id) => ({
+        id,
+        changes: { isOn: false },
+      }));
+
+      timerAdapter.updateMany(state, updated);
     },
   },
 });
@@ -48,11 +68,12 @@ export const {
   setRemainingSeconds,
   decrementRemainingSeconds,
   addRemainingSeconds,
+  pauseAllTimers,
 } = timerSlice.actions;
 
 export default timerSlice.reducer;
 
-// Selector
+// Selectors
 export const { selectById: selectTimerById, selectAll: selectAllTimers } =
   timerAdapter.getSelectors(
     (state: { timer: ReturnType<typeof timerSlice.reducer> }) => state.timer

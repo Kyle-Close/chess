@@ -13,8 +13,6 @@ import { getSquareRank } from '../helpers/analysis/board-mapping/getSquareRank';
 import { getSquareFile } from '../helpers/analysis/board-mapping/getSquareFile';
 import { PieceColor } from '../enums/PieceColor';
 import { SquareRank } from '../enums/SquareRank';
-import { convertStringToPiece } from '../helpers/utilities/convertStringToPiece';
-import { assignPieceToSquare } from '../helpers/game-core/board-management/assignPieceToSquare';
 import { isHalfMoveResetCondition } from '../helpers/game-core/move-execution/isHalfMoveResetCondition';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
@@ -43,7 +41,7 @@ import {
 import { setIsInCheck, toggleIsTurn } from '../redux/slices/player';
 import { selectCastleRightsById } from '../redux/slices/castleRights';
 import { useCastleRights } from './useCastleRights';
-import { addRemainingSeconds, setIsOn } from '../redux/slices/timer';
+import { addRemainingSeconds } from '../redux/slices/timer';
 import { usePlayer } from './usePlayer';
 import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { getSecondsToIncrement } from '../helpers/game-core/move-utility/getSecondsToIncrement';
@@ -116,10 +114,6 @@ export function useMove(): UseMoveReturn {
     // Update player turns
     dispatch(toggleIsTurn({ id: gameInfo.whitePlayerId }));
     dispatch(toggleIsTurn({ id: gameInfo.blackPlayerId }));
-
-    // Update player timers
-    dispatch(setIsOn({ id: activePlayer.timerId, isOn: false }));
-    dispatch(setIsOn({ id: waitingPlayer.timerId, isOn: true }));
 
     // Update move counters
     updateMoveCounts(moveMetaData);
