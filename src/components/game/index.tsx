@@ -18,22 +18,15 @@ export function Game() {
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
-  const [showPromotion, setShowPromotion] = useState(!!gameInfo.pawnPromotionSquare);
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const { undo, redo } = useUndoRedoMove();
 
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
+  const showPromotion = gameInfo.pawnPromotionSquare !== null;
 
   useEffect(() => {
     if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
   }, [gameInfo.matchResult]);
-
-  useEffect(() => {
-    if (gameInfo.pawnPromotionSquare !== null) {
-      dispatch(setIsPlaying(false));
-      setShowPromotion(true);
-    } else setShowPromotion(false);
-  }, [gameInfo.pawnPromotionSquare]);
 
   useEffect(() => {
     if (!gameInfo.isPlaying) return;

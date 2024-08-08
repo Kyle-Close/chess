@@ -7,6 +7,9 @@ import { FaChessRook } from 'react-icons/fa';
 import { useAppDispatch, useAppSelector, useBoard } from '../../hooks/useBoard';
 import { clearPawnPromotionSquare, setIsPlaying } from '../../redux/slices/gameInfo';
 import { PieceType } from '../../enums/PieceType';
+import { MoveMetaData } from '../../helpers/game-core/move-execution/buildMoveMetaData';
+import { Piece } from '../../context/board/InitialState';
+import { useTransitionTurn } from '../../hooks/useTransitionTurn';
 
 interface PromotePawnModalProps {
   isOpen: boolean;
@@ -16,23 +19,21 @@ interface PromotePawnModalProps {
 export function PromotePawnModal({ isOpen, onClose }: PromotePawnModalProps) {
   const dispatch = useAppDispatch();
   const gameInfo = useAppSelector((state) => state.gameInfo);
-  const { replacePieceAtPosition } = useBoard();
+  const moveMetaData = useAppSelector((state) => state.move);
+  const { transition } = useTransitionTurn();
 
   const handleClick = (pieceType: PieceType) => {
     if (!gameInfo.pawnPromotionSquare) return;
 
-    // INSTEAD NEED TO UPDATE MOVE META DATA BOARD
-    // 1. Update board with chosen piece on end square
-    // 2. clear pawn promotion square in state
-    // 3. set is playing to true in state
-    // 4. trigger transition to run with new move meta data
-    // OR
-    // deep copy moveMeta data so we aren't manipulating state
-    // then we can pass it to transition
-    HERE;
-    replacePieceAtPosition(gameInfo.pawnPromotionSquare, pieceType);
+    const copyMove: MoveMetaData = JSON.parse(JSON.stringify(moveMetaData));
+    const copyBoard = copyMove.updatedBoard;
+    const newPiece: Piece = { type: pieceType, hasMoved: true, color: copyMove.piece.color };
+
+    copyBoard[copyMove.endPosition].piece = newPiece;
+
     dispatch(clearPawnPromotionSquare());
     dispatch(setIsPlaying(true));
+    transition(copyMove);
   };
 
   return (

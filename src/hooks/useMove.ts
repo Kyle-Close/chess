@@ -115,6 +115,12 @@ export function useMove(): UseMoveReturn {
       whitePlayer.isTurn ? whiteCastleRights : blackCastleRights,
       gameInfo.enPassantSquare
     );
+
+    // Remove any square markings
+    moveMetaData.updatedBoard.forEach((square) => {
+      square.isCapture = false;
+      square.isValidMove = false;
+    });
   }
 
   function handleSpecialMoves(moveMetaData: MoveMetaData) {

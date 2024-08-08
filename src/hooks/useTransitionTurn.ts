@@ -4,6 +4,7 @@ import { checkStalemate } from '../helpers/analysis/game-checks/checkStalemate';
 import { MoveMetaData } from '../helpers/game-core/move-execution/buildMoveMetaData';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
+import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { socket } from '../main';
 import { setupBoard } from '../redux/slices/board';
 
@@ -58,11 +59,6 @@ export function useTransitionTurn() {
           secondsToAdd: moveMetaData.increment.secondsToIncrement,
         })
       );
-    }
-
-    // Handle pawn promotion logic
-    if (moveMetaData.isPromotion) {
-      dispatch(setPawnPromotionSquare(moveMetaData.endPosition));
     }
 
     // Handle en passant
