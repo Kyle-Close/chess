@@ -27,16 +27,16 @@ export function scanDiagonalForCheck(
 
 function getPawnPositionForCheck(kingIndex: number, opponentColor: PieceColor) {
   // Returns the index in the array that the enemy pawn needs to be in for check.
-  if (opponentColor === PieceColor.BLACK) return kingIndex + 1;
-  return kingIndex - 1;
+  if (opponentColor === PieceColor.BLACK) return kingIndex - 1;
+  return kingIndex + 1;
 }
 
 function scanDiagonalForPawnCheck(scannedDiagonal: ScanResult[], opponentColor: PieceColor) {
   let isCheck = false;
 
-  scannedDiagonal.forEach((square, index) => {
-    if (!square) return;
-    const isMyKing = square?.type === PieceType.KING && square.color !== opponentColor;
+  scannedDiagonal.forEach((piece, index) => {
+    if (!piece) return;
+    const isMyKing = piece.type === PieceType.KING && piece.color !== opponentColor;
     if (!isMyKing) return;
 
     const pawnCheckPositionIndex = getPawnPositionForCheck(index, opponentColor);

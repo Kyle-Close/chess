@@ -15,6 +15,8 @@ export function filterCheckMoves(
 
   return validMoves.filter((target) => {
     const boardPostMove = executeMove(board, currentPiecePos, target.index, true);
+    if (!boardPostMove) return false;
+
     const currentKingIndex = getKingIndex(boardPostMove, playerColor);
     const isInCheck = isKingInCheck(boardPostMove, currentKingIndex, playerColor);
 

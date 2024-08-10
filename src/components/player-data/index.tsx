@@ -4,7 +4,7 @@ import blackPlayerImg from '../../assets/profile-black.png';
 import { useAppSelector } from '../../hooks/useBoard';
 import { selectPlayerById } from '../../redux/slices/player';
 import { PieceColor } from '../../enums/PieceColor';
-import { Box, Heading, Text } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
 import { TimeControl } from '../../redux/slices/gameSettings';
 import { ResignButton } from '../resign/ResignButton';
 import { OfferDrawButton } from '../offer-draw';
@@ -20,11 +20,12 @@ export function PlayerData({ playerId, openModal, materialDiff }: PlayerDataProp
   const showTimer = gameSettings.timeControl !== TimeControl.FREE_PLAY;
   const materialDiffColor = materialDiff >= 0 ? 'green.200' : 'red.300';
   const displayValue = materialDiff >= 0 ? `+${materialDiff}` : materialDiff;
+  const reverse = player.color === PieceColor.BLACK;
 
   return (
     <Box className={getPlayerDataClasses()}>
       <Box className='flex gap-4'>
-        <Box className='flex gap-4 grow-0 self-start'>
+        <Box alignSelf={reverse ? 'end' : 'start'} className='flex gap-4 grow-0'>
           <img
             className='max-w-12 max-h-12 ml-4'
             src={player.color === PieceColor.WHITE ? whitePlayerImg : blackPlayerImg}
@@ -39,13 +40,22 @@ export function PlayerData({ playerId, openModal, materialDiff }: PlayerDataProp
           </Box>
         </Box>
       </Box>
-      <Box className='flex gap-4 flex-col items-center'>
-        {showTimer && <Timer timerId={player.timerId} color={player.color} />}
-        <Box className='flex gap-2 items-end'>
+      <Grid
+        templateColumns='1fr'
+        templateRows='auto auto'
+        gridTemplateAreas={reverse ? `"buttons" "timer"` : `"timer" "buttons"`}
+        gap={4}
+      >
+        {showTimer && (
+          <GridItem gridArea='timer'>
+            <Timer timerId={player.timerId} color={player.color} />
+          </GridItem>
+        )}
+        <GridItem gridArea='buttons' className='flex gap-2 items-end'>
           <OfferDrawButton playerId={playerId} openModal={openModal} />
           <ResignButton playerId={playerId} openModal={openModal} />
-        </Box>
-      </Box>
+        </GridItem>
+      </Grid>
     </Box>
   );
 }

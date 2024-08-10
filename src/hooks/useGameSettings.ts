@@ -10,7 +10,14 @@ import {
   setTimeControl,
 } from '../redux/slices/gameSettings';
 import { useAppDispatch, useAppSelector } from './useBoard';
-import { resetGameInfo, setIsPlaying, setPlayerIds } from '../redux/slices/gameInfo';
+import {
+  resetGameInfo,
+  setEnPassantSquare,
+  setFullMoves,
+  setHalfMoves,
+  setIsPlaying,
+  setPlayerIds,
+} from '../redux/slices/gameInfo';
 import {
   createPlayer,
   removeAllPlayers,
@@ -33,6 +40,8 @@ import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
 import { useNavigate } from 'react-router-dom';
 import { initialCastleRights, useCastleRights } from './useCastleRights';
 import { BoardState } from '../context/board/InitialState';
+import { convertFileToIndex } from '../helpers/analysis/game-checks/pieceLocation';
+import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -73,16 +82,6 @@ export function useGameSettings() {
 
     let board: BoardState = [];
 
-    if (isValidFEN(data.fen)) {
-      const fen = parseFenString(data.fen);
-      board = buildBoardFromFen(fen.initialPositions);
-    } else {
-      const fen = parseFenString(DEFAULT_FEN_STRING);
-      board = buildBoardFromFen(fen.initialPositions);
-    }
-
-    dispatch(setupBoard(board));
-
     const whitePlayer = dispatch(
       createPlayer({
         name: data.whiteName,
@@ -107,6 +106,22 @@ export function useGameSettings() {
       })
     );
 
+    let playerTurn = whitePlayer;
+
+    if (isValidFEN(data.fen)) {
+      const fen = parseFenString(data.fen);
+      board = buildBoardFromFen(fen.initialPositions);
+      playerTurn = fen.turn === 'w' ? whitePlayer : blackPlayer;
+      dispatch(setHalfMoves(Number(fen.halfMoves)));
+      dispatch(setFullMoves(Number(fen.fullMoves)));
+      dispatch(setEnPassantSquare(getEnPassantTargetSquareFromFen(fen.enPassant)));
+    } else {
+      const fen = parseFenString(DEFAULT_FEN_STRING);
+      board = buildBoardFromFen(fen.initialPositions);
+    }
+
+    dispatch(setupBoard(board));
+
     const newCastleRights = castleRights.getNewCastleRights(board);
     castleRights.updateCastleRights(
       newCastleRights,
@@ -124,9 +139,11 @@ export function useGameSettings() {
     dispatch(setRemainingSeconds({ id: blackTimer.payload.id, remainingSeconds }));
     dispatch(setIsOn({ id: whiteTimer.payload.id, isOn: true }));
 
+    // Set starting player turn
+    dispatch(setIsTurn({ id: playerTurn.payload.id, isTurn: true }));
+
     // Start game
     dispatch(setIsPlaying(true));
-    dispatch(setIsTurn({ id: whitePlayer.payload.id, isTurn: true }));
 
     // Handle game settings
     dispatch(setGameType(settings.gameType));

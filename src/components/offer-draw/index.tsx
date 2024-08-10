@@ -19,8 +19,7 @@ interface OfferDrawButtonProps {
 export function OfferDrawButton({ openModal, playerId }: OfferDrawButtonProps) {
   const dispatch = useAppDispatch();
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
-
-  if (!player.isTurn) return <></>;
+  const visibility = player.isTurn ? 'visible' : 'hidden';
 
   const handleClick = () => {
     dispatch(setMatchResult(MatchResult.DRAW));
@@ -33,6 +32,7 @@ export function OfferDrawButton({ openModal, playerId }: OfferDrawButtonProps) {
 
   return (
     <IconButton
+      visibility={visibility}
       size='sm'
       onClick={handleClick}
       aria-label='Offer Draw'
