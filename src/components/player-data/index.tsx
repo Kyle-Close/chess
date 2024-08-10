@@ -20,26 +20,26 @@ export function PlayerData({ playerId, openModal }: PlayerDataProps) {
 
   return (
     <Box className={getPlayerDataClasses()}>
-      <Box className='flex gap-4 items-end'>
+      <Box className='flex gap-4'>
         <img
           className='max-w-12 max-h-12 ml-4'
           src={player.color === PieceColor.WHITE ? whitePlayerImg : blackPlayerImg}
         />
         <Text className=''>{player.name}</Text>
       </Box>
-      <Box className='flex gap-4 items-center'>
-        <Box className='flex gap-2 items-center'>
+      <Box className='flex gap-4 flex-col items-center'>
+        {showTimer && <Timer timerId={player.timerId} color={player.color} />}
+        <Box className='flex gap-4 items-center'>
           <OfferDrawButton playerId={playerId} openModal={openModal} />
           <ResignButton playerId={playerId} openModal={openModal} />
         </Box>
-        {showTimer && <Timer timerId={player.timerId} color={player.color} />}
       </Box>
     </Box>
   );
 }
 
 function getPlayerDataClasses(isShowWhiteBottom = false) {
-  const core = ['flex', 'w-full', 'justify-between', 'p-2', 'items-end'];
+  const core = ['flex', 'w-full', 'justify-between', 'p-2'];
   const flipped = isShowWhiteBottom ? ['rotate-180'] : [];
 
   return [...core, ...flipped].join(' ');
