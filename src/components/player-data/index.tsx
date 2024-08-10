@@ -4,7 +4,7 @@ import blackPlayerImg from '../../assets/profile-black.png';
 import { useAppSelector } from '../../hooks/useBoard';
 import { selectPlayerById } from '../../redux/slices/player';
 import { PieceColor } from '../../enums/PieceColor';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Heading, Text } from '@chakra-ui/react';
 import { TimeControl } from '../../redux/slices/gameSettings';
 import { ResignButton } from '../resign/ResignButton';
 import { OfferDrawButton } from '../offer-draw';
@@ -18,16 +18,26 @@ export function PlayerData({ playerId, openModal, materialDiff }: PlayerDataProp
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const showTimer = gameSettings.timeControl !== TimeControl.FREE_PLAY;
+  const materialDiffColor = materialDiff >= 0 ? 'green.200' : 'red.300';
+  const displayValue = materialDiff >= 0 ? `+${materialDiff}` : materialDiff;
 
   return (
     <Box className={getPlayerDataClasses()}>
       <Box className='flex gap-4'>
-        <img
-          className='max-w-12 max-h-12 ml-4'
-          src={player.color === PieceColor.WHITE ? whitePlayerImg : blackPlayerImg}
-        />
-        <Text className=''>{player.name}</Text>
-        <Text>{materialDiff}</Text>
+        <Box className='flex gap-4 grow-0 self-start'>
+          <img
+            className='max-w-12 max-h-12 ml-4'
+            src={player.color === PieceColor.WHITE ? whitePlayerImg : blackPlayerImg}
+          />
+          <Box className='flex flex-col gap-2 justify-end'>
+            <Text opacity='0.8' fontSize='small' color={materialDiffColor}>
+              {materialDiff === 0 ? '' : displayValue}
+            </Text>
+            <Heading as='h6' className='font-medium' fontSize='x-large'>
+              {player.name}
+            </Heading>
+          </Box>
+        </Box>
       </Box>
       <Box className='flex gap-4 flex-col items-center'>
         {showTimer && <Timer timerId={player.timerId} color={player.color} />}
