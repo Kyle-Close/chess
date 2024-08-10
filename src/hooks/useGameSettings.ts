@@ -91,6 +91,7 @@ export function useGameSettings() {
         isTurn: false,
         timerId: whiteTimer.payload.id,
         castleRightsId: whiteCastleRightsRedux.payload.id,
+        remainingMaterialValue: 39,
       })
     );
 
@@ -102,11 +103,16 @@ export function useGameSettings() {
         isTurn: false,
         timerId: blackTimer.payload.id,
         castleRightsId: blackCastleRightsRedux.payload.id,
+        remainingMaterialValue: 39,
       })
     );
 
-    castleRights.updateCastleRights(board, PieceColor.WHITE, whitePlayer.payload.castleRightsId);
-    castleRights.updateCastleRights(board, PieceColor.BLACK, blackPlayer.payload.castleRightsId);
+    const newCastleRights = castleRights.getNewCastleRights(board);
+    castleRights.updateCastleRights(
+      newCastleRights,
+      whitePlayer.payload.castleRightsId,
+      blackPlayer.payload.castleRightsId
+    );
 
     dispatch(
       setPlayerIds({ whitePlayerId: whitePlayer.payload.id, blackPlayerId: blackPlayer.payload.id })

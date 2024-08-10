@@ -1,10 +1,10 @@
 import { PieceColor } from '../enums/PieceColor';
 import { checkInsufficientMaterial } from '../helpers/analysis/game-checks/checkInsufficientMaterial';
 import { checkStalemate } from '../helpers/analysis/game-checks/checkStalemate';
+import { getTotalMaterialValue } from '../helpers/analysis/getMaterialValue';
 import { MoveMetaData } from '../helpers/game-core/move-execution/buildMoveMetaData';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
-import { deepCopyBoard } from '../helpers/utilities/deepCopyBoard';
 import { socket } from '../main';
 import { setupBoard } from '../redux/slices/board';
 
@@ -19,9 +19,8 @@ import {
   setIsPlaying,
   setMatchResult,
   setMatchResultSubType,
-  setPawnPromotionSquare,
 } from '../redux/slices/gameInfo';
-import { setIsInCheck, toggleIsTurn } from '../redux/slices/player';
+import { setIsInCheck, setRemainingMaterialValue, toggleIsTurn } from '../redux/slices/player';
 import { addRemainingSeconds } from '../redux/slices/timer';
 import { useAppDispatch, useAppSelector } from './useBoard';
 
@@ -31,6 +30,13 @@ export function useTransitionTurn() {
   const settings = useAppSelector((state) => state.gameSettings);
 
   function transition(moveMetaData: MoveMetaData) {
+    // Update player remaining material value
+    const materialValue = getTotalMaterialValue(
+      moveMetaData.updatedBoard,
+      moveMetaData.piece.color
+    );
+    dispatch(setRemainingMaterialValue({ id: moveMetaData.activePlayerId, value: materialValue }));
+
     // Clear the redo queue
     dispatch(clearMoveHistoryRedo());
 

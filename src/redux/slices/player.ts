@@ -8,6 +8,7 @@ export interface Player {
   color: PieceColor;
   isTurn: boolean;
   isInCheck: boolean;
+  remainingMaterialValue: number;
   timerId: string;
   castleRightsId: string;
 }
@@ -56,6 +57,10 @@ export const playerSlice = createSlice({
       const { id } = action.payload;
       state.entities[id].isTurn = !state.entities[id].isTurn;
     },
+    setRemainingMaterialValue(state, action: PayloadAction<{ id: string; value: number }>) {
+      const { id, value } = action.payload;
+      state.entities[id].remainingMaterialValue = value;
+    },
   },
 });
 
@@ -65,6 +70,7 @@ export const {
   setName,
   setColor,
   setIsInCheck,
+  setRemainingMaterialValue,
   setIsTurn,
   toggleIsTurn,
 } = playerSlice.actions;
