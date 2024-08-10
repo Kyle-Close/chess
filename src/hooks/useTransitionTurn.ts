@@ -31,11 +31,23 @@ export function useTransitionTurn() {
 
   function transition(moveMetaData: MoveMetaData) {
     // Update player remaining material value
-    const materialValue = getTotalMaterialValue(
+    const activePlayerMaterialVal = getTotalMaterialValue(
       moveMetaData.updatedBoard,
       moveMetaData.piece.color
     );
-    dispatch(setRemainingMaterialValue({ id: moveMetaData.activePlayerId, value: materialValue }));
+    dispatch(
+      setRemainingMaterialValue({ id: moveMetaData.activePlayerId, value: activePlayerMaterialVal })
+    );
+    const waitingPlayerMaterialVal = getTotalMaterialValue(
+      moveMetaData.updatedBoard,
+      moveMetaData.piece.color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE
+    );
+    dispatch(
+      setRemainingMaterialValue({
+        id: moveMetaData.waitingPlayerId,
+        value: waitingPlayerMaterialVal,
+      })
+    );
 
     // Clear the redo queue
     dispatch(clearMoveHistoryRedo());

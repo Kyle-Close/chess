@@ -11,9 +11,10 @@ import { OfferDrawButton } from '../offer-draw';
 
 interface PlayerDataProps {
   playerId: string;
+  materialDiff: number;
   openModal: () => void;
 }
-export function PlayerData({ playerId, openModal }: PlayerDataProps) {
+export function PlayerData({ playerId, openModal, materialDiff }: PlayerDataProps) {
   const player = useAppSelector((state) => selectPlayerById(state, playerId));
   const gameSettings = useAppSelector((state) => state.gameSettings);
   const showTimer = gameSettings.timeControl !== TimeControl.FREE_PLAY;
@@ -26,10 +27,11 @@ export function PlayerData({ playerId, openModal }: PlayerDataProps) {
           src={player.color === PieceColor.WHITE ? whitePlayerImg : blackPlayerImg}
         />
         <Text className=''>{player.name}</Text>
+        <Text>{materialDiff}</Text>
       </Box>
       <Box className='flex gap-4 flex-col items-center'>
         {showTimer && <Timer timerId={player.timerId} color={player.color} />}
-        <Box className='flex gap-4 items-center'>
+        <Box className='flex gap-2 items-end'>
           <OfferDrawButton playerId={playerId} openModal={openModal} />
           <ResignButton playerId={playerId} openModal={openModal} />
         </Box>

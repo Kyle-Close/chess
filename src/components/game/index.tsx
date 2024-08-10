@@ -23,6 +23,8 @@ export function Game() {
 
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
   const showPromotion = gameInfo.pawnPromotionSquare !== null;
+  const whiteMaterialDiff = whitePlayer.remainingMaterialValue - blackPlayer.remainingMaterialValue;
+  const blackMaterialDiff = blackPlayer.remainingMaterialValue - whitePlayer.remainingMaterialValue;
 
   useEffect(() => {
     if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
@@ -47,9 +49,17 @@ export function Game() {
     <div className={getGameClasses()}>
       <GameOver isOpen={showModal} closeModal={closeModal} />
       <PromotePawnModal isOpen={showPromotion} onClose={() => {}} />
-      <PlayerData playerId={gameInfo.blackPlayerId} openModal={openModal} />
+      <PlayerData
+        materialDiff={blackMaterialDiff}
+        playerId={gameInfo.blackPlayerId}
+        openModal={openModal}
+      />
       <Board />
-      <PlayerData playerId={gameInfo.whitePlayerId} openModal={openModal} />
+      <PlayerData
+        materialDiff={whiteMaterialDiff}
+        playerId={gameInfo.whitePlayerId}
+        openModal={openModal}
+      />
       {gameSettings.isUndoRedo && (
         <Box className='flex justify-end gap-2 mr-6'>
           <UndoButton handleClick={undo} />
