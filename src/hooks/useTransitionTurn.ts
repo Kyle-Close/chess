@@ -7,6 +7,7 @@ import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notat
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
 import { socket } from '../main';
 import { setupBoard } from '../redux/slices/board';
+import { CastleRights, setCastleRights } from '../redux/slices/castleRights';
 
 import {
   MatchResult,
@@ -69,6 +70,19 @@ export function useTransitionTurn() {
       dispatch(setIsInCheck({ id: moveMetaData.waitingPlayerId, isInCheck: false }));
     }
 
+    // Update castle rights
+    dispatch(setCastleRights({ castleRights: moveMetaData.activeCastleRights }));
+    dispatch(setCastleRights({ castleRights: moveMetaData.waitingCastleRights }));
+
+    const whiteCastleRights =
+      moveMetaData.piece.color === PieceColor.WHITE
+        ? moveMetaData.activeCastleRights
+        : moveMetaData.waitingCastleRights;
+    const blackCastleRights =
+      moveMetaData.piece.color === PieceColor.BLACK
+        ? moveMetaData.activeCastleRights
+        : moveMetaData.waitingCastleRights;
+
     // Handle Time Increment
     if (moveMetaData.increment) {
       dispatch(
@@ -86,32 +100,28 @@ export function useTransitionTurn() {
     // Update move history
     dispatch(
       pushToMoveHistory({
-        fenString: buildFenStringFromGame(
-          moveMetaData,
-          moveMetaData.updatedWhiteCastleRights,
-          moveMetaData.updatedBlackCastleRights
-        ),
+        fenString: buildFenStringFromGame(moveMetaData, whiteCastleRights, blackCastleRights),
         chessNotation: buildAgebraicNotation(moveMetaData),
       })
     );
 
     // Check if game is over. Update gameState if true
-    const isOver = handleGameIsOver(moveMetaData);
+    const isOver = handleGameIsOver(moveMetaData, whiteCastleRights, blackCastleRights);
     if (isOver) dispatch(setIsPlaying(false));
 
     // Trigger the latest board update
     dispatch(setupBoard(moveMetaData.updatedBoard));
 
-    const newBoardFen = buildFenStringFromGame(
-      moveMetaData,
-      moveMetaData.updatedWhiteCastleRights,
-      moveMetaData.updatedBlackCastleRights
-    );
+    const newBoardFen = buildFenStringFromGame(moveMetaData, whiteCastleRights, blackCastleRights);
 
     socket.emit('go', newBoardFen);
   }
 
-  function handleGameIsOver(moveMetaData: MoveMetaData) {
+  function handleGameIsOver(
+    moveMetaData: MoveMetaData,
+    whiteCastleRights: CastleRights,
+    blackCastleRights: CastleRights
+  ) {
     let isOver = false;
     if (moveMetaData.isCheckmate) {
       isOver = true;
@@ -127,9 +137,7 @@ export function useTransitionTurn() {
       moveMetaData.updatedBoard,
       moveMetaData.isCheck,
       moveMetaData.piece.color,
-      moveMetaData.piece.color === PieceColor.WHITE
-        ? moveMetaData.updatedWhiteCastleRights
-        : moveMetaData.updatedBlackCastleRights,
+      moveMetaData.piece.color === PieceColor.WHITE ? whiteCastleRights : blackCastleRights,
       moveMetaData.enPassantSquare
     );
 

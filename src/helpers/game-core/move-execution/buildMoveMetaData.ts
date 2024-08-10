@@ -31,8 +31,8 @@ export interface MoveMetaData {
   startPosition: number;
   endPosition: number;
   updatedBoard: BoardState;
-  updatedWhiteCastleRights: CastleRights;
-  updatedBlackCastleRights: CastleRights;
+  activeCastleRights: CastleRights;
+  waitingCastleRights: CastleRights;
   halfMoves: number;
   fullMoves: number;
   increment: Increment | null;
@@ -75,8 +75,8 @@ export function buildMoveMetaData(
     startPosition,
     endPosition,
     updatedBoard: [...board],
-    updatedWhiteCastleRights: initCastleRights,
-    updatedBlackCastleRights: initCastleRights,
+    activeCastleRights: initCastleRights,
+    waitingCastleRights: initCastleRights,
     halfMoves: 0,
     fullMoves: 1,
     increment: null,
