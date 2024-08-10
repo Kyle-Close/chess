@@ -96,17 +96,13 @@ export function useMove(): UseMoveReturn {
 
     // Update player castle rights
     const { whiteCastleRights, blackCastleRights } = getNewCastleRights(moveMetaData.updatedBoard);
-    const activeCastleRights =
-      moveMetaData.piece.color === PieceColor.WHITE ? whiteCastleRights : blackCastleRights;
-    const waitingCastleRights =
-      moveMetaData.piece.color === PieceColor.BLACK ? whiteCastleRights : blackCastleRights;
 
-    moveMetaData.activeCastleRights = {
-      ...activeCastleRights,
+    moveMetaData.whiteCastleRights = {
+      ...whiteCastleRights,
       id: whitePlayer.castleRightsId,
     };
-    moveMetaData.waitingCastleRights = {
-      ...waitingCastleRights,
+    moveMetaData.blackCastleRights = {
+      ...blackCastleRights,
       id: blackPlayer.castleRightsId,
     };
 
@@ -133,6 +129,7 @@ export function useMove(): UseMoveReturn {
   function handleSpecialMoves(moveMetaData: MoveMetaData) {
     if (moveMetaData.isCastle) handleCastle(moveMetaData);
     if (moveMetaData.piece.type === PieceType.PAWN) handlePawnMoves(moveMetaData);
+    else moveMetaData.enPassantSquare = null;
   }
 
   function updateMoveCounts(moveMetaData: MoveMetaData) {

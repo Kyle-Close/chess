@@ -71,17 +71,8 @@ export function useTransitionTurn() {
     }
 
     // Update castle rights
-    dispatch(setCastleRights({ castleRights: moveMetaData.activeCastleRights }));
-    dispatch(setCastleRights({ castleRights: moveMetaData.waitingCastleRights }));
-
-    const whiteCastleRights =
-      moveMetaData.piece.color === PieceColor.WHITE
-        ? moveMetaData.activeCastleRights
-        : moveMetaData.waitingCastleRights;
-    const blackCastleRights =
-      moveMetaData.piece.color === PieceColor.BLACK
-        ? moveMetaData.activeCastleRights
-        : moveMetaData.waitingCastleRights;
+    dispatch(setCastleRights({ castleRights: moveMetaData.whiteCastleRights }));
+    dispatch(setCastleRights({ castleRights: moveMetaData.blackCastleRights }));
 
     // Handle Time Increment
     if (moveMetaData.increment) {
@@ -100,19 +91,31 @@ export function useTransitionTurn() {
     // Update move history
     dispatch(
       pushToMoveHistory({
-        fenString: buildFenStringFromGame(moveMetaData, whiteCastleRights, blackCastleRights),
+        fenString: buildFenStringFromGame(
+          moveMetaData,
+          moveMetaData.whiteCastleRights,
+          moveMetaData.blackCastleRights
+        ),
         chessNotation: buildAgebraicNotation(moveMetaData),
       })
     );
 
     // Check if game is over. Update gameState if true
-    const isOver = handleGameIsOver(moveMetaData, whiteCastleRights, blackCastleRights);
+    const isOver = handleGameIsOver(
+      moveMetaData,
+      moveMetaData.whiteCastleRights,
+      moveMetaData.blackCastleRights
+    );
     if (isOver) dispatch(setIsPlaying(false));
 
     // Trigger the latest board update
     dispatch(setupBoard(moveMetaData.updatedBoard));
 
-    const newBoardFen = buildFenStringFromGame(moveMetaData, whiteCastleRights, blackCastleRights);
+    const newBoardFen = buildFenStringFromGame(
+      moveMetaData,
+      moveMetaData.whiteCastleRights,
+      moveMetaData.blackCastleRights
+    );
 
     socket.emit('go', newBoardFen);
   }
