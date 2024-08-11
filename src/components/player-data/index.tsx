@@ -34,8 +34,13 @@ export function PlayerData({ playerId, openModal, materialDiff }: PlayerDataProp
             <Text opacity='0.8' fontSize='small' color={materialDiffColor}>
               {materialDiff === 0 ? '' : displayValue}
             </Text>
-            <Heading as='h6' className='font-medium' fontSize='x-large'>
-              {player.name}
+            <Heading
+              visibility={player.name ? 'visible' : 'hidden'}
+              as='h6'
+              className='font-medium'
+              fontSize='x-large'
+            >
+              {player.name ? player.name : 'hidden'}
             </Heading>
           </Box>
         </Box>

@@ -24,6 +24,7 @@ import {
   selectPlayerById,
   setIsInCheck,
   setIsTurn,
+  setRemainingMaterialValue,
 } from '../redux/slices/player';
 import {
   createCastleRights,
@@ -164,6 +165,8 @@ export function useGameSettings() {
     dispatch(setIsTurn({ id: whitePlayer.id, isTurn: false }));
     dispatch(setIsInCheck({ id: blackPlayer.id, isInCheck: false }));
     dispatch(setIsTurn({ id: blackPlayer.id, isTurn: false }));
+    dispatch(setRemainingMaterialValue({ id: whitePlayer.id, value: 39 }));
+    dispatch(setRemainingMaterialValue({ id: blackPlayer.id, value: 39 }));
 
     // Setup default game board
     const fen = parseFenString(DEFAULT_FEN_STRING);

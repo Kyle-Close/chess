@@ -37,7 +37,10 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
   };
 
   useEffect(() => {
-    if (!gameInfo.isPlaying) return;
+    if (!gameInfo.isPlaying) {
+      dispatch(setIsOn({ id: player.timerId, isOn: false }));
+      return;
+    }
     if (player.isTurn) dispatch(setIsOn({ id: player.timerId, isOn: true }));
     else dispatch(setIsOn({ id: player.timerId, isOn: false }));
   }, [player.isTurn]);

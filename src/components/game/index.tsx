@@ -31,7 +31,10 @@ export function Game() {
   }, [gameInfo.matchResult]);
 
   useEffect(() => {
-    if (!gameInfo.isPlaying) return;
+    if (!gameInfo.isPlaying) {
+      dispatch(setIsOn({ id: whitePlayer.id, isOn: false }));
+      dispatch(setIsOn({ id: blackPlayer.id, isOn: false }));
+    }
 
     if (whitePlayer.isTurn) {
       dispatch(setIsOn({ id: whitePlayer.id, isOn: true }));

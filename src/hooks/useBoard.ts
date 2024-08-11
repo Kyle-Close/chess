@@ -92,16 +92,6 @@ export function useBoard() {
     dispatch(setupBoard(copy));
   }
 
-  function clearMarkedSquares() {
-    const copy = deepCopyBoard(board);
-    copy.forEach((square) => {
-      square.isCapture = false;
-      square.isValidMove = false;
-    });
-
-    dispatch(setupBoard(copy));
-  }
-
   const handleSquareClicked = (index: number) => {
     if (!gameInfo.isPlaying) return;
 
