@@ -1,7 +1,3 @@
-import { useEffect } from 'react';
-import { MatchResult } from './redux/slices/gameInfo';
-import { useAppSelector } from './hooks/useBoard';
-
 interface AppProps {
   children?: React.ReactNode;
 }

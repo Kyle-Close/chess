@@ -7,7 +7,7 @@ export const moveSlice = createSlice({
   name: 'move',
   initialState: null as MoveState,
   reducers: {
-    setMoveMetaData(state, action: PayloadAction<MoveState>) {
+    setMoveMetaData(_state, action: PayloadAction<MoveState>) {
       return action.payload;
     },
   },

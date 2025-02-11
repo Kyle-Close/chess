@@ -1,6 +1,6 @@
 import { Timer } from './Timer';
 import whitePlayerImg from '../../assets/profile-white.png';
-import blackPlayerImg from '../../assets/profile-black.png';
+import blackPlayerImg from '../../assets/profile-black.png'
 import { useAppSelector } from '../../hooks/useBoard';
 import { selectPlayerById } from '../../redux/slices/player';
 import { PieceColor } from '../../enums/PieceColor';

@@ -16,7 +16,7 @@ import { PieceColor } from '../enums/PieceColor';
 import { PieceType } from '../enums/PieceType';
 import { useTransitionTurn } from './useTransitionTurn';
 import { setMoveMetaData } from '../redux/slices/move';
-import { setEnPassantSquare, setPawnPromotionSquare } from '../redux/slices/gameInfo';
+import { setPawnPromotionSquare } from '../redux/slices/gameInfo';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();

@@ -1,10 +1,7 @@
 import { Piece } from '../../context/board/InitialState';
 import { getSquareFile } from '../../helpers/analysis/board-mapping/getSquareFile';
 import { getSquareRank } from '../../helpers/analysis/board-mapping/getSquareRank';
-import { getKingIndex } from '../../helpers/analysis/game-checks/getKingIndex';
-import { useAppSelector } from '../../hooks/useBoard';
 import { useSquare } from '../../hooks/useSquare';
-import { selectPlayerById } from '../../redux/slices/player';
 import { Piece as PieceComponent } from '../piece';
 
 interface SquareProps {

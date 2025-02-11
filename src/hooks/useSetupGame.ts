@@ -1,21 +1,18 @@
 import { buildBoardFromFen } from '../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { parseFenString } from '../helpers/notation-setup/game-setup/parseFenString';
-import { PieceColor } from '../enums/PieceColor';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
 import { useAppDispatch, useAppSelector } from './useBoard';
 import { setupBoard } from '../redux/slices/board';
-import { useCastleRights } from './useCastleRights';
 import { setEnPassantSquare, setFullMoves, setHalfMoves } from '../redux/slices/gameInfo';
 import { selectPlayerById, setIsTurn } from '../redux/slices/player';
+import { setCastleRights } from '../redux/slices/castleRights';
+import { initialCastleRights } from './useCastleRights';
 
 export function useSetupGame() {
-  const board = useAppSelector((state) => state.board);
-  const gameInfo = useAppSelector((state) => state.gameInfo);
   const dispatch = useAppDispatch();
+  const gameInfo = useAppSelector((state) => state.gameInfo);
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
-  const whiteCastleRights = useCastleRights({ id: whitePlayer.castleRightsId });
-  const blackCastleRights = useCastleRights({ id: blackPlayer.castleRightsId });
 
   function setupFromFEN(fenString: string) {
     const fenSegments = parseFenString(fenString);
@@ -42,8 +39,8 @@ export function useSetupGame() {
     dispatch(setFullMoves(fullMoves));
 
     // Set player castle rights
-    whiteCastleRights.updateCastleRights(board, PieceColor.WHITE);
-    blackCastleRights.updateCastleRights(board, PieceColor.BLACK);
+    dispatch(setCastleRights({ castleRights: { ...initialCastleRights, id: whitePlayer.id } }))
+    dispatch(setCastleRights({ castleRights: { ...initialCastleRights, id: blackPlayer.id } }))
 
     // Set en passant target square
     const enPassantTargetSquare = getEnPassantTargetSquareFromFen(fenSegments.enPassant);

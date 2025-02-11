@@ -6,7 +6,7 @@ import { Board } from '../board';
 import { PlayerData } from '../player-data';
 import { RedoButton } from '../RedoButton';
 import { GameOver } from '../game-over';
-import { MatchResult, setIsPlaying } from '../../redux/slices/gameInfo';
+import { MatchResult } from '../../redux/slices/gameInfo';
 import { useEffect, useState } from 'react';
 import { PromotePawnModal } from '../promote';
 import { setIsOn } from '../../redux/slices/timer';
@@ -17,8 +17,8 @@ export function Game() {
   const gameInfo = useAppSelector((state) => state.gameInfo);
   const whitePlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.whitePlayerId));
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
-  const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
   const gameSettings = useAppSelector((state) => state.gameSettings);
+  const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
   const { undo, redo } = useUndoRedoMove();
 
   if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return <></>;
@@ -51,7 +51,7 @@ export function Game() {
   return (
     <div className={getGameClasses()}>
       <GameOver isOpen={showModal} closeModal={closeModal} />
-      <PromotePawnModal isOpen={showPromotion} onClose={() => {}} />
+      <PromotePawnModal isOpen={showPromotion} onClose={() => { }} />
       <PlayerData
         materialDiff={blackMaterialDiff}
         playerId={gameInfo.blackPlayerId}

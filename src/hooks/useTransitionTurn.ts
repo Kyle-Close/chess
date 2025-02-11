@@ -5,10 +5,8 @@ import { getTotalMaterialValue } from '../helpers/analysis/getMaterialValue';
 import { MoveMetaData } from '../helpers/game-core/move-execution/buildMoveMetaData';
 import { buildAgebraicNotation } from '../helpers/notation-setup/algebraic-notation/buildAlgebraicNotation';
 import { buildFenStringFromGame } from '../helpers/notation-setup/fen-management/buildFenStringFromGame';
-import { socket } from '../main';
 import { setupBoard } from '../redux/slices/board';
 import { CastleRights, setCastleRights } from '../redux/slices/castleRights';
-
 import {
   MatchResult,
   MatchResultSubType,
@@ -24,6 +22,7 @@ import {
 import { setIsInCheck, setRemainingMaterialValue, toggleIsTurn } from '../redux/slices/player';
 import { addRemainingSeconds } from '../redux/slices/timer';
 import { useAppDispatch, useAppSelector } from './useBoard';
+import { getMoveAudio } from '../helpers/audio/getMoveAudio';
 
 // Take a moveMetaData and run the necessary dispatch's
 export function useTransitionTurn() {
@@ -117,7 +116,13 @@ export function useTransitionTurn() {
       moveMetaData.blackCastleRights
     );
 
-    socket.emit('go', newBoardFen);
+    // Play sound
+    const audio = getMoveAudio(moveMetaData);
+    const mySound = new Audio(audio);
+    mySound.play();
+
+    void newBoardFen
+    //socket.emit('evaluate', newBoardFen);
   }
 
   function handleGameIsOver(

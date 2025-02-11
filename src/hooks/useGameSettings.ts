@@ -41,8 +41,8 @@ import { DEFAULT_FEN_STRING } from '../constants/defaultFen';
 import { useNavigate } from 'react-router-dom';
 import { initialCastleRights, useCastleRights } from './useCastleRights';
 import { BoardState } from '../context/board/InitialState';
-import { convertFileToIndex } from '../helpers/analysis/game-checks/pieceLocation';
 import { getEnPassantTargetSquareFromFen } from '../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
+import { socket } from '../helpers/socket';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;
@@ -152,6 +152,8 @@ export function useGameSettings() {
     dispatch(setIsFiftyMoveRule(settings.isFiftyMoveRule));
     dispatch(setIsIncrement(settings.isIncrement));
     dispatch(setIsUndoRedo(settings.isUndoRedo));
+
+    socket.connect()
 
     navigate('/game');
   }
