@@ -1,9 +1,8 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
-import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
-import { buildFenCastleSegment } from './buildFenCastleSegment';
-import { CastleRights } from '../../../redux/slices/castleRights';
+import { BoardState, Piece } from "base/context/board/InitialState";
+import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
+import { buildFenCastleSegment } from "./buildFenCastleSegment";
+import { CastleRights } from "base/redux/slices/castleRights";
+import { MoveMetaData } from "base/helpers/game-core/move-execution/buildMoveMetaData";
 
 export function buildFenStringFromGame(
   moveMetaData: MoveMetaData,

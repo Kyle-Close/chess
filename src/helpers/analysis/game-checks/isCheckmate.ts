@@ -1,12 +1,12 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { executeMove } from '../../game-core/move-execution/executeMove';
-import { calculateAllValidMoves } from '../../game-core/move-execution/calculateAllValidMoves';
-import { filterCheckMoves } from '../../game-core/piece-validation/filterCheckMoves';
-import { kingMoveValidation } from '../../game-core/piece-validation/kingMoveValidation';
-import { deepCopyBoard } from '../../utilities/deepCopyBoard';
+import { executeMove } from 'base/helpers/game-core/move-execution/executeMove';
 import { getKingIndex } from './getKingIndex';
 import { isKingInCheck } from './isKingInCheck';
-import { CastleRights } from '../../../redux/slices/castleRights';
+import { deepCopyBoard } from 'base/helpers/utilities/deepCopyBoard';
+import { calculateAllValidMoves } from 'base/helpers/game-core/move-execution/calculateAllValidMoves';
+import { filterCheckMoves } from 'base/helpers/game-core/piece-validation/filterCheckMoves';
+import { kingMoveValidation } from 'base/helpers/game-core/piece-validation/kingMoveValidation';
+import { CastleRights } from 'base/redux/slices/castleRights';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 
 export interface PieceWithIndex extends Piece {
   index: number;

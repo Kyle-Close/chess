@@ -1,6 +1,6 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { CastleRights } from '../../../redux/slices/castleRights';
+import { CastleRights } from 'base/redux/slices/castleRights';
 import { calculateAllValidMoves } from './calculateAllValidMoves';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 
 export function isMoveValid(
   board: BoardState,

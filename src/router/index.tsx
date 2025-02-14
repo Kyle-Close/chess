@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from '../components/App.tsx';
-import { GameSetup } from "../components/game-setup/index.tsx";
-import { Game } from "../components/game/index.tsx";
+import App from '../components/AppWrapper.tsx';
+import { GamePage } from "../pages/game/components/GamePage.tsx";
+import { GameSetupPage } from "../pages/game-setup/index.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
     path: '/setup',
     element: (
       <App>
-        <GameSetup />
+        <GameSetupPage />
       </App>
     ),
   },
@@ -20,7 +20,7 @@ export const router = createBrowserRouter([
     path: '/game',
     element: (
       <App>
-        <Game />
+        <GamePage />
       </App>
     ),
   },

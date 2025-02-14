@@ -1,7 +1,7 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { getDiagonalStartIndex } from '../../game-core/board-utility/getDiagonalStartIndex';
+import { getDiagonalStartIndex } from 'base/helpers/game-core/board-utility/getDiagonalStartIndex';
 import { getSquareFile } from '../board-mapping/getSquareFile';
 import { ScanResult } from './scanRank';
+import { BoardState } from 'base/context/board/InitialState';
 
 export function scanDiagonal(
   board: BoardState,

@@ -1,5 +1,5 @@
-import { PieceColor } from '../../../enums/PieceColor';
-import { CastleRights } from '../../../redux/slices/castleRights';
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
+import { CastleRights } from "base/redux/slices/castleRights";
 
 export function getPlayerCastleRightsFromFen(
   castleRights: string,

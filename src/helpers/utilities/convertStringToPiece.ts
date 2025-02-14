@@ -1,5 +1,4 @@
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
+import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
 
 export function convertStringToPiece(input: string, color: PieceColor) {
   switch (input.toLowerCase()) {

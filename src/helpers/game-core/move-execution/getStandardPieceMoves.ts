@@ -1,11 +1,11 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceType } from '../../../enums/PieceType';
+import { PieceType } from 'base/features/game-board/hooks/usePiece';
 import { bishopMoveValidation } from '../piece-validation/bishopMoveValidation';
 import { ValidMoves, kingMoveValidation } from '../piece-validation/kingMoveValidation';
 import { knightMoveValidation } from '../piece-validation/knightMoveValidation';
 import { pawnMoveValidation } from '../piece-validation/pawnMoveValidation';
 import { queenMoveValidation } from '../piece-validation/queenMoveValidation';
 import { rookMoveValidation } from '../piece-validation/rookMoveValidation';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 
 export function getStandardPieceMoves(board: BoardState, piece: Piece, currentIndex: number) {
   if (piece === null) return;

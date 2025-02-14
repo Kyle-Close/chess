@@ -1,11 +1,10 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
-import { CastleRights } from '../../../redux/slices/castleRights';
+import { PieceColor, PieceType } from 'base/features/game-board/hooks/usePiece';
 import { filterCheckMoves } from '../piece-validation/filterCheckMoves';
 import { ValidMoves } from '../piece-validation/kingMoveValidation';
 import { isEnpassantCapturePossible } from '../piece-validation/pawnMoveValidation';
 import { getStandardPieceMoves } from './getStandardPieceMoves';
+import { CastleRights } from 'base/redux/slices/castleRights';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 
 export function calculateAllValidMoves(
   board: BoardState,

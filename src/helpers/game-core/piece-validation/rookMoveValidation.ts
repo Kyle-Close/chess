@@ -1,8 +1,8 @@
-import { BoardState, Piece, Square } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { SquareRank } from '../../../enums/SquareRank';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { PieceColor } from 'base/features/game-board/hooks/usePiece';
+import { SquareRank } from 'base/features/game-board/hooks/useSquare';
 
 export function rookMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
   const validSquares: ValidMoves[] = [];

@@ -1,4 +1,4 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
 import { filterOccupiedSelf, filterOutOfBounds } from './knightMoveValidation';
 

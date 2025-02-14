@@ -1,4 +1,4 @@
-import { PieceColor } from '../../../enums/PieceColor';
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
 
 export function getEnPassantCapturedPieceIndex(
   pawnIndexAfterCapture: number,

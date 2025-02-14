@@ -1,4 +1,4 @@
-import { SquareFile } from '../../../enums/SquareFile';
+import { SquareFile } from "base/features/game-board/hooks/useSquare";
 
 export function convertFileToIndex(file: SquareFile) {
   if (!file) return;

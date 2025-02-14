@@ -1,5 +1,5 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
+import { BoardState } from "base/context/board/InitialState";
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
 
 export function isMoveCapture(
   board: BoardState,

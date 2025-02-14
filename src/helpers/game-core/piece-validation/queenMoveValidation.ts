@@ -1,4 +1,4 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
 import { appendDiagonalMoves, getJumpCount, getLastFile } from './bishopMoveValidation';
 import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';

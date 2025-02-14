@@ -1,8 +1,7 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
-import { isPawnInStartPosition } from '../../analysis/game-checks/isPawnInStartPosition';
-import { isNumber } from '../../utilities/isNumber';
+import { BoardState, Piece } from "base/context/board/InitialState";
+import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
+import { isPawnInStartPosition } from "base/helpers/analysis/game-checks/isPawnInStartPosition";
+import { isNumber } from "base/helpers/utilities/isNumber";
 
 export function buildBoardFromFen(fenPositionString: string) {
   // The fen position string starts with the 8th rank and goes to the first.
@@ -25,7 +24,6 @@ export function buildBoardFromFen(fenPositionString: string) {
       }
     }
   }
-
   return initialBoard;
 }
 

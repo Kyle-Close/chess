@@ -1,7 +1,7 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { SquareFile } from '../../../enums/SquareFile';
-import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 import { ValidMoves, updateValidSquaresToIncludeCaptures } from './kingMoveValidation';
+import { getSquareFile } from 'base/helpers/analysis/board-mapping/getSquareFile';
+import { SquareFile } from 'base/features/game-board/hooks/useSquare';
 
 export function bishopMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
   const validMoves: ValidMoves[] = [];

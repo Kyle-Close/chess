@@ -1,7 +1,6 @@
-import { BoardState } from '../../context/board/InitialState';
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
+import { PieceColor, PieceType } from 'base/features/game-board/hooks/usePiece';
 import { getRemainingPiecesByColor } from '../game-core/piece-management/getRemainingPiecesByColor';
+import { BoardState } from 'base/context/board/InitialState';
 
 export function getTotalMaterialValue(board: BoardState, color: PieceColor) {
   const remainingPieces = getRemainingPiecesByColor(board, color);

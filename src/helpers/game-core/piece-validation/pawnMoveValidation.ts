@@ -1,10 +1,10 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { SquareRank } from '../../../enums/SquareRank';
-import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
-import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
-import { getPawnAttackingIndexes } from '../../analysis/game-checks/getPawnAttackingIndexes';
+import { getPawnAttackingIndexes } from 'base/helpers/analysis/game-checks/getPawnAttackingIndexes';
 import { ValidMoves } from './kingMoveValidation';
+import { PieceColor } from 'base/features/game-board/hooks/usePiece';
+import { SquareRank } from 'base/features/game-board/hooks/useSquare';
+import { BoardState, Piece } from 'base/context/board/InitialState';
+import { getSquareFile } from 'base/helpers/analysis/board-mapping/getSquareFile';
+import { getSquareRank } from 'base/helpers/analysis/board-mapping/getSquareRank';
 
 export function pawnMoveValidation(board: BoardState, piece: Piece, currentIndex: number) {
   const validSquares: ValidMoves[] = [];

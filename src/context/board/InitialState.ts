@@ -1,7 +1,7 @@
 // Start of the array is equal to rank 1, file a. Goes from left to right up to rank 8 eventually
 
-import { PieceColor } from '../../enums/PieceColor';
-import { PieceType } from '../../enums/PieceType';
+import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
+
 
 export interface Piece {
   type: PieceType;

@@ -1,6 +1,6 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceType } from '../../../enums/PieceType';
+import { PieceType } from 'base/features/game-board/hooks/usePiece';
 import { getSquareFile } from '../board-mapping/getSquareFile';
+import { BoardState } from 'base/context/board/InitialState';
 
 export function scanForEnemyKingWithinOneSquare(board: BoardState, kingIndex: number) {
   const surroundingSquares = getSurroundingSquares(kingIndex);

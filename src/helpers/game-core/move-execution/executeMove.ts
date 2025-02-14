@@ -1,5 +1,5 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { deepCopyBoard } from '../../utilities/deepCopyBoard';
+import { BoardState } from "base/context/board/InitialState";
+import { deepCopyBoard } from "base/helpers/utilities/deepCopyBoard";
 
 export function executeMove(board: BoardState, startPos: number, endPos: number, useCopy = false) {
   const newBoard = useCopy ? deepCopyBoard(board) : board;

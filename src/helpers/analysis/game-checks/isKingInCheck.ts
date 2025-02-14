@@ -1,5 +1,4 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
+import { PieceColor } from 'base/features/game-board/hooks/usePiece';
 import { scanDiagonal } from '../board-scan/scanDiagonal';
 import { scanDiagonalForCheck } from '../board-scan/scanDiagonalForCheck';
 import { scanFile } from '../board-scan/scanFile';
@@ -8,6 +7,7 @@ import { scanForEnemyKingWithinOneSquare } from '../board-scan/scanForEnemyKingW
 import { scanForKnightCheck } from '../board-scan/scanForKnightCheck';
 import { scanRank } from '../board-scan/scanRank';
 import { scanRankForCheck } from '../board-scan/scanRankForCheck';
+import { BoardState } from 'base/context/board/InitialState';
 
 export function isKingInCheck(board: BoardState, currentKingIndex: number, color: PieceColor) {
   let isCheck = false;

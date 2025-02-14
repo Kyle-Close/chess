@@ -1,6 +1,5 @@
-import { Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
+import { Piece } from "base/context/board/InitialState";
+import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
 
 export enum CastleMetaData {
   KING_SIDE,

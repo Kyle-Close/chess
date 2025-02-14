@@ -1,4 +1,4 @@
-import { BoardState } from '../../../context/board/InitialState';
+import { BoardState } from "base/context/board/InitialState";
 
 export function isPathObstructed(board: BoardState, squaresAlongPath: number[]) {
   // Only care about spaces between.

@@ -1,8 +1,8 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { CastleRights } from '../../../redux/slices/castleRights';
-import { calculateAllValidMoves } from '../../game-core/move-execution/calculateAllValidMoves';
-import { getRemainingPiecesByColor } from '../../game-core/piece-management/getRemainingPiecesByColor';
+import { BoardState } from "base/context/board/InitialState";
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
+import { calculateAllValidMoves } from "base/helpers/game-core/move-execution/calculateAllValidMoves";
+import { getRemainingPiecesByColor } from "base/helpers/game-core/piece-management/getRemainingPiecesByColor";
+import { CastleRights } from "base/redux/slices/castleRights";
 
 export function checkStalemate(
   board: BoardState,

@@ -1,7 +1,6 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
-import { getRemainingPiecesByColor } from '../../game-core/piece-management/getRemainingPiecesByColor';
+import { BoardState } from 'base/context/board/InitialState';
+import { PieceColor, PieceType } from 'base/features/game-board/hooks/usePiece';
+import { getRemainingPiecesByColor } from 'base/helpers/game-core/piece-management/getRemainingPiecesByColor';
 
 export function checkInsufficientMaterial(board: BoardState) {
   const remainingWhitePieces = getRemainingPiecesByColor(board, PieceColor.WHITE);

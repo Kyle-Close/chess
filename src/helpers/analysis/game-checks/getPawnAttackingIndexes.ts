@@ -1,5 +1,5 @@
-import { PieceColor } from '../../../enums/PieceColor';
-import { getSquareFile } from '../board-mapping/getSquareFile';
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
+import { getSquareFile } from "../board-mapping/getSquareFile";
 
 export function getPawnAttackingIndexes(currentIndex: number, color: PieceColor) {
   const attackingSquares: number[] = [];

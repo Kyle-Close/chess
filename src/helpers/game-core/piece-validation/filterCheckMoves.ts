@@ -1,8 +1,8 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
 import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isKingInCheck } from '../../analysis/game-checks/isKingInCheck';
 import { ValidMoves } from './kingMoveValidation';
 import { executeMove } from '../move-execution/executeMove';
+import { BoardState, Piece } from 'base/context/board/InitialState';
 
 export function filterCheckMoves(
   validMoves: ValidMoves[],

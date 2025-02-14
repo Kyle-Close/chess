@@ -1,10 +1,10 @@
-import { CastleRights } from '../../../redux/slices/castleRights';
-import { Player } from '../../../redux/slices/player';
+import { CastleRights } from 'base/redux/slices/castleRights';
 import { getKingIndex } from '../../analysis/game-checks/getKingIndex';
 import { isCheckmate } from '../../analysis/game-checks/isCheckmate';
 import { isKingInCheck } from '../../analysis/game-checks/isKingInCheck';
 import { MoveMetaData } from '../move-execution/buildMoveMetaData';
 import { getRemainingPiecesByColor } from '../piece-management/getRemainingPiecesByColor';
+import { Player } from 'base/redux/slices/player';
 
 export function handleOpponentCheckState(
   moveMetaData: MoveMetaData,

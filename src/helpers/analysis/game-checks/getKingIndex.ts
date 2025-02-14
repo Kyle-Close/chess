@@ -1,6 +1,5 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
+import { BoardState } from "base/context/board/InitialState";
+import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
 
 export function getKingIndex(board: BoardState, pieceColor: PieceColor) {
   if (pieceColor === PieceColor.WHITE)

@@ -1,4 +1,4 @@
-import { TimeControl } from '../../../redux/slices/gameSettings';
+import { TimeControl } from "base/redux/slices/gameSettings";
 
 export function getSecondsToIncrement(timeControl: TimeControl) {
   switch (timeControl) {

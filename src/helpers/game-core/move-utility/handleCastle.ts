@@ -1,4 +1,4 @@
-import { getRookMovementForCastling } from '../../analysis/game-checks/getRookMovementForCastling';
+import { getRookMovementForCastling } from 'base/helpers/analysis/game-checks/getRookMovementForCastling';
 import { MoveMetaData } from '../move-execution/buildMoveMetaData';
 import { executeMove } from '../move-execution/executeMove';
 

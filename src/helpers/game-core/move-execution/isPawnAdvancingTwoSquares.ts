@@ -1,4 +1,4 @@
-import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
+import { getSquareRank } from "base/helpers/analysis/board-mapping/getSquareRank";
 
 export function isPawnAdvancingTwoSquares(startIndex: number, endIndex: number) {
   const startRank = getSquareRank(startIndex);

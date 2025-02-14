@@ -1,12 +1,12 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { initialCastleRights } from '../../../hooks/useCastleRights';
-import { CastleRights } from '../../../redux/slices/castleRights';
+import { initialCastleRights } from 'base/features/game-logic/hooks/useCastleRights';
 import { getCapturedPiece } from '../piece-management/getCapturedPiece';
 import { CastleMetaData, getCastleMetaData } from './getCastleMetaData';
 import { isMoveCapture } from './isMoveCapture';
 import { isMoveCastle } from './isMoveCastle';
 import { isMoveEnPassant } from './isMoveEnPassant';
 import { isMovePawnPromotion } from './isMovePawnPromotion';
+import { BoardState, Piece } from 'base/context/board/InitialState';
+import { CastleRights } from 'base/redux/slices/castleRights';
 
 interface Increment {
   timerId: string;

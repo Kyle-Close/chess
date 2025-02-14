@@ -1,9 +1,9 @@
 import { Piece } from '../../../context/board/InitialState';
-import { PieceType } from '../../../enums/PieceType';
 import { getSquareNotation } from '../fen-management/getSquareNotation';
 import { MoveMetaData } from '../../game-core/move-execution/buildMoveMetaData';
 import { CastleMetaData } from '../../game-core/move-execution/getCastleMetaData';
 import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
+import { PieceType } from 'base/features/game-board/hooks/usePiece';
 
 export function buildAgebraicNotation(moveMetaData: MoveMetaData) {
   // TO-DO:

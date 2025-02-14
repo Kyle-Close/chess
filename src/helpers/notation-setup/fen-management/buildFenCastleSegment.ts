@@ -1,4 +1,4 @@
-import { CastleRights } from '../../../hooks/useCastleRights';
+import { CastleRights } from "base/redux/slices/castleRights";
 
 export function buildFenCastleSegment(
   whiteCastleRights: CastleRights,

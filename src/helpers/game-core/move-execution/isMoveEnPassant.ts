@@ -1,4 +1,4 @@
-import { Piece } from '../../../context/board/InitialState';
+import { Piece } from "base/context/board/InitialState";
 
 export function isMoveEnPassant(
   piece: Piece,

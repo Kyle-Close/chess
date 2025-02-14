@@ -1,6 +1,6 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { scanAttackingSquares } from '../../analysis/board-scan/scanAttackingSquares';
+import { BoardState } from "base/context/board/InitialState";
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
+import { scanAttackingSquares } from "base/helpers/analysis/board-scan/scanAttackingSquares";
 
 export function isSquaresAttacked(board: BoardState, pathSquares: number[], color: PieceColor) {
   // Checks if any of the passed in squares are being attacked by opponent

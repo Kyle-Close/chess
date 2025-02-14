@@ -1,6 +1,6 @@
-import { CastleRights } from '../../../redux/slices/castleRights';
-import { MoveMetaData } from '../move-execution/buildMoveMetaData';
+import { CastleRights } from 'base/redux/slices/castleRights';
 import { isMoveValid } from '../move-execution/isMoveValid';
+import { MoveMetaData } from '../move-execution/buildMoveMetaData';
 
 export function updateIsValidMove(
   moveMetaData: MoveMetaData,

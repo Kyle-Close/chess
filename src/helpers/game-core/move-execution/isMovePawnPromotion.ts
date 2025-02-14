@@ -1,6 +1,6 @@
-import { Piece } from '../../../context/board/InitialState';
-import { PieceType } from '../../../enums/PieceType';
-import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
+import { Piece } from "base/context/board/InitialState";
+import { PieceType } from "base/features/game-board/hooks/usePiece";
+import { getSquareRank } from "base/helpers/analysis/board-mapping/getSquareRank";
 
 export function isMovePawnPromotion(piece: Piece, pawnIndex: number) {
   if (piece.type !== PieceType.PAWN) return false;

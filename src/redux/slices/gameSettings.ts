@@ -19,14 +19,16 @@ export interface GameSettings {
   isIncrement: boolean;
   isUndoRedo: boolean;
   isFiftyMoveRule: boolean;
+  stockfishElo: number;
 }
 
-const initialState = {
+const initialState: GameSettings = {
   gameType: GameType.LOCAL,
   timeControl: TimeControl.BLITZ,
   isIncrement: false,
   isUndoRedo: false,
   isFiftyMoveRule: true,
+  stockfishElo: 1500
 };
 
 export const gameSettingsSlice = createSlice({

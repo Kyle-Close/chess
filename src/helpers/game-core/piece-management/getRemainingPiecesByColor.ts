@@ -1,6 +1,6 @@
-import { BoardState, Piece } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceWithIndex } from '../../analysis/game-checks/isCheckmate';
+import { BoardState, Piece } from "base/context/board/InitialState";
+import { PieceColor } from "base/features/game-board/hooks/usePiece";
+import { PieceWithIndex } from "base/helpers/analysis/game-checks/isCheckmate";
 
 // Overload signatures
 export function getRemainingPiecesByColor(

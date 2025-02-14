@@ -1,7 +1,6 @@
-import { BoardState } from '../../../context/board/InitialState';
-import { PieceColor } from '../../../enums/PieceColor';
-import { PieceType } from '../../../enums/PieceType';
+import { PieceColor, PieceType } from 'base/features/game-board/hooks/usePiece';
 import { getSquareFile } from '../board-mapping/getSquareFile';
+import { BoardState } from 'base/context/board/InitialState';
 
 export function scanForKnightCheck(
   board: BoardState,

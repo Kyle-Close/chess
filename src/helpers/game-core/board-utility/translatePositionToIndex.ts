@@ -1,5 +1,4 @@
-import { SquareFile } from '../../../enums/SquareFile';
-import { SquareRank } from '../../../enums/SquareRank';
+import { SquareFile, SquareRank } from "base/features/game-board/hooks/useSquare";
 
 export function translatePositionToIndex(rank: SquareRank, file: SquareFile) {
   const rankMultiplier = 8 - rank;

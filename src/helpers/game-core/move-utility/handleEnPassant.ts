@@ -1,8 +1,8 @@
-import { PieceType } from '../../../enums/PieceType';
-import { buildEnPassantForFen } from '../../notation-setup/fen-management/buildEnPassantForFen';
-import { getEnPassantCapturedPieceIndex } from '../board-utility/getEnPassantCapturedPieceIndex';
-import { MoveMetaData } from '../move-execution/buildMoveMetaData';
-import { isPawnAdvancingTwoSquares } from '../move-execution/isPawnAdvancingTwoSquares';
+import { buildEnPassantForFen } from "base/helpers/notation-setup/fen-management/buildEnPassantForFen";
+import { getEnPassantCapturedPieceIndex } from "../board-utility/getEnPassantCapturedPieceIndex";
+import { isPawnAdvancingTwoSquares } from "../move-execution/isPawnAdvancingTwoSquares";
+import { PieceType } from "base/features/game-board/hooks/usePiece";
+import { MoveMetaData } from "../move-execution/buildMoveMetaData";
 
 export function handleEnPassant(moveMetaData: MoveMetaData): boolean {
   const { piece, startPosition, endPosition } = moveMetaData;

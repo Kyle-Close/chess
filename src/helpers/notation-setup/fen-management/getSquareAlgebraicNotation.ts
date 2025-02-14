@@ -1,5 +1,5 @@
-import { getSquareFile } from '../../analysis/board-mapping/getSquareFile';
-import { getSquareRank } from '../../analysis/board-mapping/getSquareRank';
+import { getSquareFile } from "base/helpers/analysis/board-mapping/getSquareFile";
+import { getSquareRank } from "base/helpers/analysis/board-mapping/getSquareRank";
 
 export function getSquareAlgebraicNotation(index: number) {
   const file = getSquareFile(index);

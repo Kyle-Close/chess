@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
-import { initialCastleRights } from '../../hooks/useCastleRights';
+import { initialCastleRights } from '../../features/game-logic/hooks/useCastleRights';
 
 export interface CastleRights {
   id: string;
