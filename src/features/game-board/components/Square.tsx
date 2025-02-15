@@ -1,8 +1,8 @@
 import { Piece as PieceComponent } from './Piece';
-import { Piece } from 'base/context/board/InitialState';
-import { getSquareRank } from 'base/helpers/analysis/board-mapping/getSquareRank';
-import { getSquareFile } from 'base/helpers/analysis/board-mapping/getSquareFile';
 import { useSquare } from '../hooks/useSquare';
+import { Piece } from 'base/data/getInitialBoardState';
+import { getSquareFile } from '../utils/board-utility/getSquareFile';
+import { getSquareRank } from '../utils/board-utility/getSquareRank';
 
 interface SquareProps {
   currentPiece: Piece | null;

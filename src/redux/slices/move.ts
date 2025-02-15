@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { MoveMetaData } from '../../helpers/game-core/move-execution/buildMoveMetaData';
+import { MoveMetaData } from 'base/features/game-logic/utils/move-execution/buildMoveMetaData';
 
 type MoveState = MoveMetaData | null;
 

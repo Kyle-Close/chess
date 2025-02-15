@@ -1,10 +1,10 @@
-import { getKingIndex } from '../../../helpers/analysis/game-checks/getKingIndex';
-import { BoardState } from '../../../context/board/InitialState';
-import { isSquaresAttacked } from '../../../helpers/game-core/move-utility/isSquaresAttacked';
-import { isPathObstructed } from '../../../helpers/game-core/move-utility/isPathObstructed';
-import { useAppDispatch } from '../../game-board/hooks/useBoard';
-import { CastleRights, setCastleRights } from '../../../redux/slices/castleRights';
+import { BoardState } from 'base/data/getInitialBoardState';
+import { useAppDispatch } from 'base/features/game-board/hooks/useBoard';
 import { PieceColor } from 'base/features/game-board/hooks/usePiece';
+import { CastleRights, setCastleRights } from 'base/redux/slices/castleRights';
+import { getKingIndex } from '../utils/game-checks/getKingIndex';
+import { isPathObstructed } from '../utils/move-utility/isPathObstructed';
+import { isSquaresAttacked } from '../utils/move-utility/isSquaresAttacked';
 
 interface NewCastleRightsReturn {
   whiteCastleRights: Omit<CastleRights, 'id'>;

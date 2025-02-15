@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { BoardState, getInitialBoardState } from '../../context/board/InitialState';
+import { BoardState, getInitialBoardState } from '../../data/getInitialBoardState';
 
 export type SetupBoardPayload = BoardState;
 

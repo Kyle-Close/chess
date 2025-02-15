@@ -1,5 +1,5 @@
-import { Piece } from "base/context/board/InitialState";
-import { getSquareRank } from "base/helpers/analysis/board-mapping/getSquareRank";
+import { Piece } from "base/data/getInitialBoardState";
+import { getSquareRank } from "../utils/board-utility/getSquareRank";
 import { PieceColor } from "./usePiece";
 
 export function useSquare(

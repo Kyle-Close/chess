@@ -5,11 +5,11 @@ import { FaChessBishop } from 'react-icons/fa6';
 import { FaChessRook } from 'react-icons/fa';
 import { useAppDispatch, useAppSelector } from 'base/features/game-board/hooks/useBoard';
 import { useTransitionTurn } from '../hooks/useTransitionTurn';
-import { MoveMetaData } from 'base/helpers/game-core/move-execution/buildMoveMetaData';
-import { Piece } from 'base/context/board/InitialState';
 import { clearPawnPromotionSquare, setIsPlaying } from 'base/redux/slices/gameInfo';
 import { PieceType } from 'base/features/game-board/hooks/usePiece';
 import { BaseModal } from 'base/components/BaseModal';
+import { MoveMetaData } from '../utils/move-execution/buildMoveMetaData';
+import { Piece } from 'base/data/getInitialBoardState';
 
 interface PromotePawnModalProps {
   isOpen: boolean;

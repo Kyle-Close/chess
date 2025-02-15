@@ -1,5 +1,5 @@
 import { PieceColor } from 'base/features/game-board/hooks/usePiece';
-import { convertSecondsToMin } from 'base/helpers/utilities/convertSecondsToMin';
+import { convertSecondsToMin } from 'base/utils/convertSecondsToMin';
 import { useTimer } from '../hooks/useTimer';
 import clockImg from 'base/assets/clock.png'
 

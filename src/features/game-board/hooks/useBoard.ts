@@ -1,9 +1,4 @@
-import { getInitialBoardState } from 'base/context/board/InitialState';
 import { useMove } from 'base/features/game-logic/hooks/useMove';
-import { getKingIndex } from 'base/helpers/analysis/game-checks/getKingIndex';
-import { calculateAllValidMoves } from 'base/helpers/game-core/move-execution/calculateAllValidMoves';
-import { ValidMoves } from 'base/helpers/game-core/piece-validation/kingMoveValidation';
-import { deepCopyBoard } from 'base/helpers/utilities/deepCopyBoard';
 import { useTransitionTurn } from 'base/features/game-logic/hooks/useTransitionTurn';
 import { clearIsValidSquares, setupBoard } from 'base/redux/slices/board';
 import { selectCastleRightsById } from 'base/redux/slices/castleRights';
@@ -16,6 +11,11 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useStartEndAction } from './useStartEndAction';
 import { PieceColor, PieceType } from './usePiece';
+import { deepCopyBoard } from '../utils/board-utility/deepCopyBoard';
+import { ValidMoves } from 'base/features/game-logic/utils/piece-validation/kingMoveValidation';
+import { calculateAllValidMoves } from 'base/features/game-logic/utils/move-execution/calculateAllValidMoves';
+import { getInitialBoardState } from 'base/data/getInitialBoardState';
+import { getKingIndex } from 'base/features/game-logic/utils/game-checks/getKingIndex';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();

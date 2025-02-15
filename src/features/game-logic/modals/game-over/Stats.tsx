@@ -1,11 +1,11 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useAppSelector } from "base/features/game-board/hooks/useBoard";
 import { PieceColor } from "base/features/game-board/hooks/usePiece";
-import { getRemainingPiecesByColor } from "base/helpers/game-core/piece-management/getRemainingPiecesByColor";
-import { convertSecondsToMin } from "base/helpers/utilities/convertSecondsToMin";
+import { convertSecondsToMin } from "base/utils/convertSecondsToMin";
 import { TimeControl } from "base/redux/slices/gameSettings";
 import { selectPlayerById } from "base/redux/slices/player";
 import { selectTimerById } from "base/redux/slices/timer";
+import { getRemainingPiecesByColor } from "../../utils/piece-management/getRemainingPiecesByColor";
 
 interface GameOverDataRow {
   title: string;

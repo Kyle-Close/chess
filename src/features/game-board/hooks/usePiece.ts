@@ -1,7 +1,7 @@
-import { Piece } from "base/context/board/InitialState";
+import { Piece } from "base/data/getInitialBoardState";
 import { useAppDispatch, useAppSelector } from "./useBoard";
-import { deepCopyBoard } from "base/helpers/utilities/deepCopyBoard";
 import { setupBoard } from "base/redux/slices/board";
+import { deepCopyBoard } from "../utils/board-utility/deepCopyBoard";
 
 export function usePiece() {
   const board = useAppSelector((state) => state.board);

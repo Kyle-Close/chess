@@ -30,17 +30,17 @@ import {
   setCastleRights,
 } from '../../../redux/slices/castleRights';
 import { createTimer, removeAllTimers, setIsOn, setRemainingSeconds } from '../../../redux/slices/timer';
-import { getStartingTimeInSeconds } from '../../../helpers/notation-setup/game-setup/getStartingTimeInSeconds';
-import { isValidFEN, parseFenString } from '../../../helpers/notation-setup/game-setup/parseFenString';
+import { getStartingTimeInSeconds } from '../../../utils/getStartingTimeInSeconds';
+import { isValidFEN, parseFenString } from '../../game-logic/utils/fen/parseFenString';
 import { setupBoard } from '../../../redux/slices/board';
-import { buildBoardFromFen } from '../../../helpers/notation-setup/game-setup/buildBoardFromFen';
 import { DEFAULT_FEN_STRING } from '../../../data/defaultFen';
 import { useNavigate } from 'react-router-dom';
 import { initialCastleRights, useCastleRights } from '../../game-logic/hooks/useCastleRights';
-import { BoardState } from '../../../context/board/InitialState';
-import { getEnPassantTargetSquareFromFen } from '../../../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
-import { socket } from '../../../helpers/socket';
+import { BoardState } from '../../../data/getInitialBoardState';
 import { PieceColor } from 'base/features/game-board/hooks/usePiece';
+import { getEnPassantTargetSquareFromFen } from 'base/features/game-logic/utils/fen/getEnPassantTargetSquareFromFen';
+import { socket } from 'base/utils/socket';
+import { buildBoardFromFen } from 'base/features/game-logic/utils/fen/buildBoardFromFen';
 
 export type LocalGameSetupFormInputs = {
   whiteName: string;

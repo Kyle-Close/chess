@@ -1,29 +1,26 @@
-import { Piece } from '../../../context/board/InitialState';
-import {
-  MoveMetaData,
-  buildMoveMetaData,
-} from '../../../helpers/game-core/move-execution/buildMoveMetaData';
-import { executeMove } from '../../../helpers/game-core/move-execution/executeMove';
-import { getEnPassantCapturedPieceIndex } from '../../../helpers/game-core/board-utility/getEnPassantCapturedPieceIndex';
-import { clearSquare } from '../../../helpers/game-core/board-management/clearSquare';
-import { isPawnAdvancingTwoSquares } from '../../../helpers/game-core/move-execution/isPawnAdvancingTwoSquares';
-import { translatePositionToIndex } from '../../../helpers/game-core/board-utility/translatePositionToIndex';
-import { getSquareRank } from '../../../helpers/analysis/board-mapping/getSquareRank';
-import { getSquareFile } from '../../../helpers/analysis/board-mapping/getSquareFile';
-import { isHalfMoveResetCondition } from '../../../helpers/game-core/move-execution/isHalfMoveResetCondition';
-import { handleOpponentCheckState } from '../../../helpers/game-core/move-utility/handleOpponentCheckState';
-import { handleEnPassant } from '../../../helpers/game-core/move-utility/handleEnPassant';
-import { handleCastle } from '../../../helpers/game-core/move-utility/handleCastle';
-import { updateIsValidMove } from '../../../helpers/game-core/move-utility/updateIsValidMove';
-import { handlePawnPromotion } from '../../../helpers/game-core/move-utility/handlePawnPromotion';
-import { useAppSelector } from '../../game-board/hooks/useBoard';
-import { selectCastleRightsById } from '../../../redux/slices/castleRights';
 import { usePlayer } from './usePlayer';
-import { deepCopyBoard } from '../../../helpers/utilities/deepCopyBoard';
-import { getSecondsToIncrement } from '../../../helpers/game-core/move-utility/getSecondsToIncrement';
 import { useCastleRights } from './useCastleRights';
 import { SquareRank } from 'base/features/game-board/hooks/useSquare';
 import { PieceColor, PieceType } from 'base/features/game-board/hooks/usePiece';
+import { Piece } from 'base/data/getInitialBoardState';
+import { MoveMetaData, buildMoveMetaData } from '../utils/move-execution/buildMoveMetaData';
+import { useAppSelector } from 'base/features/game-board/hooks/useBoard';
+import { selectCastleRightsById } from 'base/redux/slices/castleRights';
+import { deepCopyBoard } from 'base/features/game-board/utils/board-utility/deepCopyBoard';
+import { updateIsValidMove } from '../utils/move-utility/updateIsValidMove';
+import { handleEnPassant } from '../utils/move-utility/handleEnPassant';
+import { executeMove } from '../utils/move-execution/executeMove';
+import { handlePawnPromotion } from '../utils/move-utility/handlePawnPromotion';
+import { handleOpponentCheckState } from '../utils/move-utility/handleOpponentCheckState';
+import { handleCastle } from '../utils/move-utility/handleCastle';
+import { isHalfMoveResetCondition } from '../utils/move-execution/isHalfMoveResetCondition';
+import { getSecondsToIncrement } from '../utils/move-utility/getSecondsToIncrement';
+import { getEnPassantCapturedPieceIndex } from 'base/features/game-board/utils/board-utility/getEnPassantCapturedPieceIndex';
+import { clearSquare } from 'base/features/game-board/utils/board-management/clearSquare';
+import { isPawnAdvancingTwoSquares } from '../utils/move-execution/isPawnAdvancingTwoSquares';
+import { getSquareRank } from 'base/features/game-board/utils/board-utility/getSquareRank';
+import { getSquareFile } from 'base/features/game-board/utils/board-utility/getSquareFile';
+import { translatePositionToIndex } from 'base/features/game-board/utils/board-utility/translatePositionToIndex';
 
 export interface UseMoveReturn {
   buildInitMoveMetaData: (piece: Piece, startPos: number, endPos: number) => MoveMetaData | null;

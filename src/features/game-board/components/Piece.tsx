@@ -13,8 +13,8 @@ import bishopBlack from 'base/assets/black-bishop.png';
 import blackQueen from 'base/assets/black-queen.png';
 import blackKing from 'base/assets/black-king.png';
 
-import { Piece as PieceInterface } from 'base/context/board/InitialState';
 import { PieceColor, PieceType } from '../hooks/usePiece';
+import { Piece as PieceInterface } from 'base/data/getInitialBoardState';
 
 interface PieceProps {
   piece: PieceInterface;

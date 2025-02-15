@@ -1,12 +1,12 @@
-import { buildBoardFromFen } from '../../../helpers/notation-setup/game-setup/buildBoardFromFen';
-import { parseFenString } from '../../../helpers/notation-setup/game-setup/parseFenString';
-import { getEnPassantTargetSquareFromFen } from '../../../helpers/notation-setup/game-setup/getEnPassantTargetSquareFromFen';
-import { useAppDispatch, useAppSelector } from '../../game-board/hooks/useBoard';
-import { setupBoard } from '../../../redux/slices/board';
-import { setEnPassantSquare, setFullMoves, setHalfMoves } from '../../../redux/slices/gameInfo';
-import { selectPlayerById, setIsTurn } from '../../../redux/slices/player';
-import { setCastleRights } from '../../../redux/slices/castleRights';
+import { useAppDispatch, useAppSelector } from 'base/features/game-board/hooks/useBoard';
 import { initialCastleRights } from './useCastleRights';
+import { selectPlayerById, setIsTurn } from 'base/redux/slices/player';
+import { parseFenString } from '../utils/fen/parseFenString';
+import { setupBoard } from 'base/redux/slices/board';
+import { setEnPassantSquare, setFullMoves, setHalfMoves } from 'base/redux/slices/gameInfo';
+import { setCastleRights } from 'base/redux/slices/castleRights';
+import { getEnPassantTargetSquareFromFen } from '../utils/fen/getEnPassantTargetSquareFromFen';
+import { buildBoardFromFen } from '../utils/fen/buildBoardFromFen';
 
 export function useSetupGame() {
   const dispatch = useAppDispatch();

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { socket } from "../../helpers/socket";
+import { socket } from "base/utils/socket";
 
 interface SocketData {
   isConnected: boolean
