@@ -1,7 +1,7 @@
 import { TabNavigation } from '../../components/TabNavigation';
 import { ComputerSetup } from './ComputerSetup';
-import { LocalSetup } from './Local/LocalSetup';
-import { OnlineSetup } from './OnlineSetup';
+import { LocalSetup } from './local/LocalSetup';
+import { OnlineSetup } from './online/OnlineSetup';
 
 export function GameSetupPage() {
   return (
@@ -11,7 +11,7 @@ export function GameSetupPage() {
         <TabNavigation
           tabData={[
             { tabName: 'Local', tabContent: <LocalSetup />, isDisabled: false },
-            { tabName: 'Computer', tabContent: <ComputerSetup />, isDisabled: true },
+            { tabName: 'Computer', tabContent: <ComputerSetup />, isDisabled: false },
             { tabName: 'Online', tabContent: <OnlineSetup />, isDisabled: true },
           ]}
         />

@@ -1,5 +1,5 @@
 import { Box, Button } from '@chakra-ui/react';
-import { useGameSettings } from 'base/features/game-settings/hooks/useGameSettings';
+import { useResetGame } from 'base/features/game-settings/hooks/useResetGame';
 import { useNavigate } from 'react-router-dom';
 
 interface ButtonSectionProps {
@@ -8,10 +8,10 @@ interface ButtonSectionProps {
 
 export function ButtonSection({ closeModal }: ButtonSectionProps) {
   const navigate = useNavigate();
-  const gameSettings = useGameSettings();
+  const { reset } = useResetGame();
 
   const handleRematch = () => {
-    gameSettings.resetGame();
+    reset
     closeModal();
   };
 

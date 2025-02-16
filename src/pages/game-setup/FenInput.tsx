@@ -1,6 +1,6 @@
 import { Input } from '@chakra-ui/react';
 import { UseFormRegister } from 'react-hook-form';
-import { LocalGameSetupFormInputs } from '../../../features/game-settings/hooks/useGameSettings';
+import { LocalGameSetupFormInputs } from '../../features/game-settings/hooks/useGameSettings';
 
 interface FenInputProps {
   register: UseFormRegister<LocalGameSetupFormInputs>;

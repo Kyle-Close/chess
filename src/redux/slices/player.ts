@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createEntityAdapter } from '@reduxjs/toolkit';
-import { PieceColor } from '../../enums/PieceColor';
+import { PieceColor } from 'base/features/game-board/hooks/usePiece';
 import { nanoid } from 'nanoid';
 
 export interface Player {

@@ -3,11 +3,11 @@ import { Input, Text } from '@chakra-ui/react';
 import { UseFormRegister } from 'react-hook-form';
 import { LocalGameSetupFormInputs } from '../../../features/game-settings/hooks/useGameSettings';
 
-interface PlayerNameInputsProps {
+interface PlayerNamesInputsProps {
   register: UseFormRegister<LocalGameSetupFormInputs>;
 }
 
-export function PlayerNameInputs({ register }: PlayerNameInputsProps) {
+export function PlayerNamesInputs({ register }: PlayerNamesInputsProps) {
   return (
     <>
       <Box className='flex gap-2 items-end'>

@@ -50,6 +50,9 @@ export const gameSettingsSlice = createSlice({
     setIsFiftyMoveRule(state, action: PayloadAction<boolean>) {
       state.isFiftyMoveRule = action.payload;
     },
+    setStockfishElo(state, action: PayloadAction<number>) {
+      state.stockfishElo = action.payload;
+    }
   },
 });
 
