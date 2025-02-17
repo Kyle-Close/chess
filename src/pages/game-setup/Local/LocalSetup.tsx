@@ -7,12 +7,13 @@ import { GameType } from 'base/redux/slices/gameSettings';
 import { PlayerNamesInputs } from './PlayerNamesInputs';
 
 export function LocalSetup() {
-  const gameSettings = useGameSettings(GameType.LOCAL);
+  const gameSettings = useGameSettings();
+
   return (
     <Box
       as='form'
       className='flex flex-col my-2 gap-4 flex-grow'
-      onSubmit={gameSettings.handleSubmit(gameSettings.onFormSubmit)}
+      onSubmit={gameSettings.handleGameSubmit(GameType.LOCAL)}
     >
       <PlayerNamesInputs register={gameSettings.register} />
       <TimeControls register={gameSettings.register} />

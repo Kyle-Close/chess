@@ -1,12 +1,12 @@
-import { LocalGameSetupFormInputs } from 'base/features/game-settings/hooks/useGameSettings';
 import { TimeControl } from 'base/redux/slices/gameSettings';
 import { UseFormRegister } from 'react-hook-form';
 import { SelectItem, SelectValueText, createListCollection } from '@chakra-ui/react';
 import { SelectContent, SelectLabel, SelectRoot, SelectTrigger } from 'base/components/ui/select';
+import { GameSetup } from 'base/features/game-settings/hooks/useGameSettings';
 
 
 interface TimeControlsProps {
-  register: UseFormRegister<LocalGameSetupFormInputs>;
+  register: UseFormRegister<GameSetup>;
 }
 
 export function TimeControls({ register }: TimeControlsProps) {

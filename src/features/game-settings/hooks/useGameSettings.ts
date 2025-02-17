@@ -1,40 +1,38 @@
 import { GameType, TimeControl } from 'base/redux/slices/gameSettings';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSetupForLocalGame } from './useSetupForLocalGame';
+import { useSetupForComputerGame } from './useSetupForComputerGame';
 
-export type LocalGameSetupFormInputs = {
-  whiteName: string;
-  blackName: string;
-  selectedTimeControl: TimeControl;
+export interface GameSetup {
   isIncrement: boolean;
   isUndoRedo: boolean;
   isFiftyMoveRule: boolean;
-  fen: string;
-};
+  timeControl: TimeControl,
+  whiteName?: string;
+  blackName?: string;
+  selectedTimeControl: TimeControl;
+  fen?: string;
+  stockfishElo?: string;
+}
 
-export function useGameSettings(gameType: GameType) {
-  // Game settings are determined by the setup forms
-  const { register, handleSubmit } = useForm<LocalGameSetupFormInputs>();
+export function useGameSettings() {
+  const { register, handleSubmit } = useForm<GameSetup>();
 
-  const { setupLocalGame } = useSetupForLocalGame()
+  const { setupLocalGame } = useSetupForLocalGame();
+  const { setupComputerGame } = useSetupForComputerGame();
 
-  const onFormSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) => {
-    switch (gameType) {
-      case GameType.LOCAL:
+  const onFormSubmit: (gameType: GameType) => SubmitHandler<GameSetup> = (gameType) => {
+    return (data) => {
+      if (gameType === GameType.LOCAL) {
         setupLocalGame(data);
-        break;
-      case GameType.COMPUTER:
-        break;
-      case GameType.ONLINE:
-        break;
-      default:
-        throw new Error('Invalid game type sent to useGameSettings')
-    }
-  }
+      } else if (gameType === GameType.COMPUTER) {
+        setupComputerGame(data);
+      }
+    };
+  };
 
   return {
-    onFormSubmit,
     register,
-    handleSubmit,
+    handleGameSubmit: (gameType: GameType) => handleSubmit(onFormSubmit(gameType))
   };
 }

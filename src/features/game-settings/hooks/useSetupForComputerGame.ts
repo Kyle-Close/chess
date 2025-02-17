@@ -11,27 +11,28 @@ import { buildBoardFromFen } from "base/features/game-logic/utils/fen/buildBoard
 import { getEnPassantTargetSquareFromFen } from "base/features/game-logic/utils/fen/getEnPassantTargetSquareFromFen";
 import { DEFAULT_FEN_STRING } from "base/data/defaultFen";
 import { setupBoard } from "base/redux/slices/board";
-import { setGameType, setIsFiftyMoveRule, setIsIncrement, setIsUndoRedo, setTimeControl } from "base/redux/slices/gameSettings";
+import { TimeControl, setGameType, setIsFiftyMoveRule, setIsIncrement, setIsUndoRedo, setTimeControl } from "base/redux/slices/gameSettings";
+import { socket } from "base/utils/socket";
 import { useNavigate } from "react-router-dom";
 import { useGetGameState } from "./useGetGameState";
 import { buildSettingsObject } from "../util/buildSettingsObject";
 import { GameSetup } from "./useGameSettings";
 
-export function useSetupForLocalGame() {
+export function useSetupForComputerGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const gameState = useGetGameState()
 
-  function setupLocalGame(localFormData: GameSetup) {
+  function setupComputerGame(computerFormData: GameSetup) {
     // Clear previous settings
     dispatch(resetGameInfo({ resetIds: true }));
     dispatch(removeAllTimers());
 
-    const settings = buildSettingsObject(localFormData);
+    const settings = buildSettingsObject(computerFormData);
 
     // Set timers up
-    const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
-    const blackTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
+    const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(TimeControl.FREE_PLAY)));
+    const blackTimer = dispatch(createTimer(getStartingTimeInSeconds(TimeControl.FREE_PLAY)));
 
     // Set castle rights up
     const whiteCastleRights = dispatch(createCastleRights());
@@ -39,16 +40,10 @@ export function useSetupForLocalGame() {
 
     let board: BoardState = [];
 
-    if (!localFormData.whiteName)
-      throw new Error('White name is mandatory')
-
-    if (!localFormData.blackName)
-      throw new Error('Black name is mandatory')
-
     // Set players up
     const whitePlayer = dispatch(
       createPlayer({
-        name: localFormData.whiteName,
+        name: "",
         color: PieceColor.WHITE,
         isInCheck: false,
         isTurn: false,
@@ -60,7 +55,7 @@ export function useSetupForLocalGame() {
 
     const blackPlayer = dispatch(
       createPlayer({
-        name: localFormData.blackName,
+        name: "",
         color: PieceColor.BLACK,
         isInCheck: false,
         isTurn: false,
@@ -73,8 +68,8 @@ export function useSetupForLocalGame() {
     let playerTurn = whitePlayer;
 
     // Set the board up
-    if (localFormData.fen && isValidFEN(localFormData.fen)) {
-      const fenObj = parseFenString(localFormData.fen);
+    if (computerFormData.fen && isValidFEN(computerFormData.fen)) {
+      const fenObj = parseFenString(computerFormData.fen);
       board = buildBoardFromFen(fenObj.initialPositions);
       playerTurn = fenObj.turn === 'w' ? whitePlayer : blackPlayer;
       dispatch(setHalfMoves(Number(fenObj.halfMoves)));
@@ -99,9 +94,8 @@ export function useSetupForLocalGame() {
     );
 
     // Set timers up
-    const remainingSeconds = getStartingTimeInSeconds(settings.timeControl);
-    dispatch(setRemainingSeconds({ id: whiteTimer.payload.id, remainingSeconds }));
-    dispatch(setRemainingSeconds({ id: blackTimer.payload.id, remainingSeconds }));
+    dispatch(setRemainingSeconds({ id: whiteTimer.payload.id, remainingSeconds: 999999 }));
+    dispatch(setRemainingSeconds({ id: blackTimer.payload.id, remainingSeconds: 999999 }));
     dispatch(setIsOn({ id: whiteTimer.payload.id, isOn: true }));
 
     // Set starting player turn
@@ -112,13 +106,15 @@ export function useSetupForLocalGame() {
 
     // Handle game settings
     dispatch(setGameType(settings.gameType));
-    dispatch(setTimeControl(settings.timeControl));
+    dispatch(setTimeControl(TimeControl.FREE_PLAY));
     dispatch(setIsFiftyMoveRule(settings.isFiftyMoveRule));
     dispatch(setIsIncrement(settings.isIncrement));
     dispatch(setIsUndoRedo(settings.isUndoRedo));
 
+    socket.connect()
+
     navigate('/game');
   }
 
-  return { setupLocalGame }
+  return { setupComputerGame }
 }
