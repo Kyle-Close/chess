@@ -1,4 +1,4 @@
-import { TimeControl } from 'base/redux/slices/gameSettings';
+import { GameType, TimeControl } from 'base/redux/slices/gameSettings';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSetupForLocalGame } from './useSetupForLocalGame';
 
@@ -12,16 +12,28 @@ export type LocalGameSetupFormInputs = {
   fen: string;
 };
 
-export function useGameSettings() {
+export function useGameSettings(gameType: GameType) {
   // Game settings are determined by the setup forms
   const { register, handleSubmit } = useForm<LocalGameSetupFormInputs>();
+
   const { setupLocalGame } = useSetupForLocalGame()
 
-  const onLocalFormSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) =>
-    setupLocalGame(data);
+  const onFormSubmit: SubmitHandler<LocalGameSetupFormInputs> = (data) => {
+    switch (gameType) {
+      case GameType.LOCAL:
+        setupLocalGame(data);
+        break;
+      case GameType.COMPUTER:
+        break;
+      case GameType.ONLINE:
+        break;
+      default:
+        throw new Error('Invalid game type sent to useGameSettings')
+    }
+  }
 
   return {
-    onLocalFormSubmit,
+    onFormSubmit,
     register,
     handleSubmit,
   };

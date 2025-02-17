@@ -1,44 +1,38 @@
-import { Select, Text } from '@chakra-ui/react';
-import { Box } from '@chakra-ui/react';
 import { LocalGameSetupFormInputs } from 'base/features/game-settings/hooks/useGameSettings';
 import { TimeControl } from 'base/redux/slices/gameSettings';
 import { UseFormRegister } from 'react-hook-form';
+import { SelectItem, SelectValueText, createListCollection } from '@chakra-ui/react';
+import { SelectContent, SelectLabel, SelectRoot, SelectTrigger } from 'base/components/ui/select';
+
 
 interface TimeControlsProps {
   register: UseFormRegister<LocalGameSetupFormInputs>;
 }
 
 export function TimeControls({ register }: TimeControlsProps) {
-  const freePlayString = TimeControl.FREE_PLAY;
-  const blitzString = TimeControl.BLITZ;
-  const rapidString = TimeControl.RAPID;
-  const classicalString = TimeControl.CLASSICAL;
-
   return (
-    <Box className='flex flex-col my-2 gap-4'>
-      <Text className='underline' fontWeight={500}>
-        Time Control
-      </Text>
-      <Select
-        iconColor='black'
-        className='text-black font-semibold'
-        bg=''
-        size='sm'
-        {...register('selectedTimeControl')}
-      >
-        <option className='font-semibold' value={blitzString}>
-          {blitzString}
-        </option>
-        <option className='font-semibold' value={rapidString}>
-          {rapidString}
-        </option>
-        <option className='font-semibold' value={classicalString}>
-          {classicalString}
-        </option>
-        <option className='font-semibold' value={freePlayString}>
-          {freePlayString}
-        </option>
-      </Select>
-    </Box>
+    <SelectRoot collection={timeControls} className='flex flex-col my-2 gap-4'{...register('selectedTimeControl')}>
+      <SelectLabel>Time Control</SelectLabel>
+
+      <SelectTrigger>
+        <SelectValueText>Select Time Control</SelectValueText>
+      </SelectTrigger>
+
+      <SelectContent>
+        {timeControls.items.map((timeControl) => (
+          <SelectItem item={timeControl} key={timeControl.value}>{timeControl.label}</SelectItem>
+        ))}
+      </SelectContent>
+
+    </SelectRoot>
   );
 }
+
+const timeControls = createListCollection({
+  items: [
+    { label: "Free Play", value: TimeControl.FREE_PLAY },
+    { label: "Blitz", value: TimeControl.BLITZ },
+    { label: "Rapid", value: TimeControl.RAPID },
+    { label: "Classical", value: TimeControl.CLASSICAL },
+  ],
+})

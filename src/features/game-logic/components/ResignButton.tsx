@@ -40,7 +40,7 @@ export function ResignButton({ openModal, playerId }: ResignButtonProps) {
       size='sm'
       colorScheme='red'
       aria-label='Resign Game'
-      icon={<FaFlag />}
+      children={<FaFlag />}
     />
   );
 }

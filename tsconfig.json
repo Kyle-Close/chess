@@ -23,7 +23,8 @@
     /* import path */
     "baseUrl": ".",
     "paths": {
-      "base/*": ["src/*"]
+      "base/*": ["src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],

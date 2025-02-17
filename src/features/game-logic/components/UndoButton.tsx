@@ -12,12 +12,11 @@ export function UndoButton({ handleClick }: UndoButtonProps) {
 
   return (
     <Button
-      isDisabled={isDisabled}
-      iconSpacing={0}
+      disabled={isDisabled}
       rounded='full'
       colorScheme='red'
       onClick={handleClick}
-      leftIcon={<IoArrowUndo />}
+      children={<IoArrowUndo />}
     />
   );
 }

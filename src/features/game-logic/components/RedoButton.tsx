@@ -12,12 +12,11 @@ export function RedoButton({ handleClick }: RedoButtonProps) {
 
   return (
     <Button
-      isDisabled={isDisabled}
-      iconSpacing={0}
+      disabled={isDisabled}
       rounded='full'
       colorScheme='green'
       onClick={handleClick}
-      rightIcon={<IoArrowRedo />}
+      children={<IoArrowRedo />}
     />
   );
 }

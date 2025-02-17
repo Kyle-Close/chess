@@ -30,7 +30,7 @@ export function OfferDrawButton({ openModal, playerId }: OfferDrawButtonProps) {
       size='sm'
       onClick={handleClick}
       aria-label='Offer Draw'
-      icon={<FaHandshake />}
+      children={<FaHandshake />}
       colorScheme='orange'
     />
   );
