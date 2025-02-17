@@ -2,10 +2,10 @@ import { Field, Text } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react';
 import { UseFormRegister } from 'react-hook-form';
 import { Switch } from 'base/components/ui/switch';
-import { LocalGameSetupFormInputs } from 'base/features/game-settings/hooks/useGameSettings';
+import { GameSetup } from 'base/features/game-settings/hooks/useGameSettings';
 
 interface AdditionalOptionsProps {
-  register: UseFormRegister<LocalGameSetupFormInputs>;
+  register: UseFormRegister<GameSetup>;
 }
 
 export function AdditionalOptions({ register }: AdditionalOptionsProps) {

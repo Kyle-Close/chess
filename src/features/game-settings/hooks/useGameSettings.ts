@@ -4,6 +4,7 @@ import { useSetupForLocalGame } from './useSetupForLocalGame';
 import { useSetupForComputerGame } from './useSetupForComputerGame';
 
 export interface GameSetup {
+  isWhite?: boolean;
   isIncrement: boolean;
   isUndoRedo: boolean;
   isFiftyMoveRule: boolean;
@@ -23,6 +24,7 @@ export function useGameSettings() {
 
   const onFormSubmit: (gameType: GameType) => SubmitHandler<GameSetup> = (gameType) => {
     return (data) => {
+      console.log(data)
       if (gameType === GameType.LOCAL) {
         setupLocalGame(data);
       } else if (gameType === GameType.COMPUTER) {

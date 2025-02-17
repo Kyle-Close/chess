@@ -24,6 +24,7 @@ export function useSetupForComputerGame() {
   const gameState = useGetGameState()
 
   function setupComputerGame(computerFormData: GameSetup) {
+    console.log(computerFormData)
     // Clear previous settings
     dispatch(resetGameInfo({ resetIds: true }));
     dispatch(removeAllTimers());

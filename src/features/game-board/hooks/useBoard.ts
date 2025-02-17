@@ -37,6 +37,7 @@ export function useBoard() {
     const whiteKingIndex = getKingIndex(board, PieceColor.WHITE);
     checkIndex = whiteKingIndex;
   }
+
   if (blackPlayer.isInCheck) {
     const blackKingIndex = getKingIndex(board, PieceColor.BLACK);
     checkIndex = blackKingIndex;

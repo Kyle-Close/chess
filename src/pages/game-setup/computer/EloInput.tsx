@@ -10,7 +10,7 @@ interface EloInputProps {
 export function EloInput({ register }: EloInputProps) {
   return (
     <Field label={"Stockfish ELO"} helperText={"Set the difficulty of the computer. 1320-3190"}>
-      <Input defaultValue={1320} {...register} />
+      <Input defaultValue={1320} {...register('stockfishElo')} />
     </Field>
   )
 }
