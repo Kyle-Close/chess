@@ -1,5 +1,5 @@
 import { TabNavigation } from '../../components/TabNavigation';
-import { ComputerSetup } from './ComputerSetup';
+import { ComputerSetup } from './computer/ComputerSetup';
 import { LocalSetup } from './local/LocalSetup';
 import { OnlineSetup } from './online/OnlineSetup';
 
