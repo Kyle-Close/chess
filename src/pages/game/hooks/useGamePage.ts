@@ -14,12 +14,6 @@ export function useGamePage() {
   const blackPlayer = useAppSelector((state) => selectPlayerById(state, gameInfo.blackPlayerId));
   const [showModal, setShowModal] = useState(gameInfo.matchResult !== MatchResult.ONGOING);
 
-  if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return null
-
-  const showPromotion = gameInfo.pawnPromotionSquare !== null;
-  const whiteMaterialDiff = whitePlayer.remainingMaterialValue - blackPlayer.remainingMaterialValue;
-  const blackMaterialDiff = blackPlayer.remainingMaterialValue - whitePlayer.remainingMaterialValue;
-
   useEffect(() => {
     if (gameInfo.matchResult !== MatchResult.ONGOING) setShowModal(true);
   }, [gameInfo.matchResult]);
@@ -37,7 +31,7 @@ export function useGamePage() {
       dispatch(setIsOn({ id: whitePlayer.id, isOn: false }));
       dispatch(setIsOn({ id: blackPlayer.id, isOn: true }));
     }
-  }, [gameInfo.isPlaying]);
+  }, [gameInfo.isPlaying, whitePlayer.id, blackPlayer.id, whitePlayer.isTurn, blackPlayer.isTurn, dispatch]);
 
   useEffect(() => {
     if (whitePlayer.isTurn && whitePlayer.isAi) {
@@ -45,7 +39,13 @@ export function useGamePage() {
     } else if (blackPlayer.isTurn && blackPlayer.isAi) {
       socket.emit('evaluate', DEFAULT_FEN_STRING)
     }
-  }, [whitePlayer.isTurn])
+  }, [whitePlayer.isTurn, whitePlayer.isAi, blackPlayer.isTurn, blackPlayer.isAi, dispatch])
+
+  if (!gameInfo.whitePlayerId || !gameInfo.blackPlayerId) return null
+
+  const showPromotion = gameInfo.pawnPromotionSquare !== null;
+  const whiteMaterialDiff = whitePlayer.remainingMaterialValue - blackPlayer.remainingMaterialValue;
+  const blackMaterialDiff = blackPlayer.remainingMaterialValue - whitePlayer.remainingMaterialValue;
 
   const closeModal = () => setShowModal(false);
   const openModal = () => setShowModal(true);

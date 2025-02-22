@@ -11,7 +11,7 @@ import { buildBoardFromFen } from "base/features/game-logic/utils/fen/buildBoard
 import { getEnPassantTargetSquareFromFen } from "base/features/game-logic/utils/fen/getEnPassantTargetSquareFromFen";
 import { DEFAULT_FEN_STRING } from "base/data/defaultFen";
 import { setupBoard } from "base/redux/slices/board";
-import { setGameType, setIsFiftyMoveRule, setIsIncrement, setIsUndoRedo, setTimeControl } from "base/redux/slices/gameSettings";
+import { GameType, setGameType, setIsFiftyMoveRule, setIsIncrement, setIsUndoRedo, setStockfishElo, setTimeControl } from "base/redux/slices/gameSettings";
 import { useNavigate } from "react-router-dom";
 import { useGetGameState } from "./useGetGameState";
 import { buildSettingsObject } from "../util/buildSettingsObject";
@@ -27,7 +27,8 @@ export function useSetupForLocalGame() {
     dispatch(resetGameInfo({ resetIds: true }));
     dispatch(removeAllTimers());
 
-    const settings = buildSettingsObject(localFormData);
+    console.log(localFormData)
+    const settings = buildSettingsObject(GameType.LOCAL, localFormData);
 
     // Set timers up
     const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(settings.timeControl)));
@@ -118,6 +119,7 @@ export function useSetupForLocalGame() {
     dispatch(setIsFiftyMoveRule(settings.isFiftyMoveRule));
     dispatch(setIsIncrement(settings.isIncrement));
     dispatch(setIsUndoRedo(settings.isUndoRedo));
+    dispatch(setStockfishElo(0))
 
     navigate('/game');
   }

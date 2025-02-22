@@ -11,16 +11,18 @@ import { buildBoardFromFen } from "base/features/game-logic/utils/fen/buildBoard
 import { getEnPassantTargetSquareFromFen } from "base/features/game-logic/utils/fen/getEnPassantTargetSquareFromFen";
 import { DEFAULT_FEN_STRING } from "base/data/defaultFen";
 import { setupBoard } from "base/redux/slices/board";
-import { TimeControl, setGameType, setIsFiftyMoveRule, setIsIncrement, setIsUndoRedo, setTimeControl } from "base/redux/slices/gameSettings";
+import { GameType, TimeControl, setGameType, setIsFiftyMoveRule, setIsIncrement, setIsUndoRedo, setStockfishElo, setTimeControl } from "base/redux/slices/gameSettings";
 import { socket } from "base/utils/socket";
 import { useNavigate } from "react-router-dom";
 import { useGetGameState } from "./useGetGameState";
 import { buildSettingsObject } from "../util/buildSettingsObject";
 import { GameSetup } from "./useGameSettings";
+import { useMove } from "base/features/game-logic/hooks/useMove";
 
 export function useSetupForComputerGame() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const move = useMove()
   const gameState = useGetGameState()
 
   function setupComputerGame(computerFormData: GameSetup) {
@@ -29,7 +31,7 @@ export function useSetupForComputerGame() {
     dispatch(resetGameInfo({ resetIds: true }));
     dispatch(removeAllTimers());
 
-    const settings = buildSettingsObject(computerFormData);
+    const settings = buildSettingsObject(GameType.COMPUTER, computerFormData);
 
     // Set timers up
     const whiteTimer = dispatch(createTimer(getStartingTimeInSeconds(TimeControl.FREE_PLAY)));
@@ -113,9 +115,14 @@ export function useSetupForComputerGame() {
     dispatch(setIsFiftyMoveRule(settings.isFiftyMoveRule));
     dispatch(setIsIncrement(settings.isIncrement));
     dispatch(setIsUndoRedo(settings.isUndoRedo));
+    dispatch(setStockfishElo(settings.stockfishElo))
 
     const gameSocket = socket.connect()
 
+    gameSocket.on('bestmove', (data) => {
+      console.log(data)
+      move.executeAiMove(data)
+    })
 
     gameSocket.emit('set-difficulty', computerFormData.stockfishElo)
 

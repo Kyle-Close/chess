@@ -139,7 +139,7 @@ export function useBoard() {
         startEnd.clear();
       }
     }
-  }, [startEnd.startPos, startEnd.endPos]);
+  }, [startEnd.startPos, startEnd.endPos, board, buildInitMoveMetaData, dispatch]);
 
   return {
     board,

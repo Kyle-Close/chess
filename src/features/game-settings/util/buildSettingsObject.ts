@@ -2,9 +2,9 @@
 import { GameSettings, GameType } from "base/redux/slices/gameSettings";
 import { GameSetup } from "../hooks/useGameSettings";
 
-export function buildSettingsObject(data: GameSetup): GameSettings {
+export function buildSettingsObject(gameType: GameType, data: GameSetup): GameSettings {
   return {
-    gameType: GameType.LOCAL,
+    gameType: gameType,
     timeControl: data.selectedTimeControl,
     isIncrement: data.isIncrement,
     isUndoRedo: data.isUndoRedo,

@@ -56,5 +56,5 @@ export const gameSettingsSlice = createSlice({
   },
 });
 
-export const { setGameType, setTimeControl, setIsIncrement, setIsUndoRedo, setIsFiftyMoveRule } =
+export const { setGameType, setTimeControl, setIsIncrement, setIsUndoRedo, setIsFiftyMoveRule, setStockfishElo } =
   gameSettingsSlice.actions;

@@ -21,9 +21,11 @@ import { handlePawnPromotion } from '../utils/move-utility/handlePawnPromotion';
 import { updateIsValidMove } from '../utils/move-utility/updateIsValidMove';
 import { useCastleRights } from './useCastleRights';
 import { usePlayer } from './usePlayer';
+import { convertStockfishPosition } from '../utils/notations/convertStockfishOutput';
 
 export interface UseMoveReturn {
   buildInitMoveMetaData: (piece: Piece, startPos: number, endPos: number) => MoveMetaData | null;
+  executeAiMove: (endPosAlgebraicNotation: string) => void
 }
 
 export function useMove(): UseMoveReturn {
@@ -45,6 +47,16 @@ export function useMove(): UseMoveReturn {
   const blackCastleRights = useAppSelector((state) =>
     selectCastleRightsById(state, blackPlayer.castleRightsId)
   );
+
+  function executeAiMove(endPosAlgebraicNotation: string) {
+    // Determine what piece is being moved and it's start position
+    const move = convertStockfishPosition(endPosAlgebraicNotation)
+    // Convert the endPosAlgebraicNotation to the index
+    console.log(move)
+    // Call build buildInitMoveMetaData
+    //
+    // Call updateGameState with the moveMetaData
+  }
 
   function buildInitMoveMetaData(
     piece: Piece,
@@ -171,5 +183,6 @@ export function useMove(): UseMoveReturn {
 
   return {
     buildInitMoveMetaData,
+    executeAiMove
   };
 }
