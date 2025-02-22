@@ -6,7 +6,7 @@ interface SocketData {
 }
 
 const initialState: SocketData = {
-  isConnected: socket.connected
+  isConnected: socket.connected,
 }
 
 export const socketSlice = createSlice({

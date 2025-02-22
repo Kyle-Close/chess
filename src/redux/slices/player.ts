@@ -11,6 +11,7 @@ export interface Player {
   remainingMaterialValue: number;
   timerId: string;
   castleRightsId: string;
+  isAi: boolean;
 }
 
 // Create entity adaptor
@@ -61,6 +62,10 @@ export const playerSlice = createSlice({
       const { id, value } = action.payload;
       state.entities[id].remainingMaterialValue = value;
     },
+    setIsAi(state, action: PayloadAction<{ id: string, value: boolean }>) {
+      const { id, value } = action.payload;
+      state.entities[id].isAi = value;
+    }
   },
 });
 
@@ -73,6 +78,7 @@ export const {
   setRemainingMaterialValue,
   setIsTurn,
   toggleIsTurn,
+  setIsAi
 } = playerSlice.actions;
 
 export default playerSlice.reducer;

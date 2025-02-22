@@ -55,6 +55,7 @@ export function useSetupForLocalGame() {
         timerId: whiteTimer.payload.id,
         castleRightsId: whiteCastleRights.payload.id,
         remainingMaterialValue: 39,
+        isAi: false
       })
     );
 
@@ -67,6 +68,7 @@ export function useSetupForLocalGame() {
         timerId: blackTimer.payload.id,
         castleRightsId: blackCastleRights.payload.id,
         remainingMaterialValue: 39,
+        isAi: false,
       })
     );
 

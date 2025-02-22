@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Player, selectPlayerById, setColor, setIsInCheck, setName } from '../../../redux/slices/player';
+import { Player, selectPlayerById, setColor, setIsAi, setIsInCheck, setName } from '../../../redux/slices/player';
 import { useAppDispatch, useAppSelector } from '../../game-board/hooks/useBoard';
 import { setIsOn } from '../../../redux/slices/timer';
 import { PieceColor } from 'base/features/game-board/hooks/usePiece';
@@ -8,6 +8,7 @@ export interface UsePlayerReturn extends Player {
   updateName: (name: string) => void;
   updateIsInCheck: (isCheck: boolean) => void;
   updateColor: (color: PieceColor) => void;
+  updateIsAi: (isAi: boolean) => void;
   stopTimer: () => void;
 }
 
@@ -36,6 +37,10 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
     dispatch(setIsInCheck({ id: playerId, isInCheck }));
   };
 
+  const updateIsAi = (isAi: boolean) => {
+    dispatch(setIsAi({ id: playerId, value: isAi }))
+  }
+
   useEffect(() => {
     if (!gameInfo.isPlaying) {
       dispatch(setIsOn({ id: player.timerId, isOn: false }));
@@ -49,6 +54,7 @@ export function usePlayer({ playerId }: UsePlayerProps): UsePlayerReturn {
     updateName,
     updateIsInCheck,
     updateColor,
+    updateIsAi,
     stopTimer,
     ...player,
   };

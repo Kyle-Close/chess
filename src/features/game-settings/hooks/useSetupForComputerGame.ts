@@ -51,6 +51,7 @@ export function useSetupForComputerGame() {
         timerId: whiteTimer.payload.id,
         castleRightsId: whiteCastleRights.payload.id,
         remainingMaterialValue: 39,
+        isAi: computerFormData.isWhite ? false : true
       })
     );
 
@@ -63,6 +64,7 @@ export function useSetupForComputerGame() {
         timerId: blackTimer.payload.id,
         castleRightsId: blackCastleRights.payload.id,
         remainingMaterialValue: 39,
+        isAi: computerFormData.isWhite ? true : false
       })
     );
 
@@ -112,7 +114,10 @@ export function useSetupForComputerGame() {
     dispatch(setIsIncrement(settings.isIncrement));
     dispatch(setIsUndoRedo(settings.isUndoRedo));
 
-    socket.connect()
+    const gameSocket = socket.connect()
+
+
+    gameSocket.emit('set-difficulty', computerFormData.stockfishElo)
 
     navigate('/game');
   }

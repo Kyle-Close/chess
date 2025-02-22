@@ -45,6 +45,7 @@ export function useBoard() {
 
   const isWhiteTurn = whitePlayer.isTurn;
   const currentPlayer = isWhiteTurn ? whitePlayer : blackPlayer;
+
   const currentPlayerCastleRights = useAppSelector((state) =>
     selectCastleRightsById(state, currentPlayer.castleRightsId)
   );
@@ -107,6 +108,7 @@ export function useBoard() {
 
   const isClickingValidSquare = (index: number, isFinalClick: boolean) => {
     const piece = board[index].piece;
+    if (currentPlayer.isAi) return false
     if ((piece && piece.color === currentPlayer.color) || !piece) return true;
     if (piece && piece.color !== currentPlayer.color && isFinalClick) return true;
     return false;

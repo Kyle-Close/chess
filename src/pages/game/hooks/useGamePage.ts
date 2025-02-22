@@ -3,6 +3,8 @@ import { selectPlayerById } from "base/redux/slices/player";
 import { MatchResult } from "base/redux/slices/gameInfo";
 import { useAppDispatch, useAppSelector } from "base/features/game-board/hooks/useBoard";
 import { setIsOn } from "base/redux/slices/timer";
+import { socket } from "base/utils/socket";
+import { DEFAULT_FEN_STRING } from "base/data/defaultFen";
 
 
 export function useGamePage() {
@@ -36,6 +38,14 @@ export function useGamePage() {
       dispatch(setIsOn({ id: blackPlayer.id, isOn: true }));
     }
   }, [gameInfo.isPlaying]);
+
+  useEffect(() => {
+    if (whitePlayer.isTurn && whitePlayer.isAi) {
+      socket.emit('evaluate', DEFAULT_FEN_STRING)
+    } else if (blackPlayer.isTurn && blackPlayer.isAi) {
+      socket.emit('evaluate', DEFAULT_FEN_STRING)
+    }
+  }, [whitePlayer.isTurn])
 
   const closeModal = () => setShowModal(false);
   const openModal = () => setShowModal(true);
