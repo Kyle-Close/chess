@@ -17,7 +17,6 @@ function splitString(input: string, pattern: RegExp) {
 
 }
 
-
 function convertAlgebraicNotationToIndex(notation: string) {
   // ex. e2
   const rank = splitString(notation, /\d/);

@@ -1,31 +1,34 @@
-import { useAppSelector, useBoard } from '../hooks/useBoard';
+import { IBoard } from 'base/redux/slices/chess-api';
 import { Square } from './Square';
 
-export function Board() {
-  const board = useAppSelector((state) => state.board);
-  const { startPos, handleSquareClicked, handleRightClickOnBoard, checkIndex } = useBoard();
+interface BoardProps {
+  board: IBoard;
+}
+
+export function Board({ board }: BoardProps) {
+  if (!board || !board.squares) return;
+  console.log(board)
 
   return (
-    <div onAuxClick={handleRightClickOnBoard} className={getBoardClasses()}>
+    <div className={getBoardClasses()}>
       <div className='grid grid-cols-8 grid-rows-8 grow'>
-        {board.map((square, key) => {
-          const isStart = startPos === key;
-          const isCheck = checkIndex === key;
+        {board.squares.map((square, key) => {
           return (
             <Square
               currentPiece={square.piece}
-              isCheck={isCheck}
+              isCheck={false}
               index={key}
               key={key}
-              handleSquareClicked={handleSquareClicked}
-              isStartPos={isStart}
-              isValidMove={square.isValidMove}
-              isCapture={square.isCapture}
+              handleSquareClicked={() => { }}
+              isStartPos={true}
+              isValidMove={false}
+              isCapture={false}
             />
           );
         })}
       </div>
     </div>
+
   );
 }
 

@@ -3,7 +3,7 @@ import { useAppSelector } from 'base/features/game-board/hooks/useBoard';
 import { useUndoRedoMove } from 'base/features/game-logic/hooks/useUndoRedoMove';
 import { useGamePage } from '../hooks/useGamePage';
 import { PromotePawnModal } from 'base/features/game-logic/modals/PromotePawnModal';
-import { Board } from 'base/features/game-board/components/Board';
+import { IBoard } from 'base/features/game-board/components/Board';
 import { GameOver } from 'base/features/game-logic/modals/game-over';
 import { RedoButton } from 'base/features/game-logic/components/RedoButton';
 import { UndoButton } from 'base/features/game-logic/components/UndoButton';

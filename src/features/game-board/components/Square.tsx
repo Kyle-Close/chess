@@ -1,11 +1,11 @@
 import { Piece as PieceComponent } from './Piece';
 import { useSquare } from '../hooks/useSquare';
-import { Piece } from 'base/data/getInitialBoardState';
 import { getSquareFile } from '../utils/board-utility/getSquareFile';
 import { getSquareRank } from '../utils/board-utility/getSquareRank';
+import { IPiece } from 'base/redux/slices/chess-api';
 
 interface SquareProps {
-  currentPiece: Piece | null;
+  currentPiece: IPiece | null;
   index: number;
   handleSquareClicked: (index: number) => void;
   isStartPos: boolean;
@@ -30,6 +30,8 @@ export function Square({
     isStartPos,
     handleSquareClicked
   );
+
+  console.log('rendering square: \n', currentPiece)
 
   const rank = getSquareRank(index);
   const file = getSquareFile(index);

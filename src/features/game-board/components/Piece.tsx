@@ -13,29 +13,28 @@ import bishopBlack from 'base/assets/black-bishop.png';
 import blackQueen from 'base/assets/black-queen.png';
 import blackKing from 'base/assets/black-king.png';
 
-import { PieceColor, PieceType } from '../hooks/usePiece';
-import { Piece as PieceInterface } from 'base/data/getInitialBoardState';
+import { Color, IPiece, PieceType } from 'base/redux/slices/chess-api';
 
 interface PieceProps {
-  piece: PieceInterface;
+  piece: IPiece;
 }
 
 export function Piece({ piece }: PieceProps) {
   const getPieceSrc = () => {
-    if (piece.color === PieceColor.WHITE) {
-      if (piece.type === PieceType.PAWN) return pieceSrc.pawnWhite;
-      else if (piece.type === PieceType.ROOK) return pieceSrc.rookWhite;
-      else if (piece.type === PieceType.KNIGHT) return pieceSrc.knightWhite;
-      else if (piece.type === PieceType.BISHOP) return pieceSrc.bishopWhite;
-      else if (piece.type === PieceType.QUEEN) return pieceSrc.queenWhite;
-      else if (piece.type === PieceType.KING) return pieceSrc.kingWhite;
+    if (piece.color === Color.WHITE) {
+      if (piece.pieceType === PieceType.PAWN) return pieceSrc.pawnWhite;
+      else if (piece.pieceType === PieceType.ROOK) return pieceSrc.rookWhite;
+      else if (piece.pieceType === PieceType.KNIGHT) return pieceSrc.knightWhite;
+      else if (piece.pieceType === PieceType.BISHOP) return pieceSrc.bishopWhite;
+      else if (piece.pieceType === PieceType.QUEEN) return pieceSrc.queenWhite;
+      else if (piece.pieceType === PieceType.KING) return pieceSrc.kingWhite;
     } else {
-      if (piece.type === PieceType.PAWN) return pieceSrc.pawnBlack;
-      else if (piece.type === PieceType.ROOK) return pieceSrc.rookBlack;
-      else if (piece.type === PieceType.KNIGHT) return pieceSrc.knightBlack;
-      else if (piece.type === PieceType.BISHOP) return pieceSrc.bishopBlack;
-      else if (piece.type === PieceType.QUEEN) return pieceSrc.blackQueen;
-      else if (piece.type === PieceType.KING) return pieceSrc.blackKing;
+      if (piece.pieceType === PieceType.PAWN) return pieceSrc.pawnBlack;
+      else if (piece.pieceType === PieceType.ROOK) return pieceSrc.rookBlack;
+      else if (piece.pieceType === PieceType.KNIGHT) return pieceSrc.knightBlack;
+      else if (piece.pieceType === PieceType.BISHOP) return pieceSrc.bishopBlack;
+      else if (piece.pieceType === PieceType.QUEEN) return pieceSrc.blackQueen;
+      else if (piece.pieceType === PieceType.KING) return pieceSrc.blackKing;
     }
   };
   return <img className={getPieceClasses()} src={getPieceSrc()} />;

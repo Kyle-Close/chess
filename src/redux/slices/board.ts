@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { BoardState, getInitialBoardState } from '../../data/getInitialBoardState';
+import { BoardState } from '../../data/getInitialBoardState';
 
 export type SetupBoardPayload = BoardState;
 
-const initialState = getInitialBoardState();
+const initialState: BoardState[] = [];
 
 export const boardSlice = createSlice({
   name: 'board',
@@ -11,13 +11,9 @@ export const boardSlice = createSlice({
   reducers: {
     setupBoard(state, action: PayloadAction<SetupBoardPayload>) {
       return action.payload;
-    },
-    clearIsValidSquares(state) {
-      state.forEach((square) => {
-        square.isValidMove = false;
-      });
-    },
+    }
   },
 });
 
-export const { setupBoard, clearIsValidSquares } = boardSlice.actions;
+export const { setupBoard } = boardSlice.actions;
+
