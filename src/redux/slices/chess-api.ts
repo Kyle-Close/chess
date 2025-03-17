@@ -83,7 +83,7 @@ export const chessApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5165/chess-api' }),
   keepUnusedDataFor: 0,
   endpoints: (build) => ({
-    startGame: build.query<StartGameResponse, string | void>({
+    startGame: build.mutation<StartGameResponse, string | void>({
       query: (fen) => ({
         url: "start-game",
         method: "POST",
@@ -91,7 +91,7 @@ export const chessApi = createApi({
         body: { fen }
       })
     }),
-    getValidMoves: build.query<GetValidMovesResponse, GetValidMovesPayload>({
+    getValidMoves: build.mutation<GetValidMovesResponse, GetValidMovesPayload>({
       query: (payload) => ({
         url: "get-valid-moves",
         method: "POST",
@@ -104,4 +104,4 @@ export const chessApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useStartGameQuery, useGetValidMovesQuery } = chessApi;
+export const { useStartGameMutation, useGetValidMovesMutation } = chessApi;

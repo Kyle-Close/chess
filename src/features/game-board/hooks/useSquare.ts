@@ -22,7 +22,6 @@ export function useSquare(
     handleSquareClicked(index);
   };
 
-
   return {
     handleClick,
     classes,

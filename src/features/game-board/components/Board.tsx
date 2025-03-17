@@ -4,11 +4,12 @@ import { Square } from './Square';
 
 interface BoardProps {
   fen: string;
+  gameId: string;
 }
 
-export function Board({ fen }: BoardProps) {
+export function Board({ fen, gameId }: BoardProps) {
   const squares = buildBoardFromFen(fen.split(' ')[0]);
-  const { handleSquareClicked, startPos } = useBoard(squares);
+  const { handleSquareClicked, startPos } = useBoard(squares, gameId);
 
   if (!fen) return;
 
