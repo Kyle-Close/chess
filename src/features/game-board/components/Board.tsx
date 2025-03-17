@@ -1,26 +1,30 @@
+import { useBoard } from '../hooks/useBoard';
+import { buildBoardFromFen } from '../utils/board-utility/buildBoardFromFen';
 import { Square } from './Square';
-import { buildBoardFromFen } from 'base/features/game-logic/utils/fen/buildBoardFromFen';
 
 interface BoardProps {
-  fen?: string;
+  fen: string;
 }
 
 export function Board({ fen }: BoardProps) {
-  if (!fen) return;
   const squares = buildBoardFromFen(fen.split(' ')[0]);
+  const { handleSquareClicked, startPos } = useBoard(squares);
+
+  if (!fen) return;
 
   return (
     <div className={getBoardClasses()}>
       <div className='grid grid-cols-8 grid-rows-8 grow'>
         {squares.map((square, key) => {
+          const isStart = startPos === key;
           return (
             <Square
               currentPiece={square.piece}
               isCheck={false}
               index={key}
               key={key}
-              handleSquareClicked={() => { }}
-              isStartPos={true}
+              handleSquareClicked={handleSquareClicked}
+              isStartPos={isStart}
               isValidMove={false}
               isCapture={false}
             />

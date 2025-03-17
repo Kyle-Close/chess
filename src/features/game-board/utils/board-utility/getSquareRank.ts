@@ -1,11 +1,14 @@
-export function getSquareRank(currentIndex: number) {
-  if (currentIndex < 8) return 8;
-  else if (currentIndex >= 8 && currentIndex < 16) return 7;
-  else if (currentIndex >= 16 && currentIndex < 24) return 6;
-  else if (currentIndex >= 24 && currentIndex < 32) return 5;
-  else if (currentIndex >= 32 && currentIndex < 40) return 4;
-  else if (currentIndex >= 40 && currentIndex < 48) return 3;
-  else if (currentIndex >= 48 && currentIndex < 56) return 2;
-  else if (currentIndex >= 56 && currentIndex < 64) return 1;
-  else throw Error('Invalid index passed to getSquareRank: ' + currentIndex);
+import { BoardRank } from "base/redux/slices/chess-api";
+
+export function getSquareRank(index: number) {
+  if (index < 8) return BoardRank.EIGHT;
+  else if (index >= 8 && index < 16) return BoardRank.SEVEN;
+  else if (index >= 16 && index < 24) return BoardRank.SIX;
+  else if (index >= 24 && index < 32) return BoardRank.FIVE;
+  else if (index >= 32 && index < 40) return BoardRank.FOUR;
+  else if (index >= 40 && index < 48) return BoardRank.THREE;
+  else if (index >= 48 && index < 56) return BoardRank.TWO;
+  else if (index >= 56 && index < 64) return BoardRank.ONE;
+
+  throw new Error("Invalid index passed to getSquareRank: " + index);
 }

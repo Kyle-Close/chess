@@ -1,9 +1,7 @@
+import { ISquare } from 'base/redux/slices/chess-api';
 import { useEffect, useState } from 'react';
-import { useAppSelector } from './useBoard';
 
 export function useStartEndAction() {
-  const gameInfo = useAppSelector((state) => state.gameInfo);
-  const board = useAppSelector((state) => state.board);
   const [startPos, setStartPos] = useState<number | null>(null);
   const [endPos, setEndPos] = useState<number | null>(null);
 
@@ -12,16 +10,14 @@ export function useStartEndAction() {
     setEndPos(null);
   };
 
-  const setPosition = (index: number) => {
-    if (!gameInfo.isPlaying) return;
-    const piece = board[index].piece;
+  const setPosition = (index: number, squares: ISquare[]) => {
+    const piece = squares[index].piece;
 
     // Clicked an empty square as starting pos. Return
     if (startPos === null && !piece) return;
 
     // Clicked a piece square. Set the start position (if not set)
     if (startPos === null) setStartPos(index);
-
     // Clicked the square you are already selecting. Return
     else if (startPos === index) return;
 

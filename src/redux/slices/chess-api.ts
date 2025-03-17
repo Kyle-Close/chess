@@ -31,9 +31,8 @@ interface ValidMoves {
 }
 
 export interface ISquare {
-  piece: IPiece;
-  file: BoardFile;
-  rank: BoardRank;
+  piece: IPiece | null;
+  index: number;
 }
 
 export interface IPiece {
@@ -82,6 +81,7 @@ export enum BoardRank {
 export const chessApi = createApi({
   reducerPath: 'start-game',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5165/chess-api' }),
+  keepUnusedDataFor: 0,
   endpoints: (build) => ({
     startGame: build.query<StartGameResponse, string | void>({
       query: (fen) => ({

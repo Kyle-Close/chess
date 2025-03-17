@@ -1,19 +1,14 @@
-import { Piece } from "base/data/getInitialBoardState";
+import { Color, IPiece } from "base/redux/slices/chess-api";
 
 export function usePiece() {
 
-  const isWhite = (piece: Piece) => {
-    return piece.color === PieceColor.WHITE;
+  const isWhite = (piece: IPiece) => {
+    return piece.color === Color.WHITE;
   };
 
   return {
     isWhite,
   };
-}
-
-export enum PieceColor {
-  WHITE = 0,
-  BLACK,
 }
 
 export enum PieceType {
