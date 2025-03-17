@@ -1,4 +1,3 @@
-import { Piece, Square } from "base/data/getInitialBoardState";
 import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
 import { isPawnInStartPosition } from "../game-checks/isPawnInStartPosition";
 
@@ -7,7 +6,7 @@ export function buildBoardFromFen(fen: string) {
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
   console.warn(fen);
-  const board: Square[] = [];
+  const board: SquareProps[] = [];
   const ranks = fen.split('/');
 
   if (ranks.length !== 8) {
