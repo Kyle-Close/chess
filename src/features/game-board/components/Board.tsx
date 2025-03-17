@@ -1,18 +1,18 @@
-import { IBoard } from 'base/redux/slices/chess-api';
 import { Square } from './Square';
+import { buildBoardFromFen } from 'base/features/game-logic/utils/fen/buildBoardFromFen';
 
 interface BoardProps {
-  board: IBoard;
+  fen?: string;
 }
 
-export function Board({ board }: BoardProps) {
-  if (!board || !board.squares) return;
-  console.log(board)
+export function Board({ fen }: BoardProps) {
+  if (!fen) return;
+  const squares = buildBoardFromFen(fen.split(' ')[0]);
 
   return (
     <div className={getBoardClasses()}>
       <div className='grid grid-cols-8 grid-rows-8 grow'>
-        {board.squares.map((square, key) => {
+        {squares.map((square, key) => {
           return (
             <Square
               currentPiece={square.piece}

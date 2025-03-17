@@ -9,7 +9,7 @@ import { saveStateToLS } from './saveStateToLS';
 import { getStateFromLS } from './getStateFromLS';
 import { moveSlice } from './slices/move';
 import { socketSlice } from './slices/socket';
-import { chessAPI } from './slices/chess-api';
+import { chessApi } from './slices/chess-api';
 
 // Automatically adds the thunk middleware and the Redux DevTools extension
 const store = configureStore({
@@ -22,10 +22,10 @@ const store = configureStore({
     gameSettingsSlice,
     moveSlice,
     socketSlice,
-    chessAPI
+    chessApi
   ),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(chessAPI.middleware),
+    getDefaultMiddleware().concat(chessApi.middleware),
   preloadedState: getStateFromLS(),
 });
 

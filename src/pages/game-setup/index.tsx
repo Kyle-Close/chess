@@ -1,6 +1,5 @@
 import { TabNavigation } from '../../components/TabNavigation';
 import { ComputerSetup } from './computer/ComputerSetup';
-import { LocalSetup } from './local/LocalSetup';
 import { OnlineSetup } from './online/OnlineSetup';
 
 export function GameSetupPage() {
@@ -10,7 +9,6 @@ export function GameSetupPage() {
         <h1 className='justify-self-center text-xl mb-5'>Game Setup</h1>
         <TabNavigation
           tabData={[
-            { tabName: 'Local', tabContent: <LocalSetup />, isDisabled: false },
             { tabName: 'Computer', tabContent: <ComputerSetup />, isDisabled: false },
             { tabName: 'Online', tabContent: <OnlineSetup />, isDisabled: true },
           ]}

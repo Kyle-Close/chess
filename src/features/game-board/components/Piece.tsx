@@ -13,15 +13,17 @@ import bishopBlack from 'base/assets/black-bishop.png';
 import blackQueen from 'base/assets/black-queen.png';
 import blackKing from 'base/assets/black-king.png';
 
-import { Color, IPiece, PieceType } from 'base/redux/slices/chess-api';
+import { PieceType } from 'base/redux/slices/chess-api';
+import { PieceColor } from '../hooks/usePiece';
+import { Piece as Piecce } from 'base/data/getInitialBoardState';
 
 interface PieceProps {
-  piece: IPiece;
+  piece: Piecce;
 }
 
 export function Piece({ piece }: PieceProps) {
   const getPieceSrc = () => {
-    if (piece.color === Color.WHITE) {
+    if (piece.color === PieceColor.WHITE) {
       if (piece.pieceType === PieceType.PAWN) return pieceSrc.pawnWhite;
       else if (piece.pieceType === PieceType.ROOK) return pieceSrc.rookWhite;
       else if (piece.pieceType === PieceType.KNIGHT) return pieceSrc.knightWhite;

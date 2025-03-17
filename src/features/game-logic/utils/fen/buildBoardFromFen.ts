@@ -1,30 +1,40 @@
-import { BoardState, Piece } from "base/data/getInitialBoardState";
+import { Piece, Square } from "base/data/getInitialBoardState";
 import { PieceColor, PieceType } from "base/features/game-board/hooks/usePiece";
-import { isNumber } from "base/utils/isNumber";
 import { isPawnInStartPosition } from "../game-checks/isPawnInStartPosition";
 
-export function buildBoardFromFen(fenPositionString: string) {
+export function buildBoardFromFen(fen: string) {
   // The fen position string starts with the 8th rank and goes to the first.
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
-  const ranks = fenPositionString.split('/');
-  if (ranks.length !== 8) throw Error('FEN position string must include exactly 8 ranks.');
+  console.warn(fen);
+  const board: Square[] = [];
+  const ranks = fen.split('/');
 
-  const initialBoard: BoardState = [];
+  if (ranks.length !== 8) {
+    throw new Error("FEN string is malformed. Expected 8 segments.");
+  }
 
-  for (let i = 0; i < ranks.length; i++) {
-    for (let j = 0; j < ranks[i].length; j++) {
-      const char = ranks[i][j];
-      if (isNumber(char)) {
-        pushEmptySquares(Number(char), initialBoard);
+  let count = 0;
+  for (const rank of ranks) {
+    for (const letter of rank) {
+      const num = Number(letter);
+
+      if (!isNaN(num) && num > 0) {
+        // If it's a number, add empty squares
+        for (let k = 0; k < num; k++) {
+          board[count] = { piece: null, index: count }
+          count++;
+        }
       } else {
-        const index = (7 - i) * 8 + j;
-        const piece = convertCharToPiece(char, index);
-        initialBoard.push({ piece, isValidMove: false, isCapture: false });
+        // Otherwise, it's a piece
+        const piece = convertCharToPiece(letter, count);
+        board[count] = { piece, index: count };
+        count++;
       }
     }
   }
-  return initialBoard;
+
+  return board;
 }
 
 function convertCharToPiece(char: string, index: number): Piece {
@@ -68,9 +78,5 @@ function convertCharToPiece(char: string, index: number): Piece {
 }
 
 function buildPiece(type: PieceType, color: PieceColor, hasMoved: boolean): Piece {
-  return { type, color, hasMoved };
-}
-
-function pushEmptySquares(count: number, board: BoardState) {
-  for (let i = 0; i < count; i++) board.push({ piece: null, isCapture: false, isValidMove: false });
+  return { pieceType: type, color, hasMoved };
 }

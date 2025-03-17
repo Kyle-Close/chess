@@ -4,6 +4,32 @@ export interface IBoard {
   squares: ISquare[];
 }
 
+export interface StartGameResponse {
+  gameId: string;
+  fen: string;
+}
+
+export interface GetValidMovesPayload {
+  GameId: string;
+  Index: number;
+}
+
+export interface GetValidMovesResponse {
+  startIndex: number,
+  validMoves: ValidMoves[],
+  isEnPassantCapture?: boolean,
+  isCastle?: boolean,
+  isCapture?: boolean,
+  endIndex?: number,
+  notation?: string,
+  newFen?: string
+}
+
+interface ValidMoves {
+  index: number,
+  isCapture: boolean
+}
+
 export interface ISquare {
   piece: IPiece;
   file: BoardFile;
@@ -53,21 +79,29 @@ export enum BoardRank {
 }
 
 // Define a service using a base URL and expected endpoints
-export const chessAPI = createApi({
-  reducerPath: 'chess-api',
+export const chessApi = createApi({
+  reducerPath: 'start-game',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5165/chess-api' }),
   endpoints: (build) => ({
-    buildBoardFromFen: build.query<IBoard, string>({
+    startGame: build.query<StartGameResponse, string | void>({
       query: (fen) => ({
-        url: "build-board",
+        url: "start-game",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: fen
+        body: { fen }
       })
     }),
+    getValidMoves: build.query<GetValidMovesResponse, GetValidMovesPayload>({
+      query: (payload) => ({
+        url: "get-valid-moves",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload
+      })
+    })
   }),
-})
+},)
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useBuildBoardFromFenQuery } = chessAPI;
+export const { useStartGameQuery, useGetValidMovesQuery } = chessApi;

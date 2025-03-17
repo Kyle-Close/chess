@@ -2,10 +2,10 @@ import { Piece as PieceComponent } from './Piece';
 import { useSquare } from '../hooks/useSquare';
 import { getSquareFile } from '../utils/board-utility/getSquareFile';
 import { getSquareRank } from '../utils/board-utility/getSquareRank';
-import { IPiece } from 'base/redux/slices/chess-api';
+import { Piece } from 'base/data/getInitialBoardState';
 
 interface SquareProps {
-  currentPiece: IPiece | null;
+  currentPiece: Piece | null;
   index: number;
   handleSquareClicked: (index: number) => void;
   isStartPos: boolean;

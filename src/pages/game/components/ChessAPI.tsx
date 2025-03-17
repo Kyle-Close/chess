@@ -1,14 +1,14 @@
 import { Board } from 'base/features/game-board/components/Board';
-import { useBuildBoardFromFenQuery } from 'base/redux/slices/chess-api';
+import { useStartGameQuery } from 'base/redux/slices/chess-api';
 import { useEffect } from 'react';
 
 export function ChessAPI() { // this should be under a pages directory.
 
-  const { data, isLoading, error, refetch } = useBuildBoardFromFenQuery("rnbqkbnr/ppp2ppp/8/3Pp3/8/8/PPPP1PPP/RNBQKBNR");
+  const { data, isLoading, error, refetch } = useStartGameQuery("rn1qk1nr/ppp2ppp/3p2b1/2b1p1B1/4P1P1/3P1N1P/PPP2P2/RN1QKB1R w KQkq - 0 1");
 
   useEffect(() => {
     refetch()
-  }, [])
+  }, [refetch])
 
   if (isLoading) return;
   else if (error) return <div>{error.toString()}</div>
@@ -16,7 +16,7 @@ export function ChessAPI() { // this should be under a pages directory.
 
   return (
     <div className={getGameClasses()}>
-      <Board board={data} />
+      <Board fen={data.fen} />
     </div>
   );
 }
