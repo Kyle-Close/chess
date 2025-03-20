@@ -11,12 +11,3 @@ export function usePiece() {
     isWhite,
   };
 }
-
-export enum PieceType {
-  PAWN,
-  KNIGHT,
-  BISHOP,
-  ROOK,
-  QUEEN,
-  KING,
-}

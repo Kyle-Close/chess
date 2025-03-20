@@ -1,49 +1,27 @@
-import { ValidMove, ValidMoveArraySchema } from 'base/zod/ValidMovesSchema';
+import { Board as BoardLocal } from 'base/zod/BoardSchema';
 import { useBoard } from '../hooks/useBoard';
 import { Square } from './Square';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Game } from 'base/zod/GameSchema';
 
-const fetchValidMoves = async (gameId: string): Promise<ValidMove[]> => {
-  try {
-    const response = await fetch("http://localhost:5165/chess-api/get-valid-moves", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ gameId }), // Send gameId in the request body
-    });
+interface BoardProps {
+  board: BoardLocal
+}
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch valid moves");
-    }
-
-    const jsonData = await response.json();
-    return ValidMoveArraySchema.parse(jsonData)
-  } catch (err) {
-    throw err;
-  }
-};
-
-
-
-export function Board() {
+export function Board({ board }: BoardProps) {
+  console.log("Rendering Board")
   const { handleSquareClicked, selected } = useBoard();
-  const queryClient = useQueryClient();
-  const game = queryClient.getQueryData<Game>(["game"]);
-
-  if (!game) return;
-  const squares = game.board.squares;
+  if (!board) return
+  console.log(board)
 
   return (
     <div className={getBoardClasses()}>
       <div className="grid grid-cols-8 grid-rows-8 grow">
-        {squares.map((square, key) => {
+        {board.squares.map((square, key) => {
           const isStart = selected.selectedIndex === key;
+          const piece = square.piece ? square.piece : null;
 
           return (
             <Square
-              currentPiece={square.piece}
+              currentPiece={piece}
               index={key}
               key={key}
               handleSquareClicked={handleSquareClicked}

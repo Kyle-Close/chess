@@ -5,7 +5,7 @@ import { BoardRankSchema } from "./BoardRank";
 
 export const SquareSchema = z.object({
   index: z.number(),
-  piece: PieceSchema,
+  piece: PieceSchema.nullable(),
   file: BoardFileSchema,
   rank: BoardRankSchema
 })

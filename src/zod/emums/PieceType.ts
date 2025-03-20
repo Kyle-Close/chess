@@ -1,5 +1,5 @@
 export enum PieceType {
-  PAWN = 1,
+  PAWN,
   KNIGHT,
   BISHOP,
   ROOK,

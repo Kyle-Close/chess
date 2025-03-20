@@ -1,11 +1,15 @@
-import { PieceType } from "base/features/game-board/hooks/usePiece";
-import { Color, IPiece, ISquare } from "base/redux/slices/chess-api";
+import { Square } from "base/zod/SquareSchema";
+import { getSquareFile } from "./getSquareFile";
+import { getSquareRank } from "./getSquareRank";
+import { Piece } from "base/zod/PieceSchema";
+import { PieceType } from "base/zod/emums/PieceType";
+import { Color } from "base/zod/emums/Color";
 
 export function buildBoardFromFen(fen: string) {
   // The fen position string starts with the 8th rank and goes to the first.
   // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
 
-  const board: ISquare[] = [];
+  const squares: Square[] = [];
   const ranks = fen.split('/');
 
   if (ranks.length !== 8) {
@@ -20,22 +24,22 @@ export function buildBoardFromFen(fen: string) {
       if (!isNaN(num) && num > 0) {
         // If it's a number, add empty squares
         for (let k = 0; k < num; k++) {
-          board[count] = { piece: null, index: count }
+          squares[count] = { index: count, file: getSquareFile(count), rank: getSquareRank(count) }
           count++;
         }
       } else {
         // Otherwise, it's a piece
         const piece = convertCharToPiece(letter);
-        board[count] = { piece, index: count };
+        squares[count] = { piece, index: count, file: getSquareFile(count), rank: getSquareRank(count) };
         count++;
       }
     }
   }
 
-  return board;
+  return squares;
 }
 
-function convertCharToPiece(char: string): IPiece {
+function convertCharToPiece(char: string): Piece {
   switch (char) {
     case 'P':
       return buildPiece(PieceType.PAWN, Color.WHITE, false);
@@ -67,6 +71,6 @@ function convertCharToPiece(char: string): IPiece {
   }
 }
 
-function buildPiece(type: PieceType, color: Color, hasMoved: boolean): IPiece {
-  return { pieceType: type, color, hasMoved };
+function buildPiece(type: PieceType, color: Color, hasMoved: boolean): Piece {
+  return { pieceType: type, color, hasMoved, index: -1, validMoves: [] };
 }

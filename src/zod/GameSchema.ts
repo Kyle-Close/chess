@@ -8,7 +8,7 @@ export const GameSchema = z.object({
   activeColor: ColorSchema,
   whiteCastleRights: CastleRightsSchema,
   blackCastleRights: CastleRightsSchema,
-  enPassantIndex: z.number(),
+  enPassantIndex: z.number().nullable(),
   halfMoves: z.number(),
   fullMoves: z.number(),
   fenHistory: z.array(z.string()),

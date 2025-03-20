@@ -1,9 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Board as BoardComponent } from 'base/features/game-board/components/Board';
-import { Board, BoardSchema } from 'base/zod/BoardSchema';
+import { Game, GameSchema } from 'base/zod/GameSchema';
+import { useEffect } from 'react';
 
-const startNewGame = async (): Promise<Board> => {
+const startNewGame = async (): Promise<Game> => {
   try {
+    console.log("Starting new game. Sending request to server")
+
     const response = await fetch("http://localhost:5165/chess-api/start-game", {
       method: "POST",
     });
@@ -11,27 +14,45 @@ const startNewGame = async (): Promise<Board> => {
     if (!response.ok) {
       throw new Error("Could not start new game.");
     }
+
     const jsonData = await response.json();
-    return BoardSchema.parse(jsonData)
+    console.log(jsonData)
+    const res = GameSchema.parse(jsonData);
+    console.log(res)
+
+    return res
   } catch (err) {
+    console.log('in catch block: ', err)
     throw err;
   }
 };
 
 export function ChessApi() { // this should be under a pages directory.
-  const game = useQuery({ queryKey: ["game"], queryFn: startNewGame });
+  const gameMutation = useMutation({
+    mutationFn: startNewGame
+  });
 
-  if (game.isError) {
-    return;
-  } else if (game.isLoading) {
-    return;
+  useEffect(() => {
+    gameMutation.mutate();
+  }, [])
+
+  if (gameMutation.isPending) {
+    console.log("Pending...")
   }
 
-  console.log(game.data);
+  if (gameMutation.isSuccess) {
+    console.log("wooo")
+  }
+
+  if (gameMutation.isError) {
+    console.log("Some error happened.")
+  }
+
+  if (!gameMutation.data) return;
 
   return (
     <div className={getGameClasses()}>
-      <BoardComponent />
+      <BoardComponent board={gameMutation.data.board} />
     </div>
   );
 }

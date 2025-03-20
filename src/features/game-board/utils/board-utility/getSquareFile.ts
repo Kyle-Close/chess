@@ -1,4 +1,4 @@
-import { BoardFile } from "base/redux/slices/chess-api";
+import { BoardFile } from "base/zod/emums/BoardFile";
 
 export function getSquareFile(index: number) {
 

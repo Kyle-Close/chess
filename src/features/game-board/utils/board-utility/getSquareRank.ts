@@ -1,4 +1,4 @@
-import { BoardRank } from "base/redux/slices/chess-api";
+import { BoardRank } from "base/zod/emums/BoardRank";
 
 export function getSquareRank(index: number) {
   if (index < 8) return BoardRank.EIGHT;
