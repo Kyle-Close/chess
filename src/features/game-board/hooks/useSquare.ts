@@ -1,11 +1,11 @@
-import { Color, IPiece } from "base/redux/slices/chess-api";
+import { Piece } from "base/zod/PieceSchema";
 import { getSquareRank } from "../utils/board-utility/getSquareRank";
+import { Color } from "base/zod/emums/Color";
 
 
 export function useSquare(
   index: number,
-  checkSquare: boolean,
-  currentPiece: IPiece | null,
+  currentPiece: Piece | null,
   isStartPos: boolean,
   handleSquareClicked: (index: number) => void
 ) {
@@ -16,7 +16,6 @@ export function useSquare(
 
   if (currentPiece && currentPiece.color === Color.BLACK) classes.push('text-black');
   if (isStartPos) classes.push('bg-green-800');
-  if (checkSquare) classes.push('bg-red-400');
 
   const handleClick = () => {
     handleSquareClicked(index);

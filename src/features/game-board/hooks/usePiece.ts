@@ -1,8 +1,9 @@
-import { Color, IPiece } from "base/redux/slices/chess-api";
+import { Piece } from "base/zod/PieceSchema";
+import { Color } from "base/zod/emums/Color";
 
 export function usePiece() {
 
-  const isWhite = (piece: IPiece) => {
+  const isWhite = (piece: Piece) => {
     return piece.color === Color.WHITE;
   };
 

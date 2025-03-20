@@ -12,17 +12,20 @@ import knightBlack from 'base/assets/black-knight.png';
 import bishopBlack from 'base/assets/black-bishop.png';
 import blackQueen from 'base/assets/black-queen.png';
 import blackKing from 'base/assets/black-king.png';
+import { Color } from 'base/zod/emums/Color';
+import { PieceType } from '../hooks/usePiece';
+import { Piece as PieceLocal } from 'base/zod/PieceSchema';
+import { PieceTypeSchema } from 'base/zod/PieceTypeSchema';
 
-import { Color, IPiece, PieceType } from 'base/redux/slices/chess-api';
 
 interface PieceProps {
-  piece: IPiece;
+  piece: PieceLocal;
 }
 
 export function Piece({ piece }: PieceProps) {
   const getPieceSrc = () => {
     if (piece.color === Color.WHITE) {
-      if (piece.pieceType === PieceType.PAWN) return pieceSrc.pawnWhite;
+      if (piece.pieceType === PieceTypeSchema.PAWN) return pieceSrc.pawnWhite;
       else if (piece.pieceType === PieceType.ROOK) return pieceSrc.rookWhite;
       else if (piece.pieceType === PieceType.KNIGHT) return pieceSrc.knightWhite;
       else if (piece.pieceType === PieceType.BISHOP) return pieceSrc.bishopWhite;

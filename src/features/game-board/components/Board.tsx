@@ -1,39 +1,58 @@
+import { ValidMove, ValidMoveArraySchema } from 'base/zod/ValidMovesSchema';
 import { useBoard } from '../hooks/useBoard';
-import { buildBoardFromFen } from '../utils/board-utility/buildBoardFromFen';
 import { Square } from './Square';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Game } from 'base/zod/GameSchema';
 
-interface BoardProps {
-  fen: string;
-  gameId: string;
-}
+const fetchValidMoves = async (gameId: string): Promise<ValidMove[]> => {
+  try {
+    const response = await fetch("http://localhost:5165/chess-api/get-valid-moves", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ gameId }), // Send gameId in the request body
+    });
 
-export function Board({ fen, gameId }: BoardProps) {
-  const squares = buildBoardFromFen(fen.split(' ')[0]);
-  const { handleSquareClicked, startPos } = useBoard(squares, gameId);
+    if (!response.ok) {
+      throw new Error("Failed to fetch valid moves");
+    }
 
-  if (!fen) return;
+    const jsonData = await response.json();
+    return ValidMoveArraySchema.parse(jsonData)
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+
+export function Board() {
+  const { handleSquareClicked, selected } = useBoard();
+  const queryClient = useQueryClient();
+  const game = queryClient.getQueryData<Game>(["game"]);
+
+  if (!game) return;
+  const squares = game.board.squares;
 
   return (
     <div className={getBoardClasses()}>
-      <div className='grid grid-cols-8 grid-rows-8 grow'>
+      <div className="grid grid-cols-8 grid-rows-8 grow">
         {squares.map((square, key) => {
-          const isStart = startPos === key;
+          const isStart = selected.selectedIndex === key;
+
           return (
             <Square
               currentPiece={square.piece}
-              isCheck={false}
               index={key}
               key={key}
               handleSquareClicked={handleSquareClicked}
               isStartPos={isStart}
-              isValidMove={false}
-              isCapture={false}
             />
           );
         })}
       </div>
     </div>
-
   );
 }
 
@@ -60,3 +79,4 @@ function getBoardClasses() {
 
   return [...core, ...responsive].join(' ');
 }
+
