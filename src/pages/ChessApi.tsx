@@ -29,17 +29,15 @@ export function ChessApi() { // this should be under a pages directory.
   const queryClient = useQueryClient()
   const gameMutation = useMutation({
     mutationFn: startNewGame,
-    mutationKey: ["game"]
+    mutationKey: ["game"],
+    onSuccess: (gameData) => {
+      queryClient.setQueryData(["game"], gameData)
+    }
   });
 
   useEffect(() => {
-    gameMutation.mutate("rn1qk1nr/ppp2ppp/3p2b1/2b1p1B1/4P1P1/3P1N1P/PPP2P2/RN1QKB1R w KQkq - 0 1");
+    gameMutation.mutate("rn1qk1nr/ppp2ppp/3p2b1/2b1p1B1/4P1P1/3P1N1P/PPP2P2/RN1QKB1R b KQkq - 0 1");
   }, [])
-
-  if (gameMutation.isSuccess) {
-    queryClient.setQueryData(["game"], gameMutation.data)
-    console.log(gameMutation.data)
-  }
 
   if (gameMutation.isError) {
     console.log("Some error happened.")

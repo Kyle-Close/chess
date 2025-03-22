@@ -7,11 +7,12 @@ interface BoardProps {
 }
 
 export function Board({ board }: BoardProps) {
-  const { handleSquareClicked, selected } = useBoard();
+  const { handleSquareClicked, selected, gameData } = useBoard();
   if (!board) return
 
-  const selectedPieceMoves = selected.selectedIndex ? board.squares[selected.selectedIndex].piece?.validMoves : null;
-  console.log(selectedPieceMoves)
+  const selectedPiece = selected.selectedIndex ? board.squares[selected.selectedIndex].piece : null;
+  const selectedPieceMoves = selectedPiece ? selectedPiece.validMoves : null;
+  const isSelectingActivePiece = selectedPiece ? selectedPiece.color === gameData?.activeColor : false;
 
   return (
     <div className={getBoardClasses()}>
@@ -23,7 +24,7 @@ export function Board({ board }: BoardProps) {
           let isCapture = false;
           let isValidMove = false;
 
-          if (selectedPieceMoves) {
+          if (selectedPieceMoves && isSelectingActivePiece) {
             const move = selectedPieceMoves.find(move => move.endIndex === key)
             if (move) {
               if (move.isCapture) isCapture = true;

@@ -1,7 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { usePieceSelector } from './usePieceSelector';
+import { Game } from 'base/zod/GameSchema';
 
 export function useBoard() {
+  const queryClient = useQueryClient();
   const selected = usePieceSelector();
+
+  const gameData = queryClient.getQueryData<Game>(["game"])
 
   const handleSquareClicked = (index: number) => {
     // No piece currently selected.
@@ -19,6 +24,7 @@ export function useBoard() {
   return {
     handleRightClickOnBoard,
     handleSquareClicked,
-    selected
+    selected,
+    gameData
   }
 }
