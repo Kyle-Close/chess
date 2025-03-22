@@ -64,7 +64,9 @@ export function Square({
       )}
       <div className='flex p-2 max-w-1/2 max-h-1/2 relative z-10'>
         {currentPiece !== null && <PieceComponent piece={currentPiece} />}
-        {isCaptureSquare || isValidSquare && <div className={buildCircleClasses()}></div>}
+
+        {isCaptureSquare && <div className={buildCircleClasses()}></div>}
+        {isValidSquare && <div className={buildCircleClasses()}></div>}
       </div>
     </div>
   );

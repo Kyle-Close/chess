@@ -3,12 +3,12 @@ import { Board as BoardComponent } from 'base/features/game-board/components/Boa
 import { Game, GameSchema } from 'base/zod/GameSchema';
 import { useEffect } from 'react';
 
-const startNewGame = async (): Promise<Game> => {
+const startNewGame = async (fen?: string): Promise<Game> => {
   try {
-    console.log("Starting new game. Sending request to server")
-
     const response = await fetch("http://localhost:5165/chess-api/start-game", {
       method: "POST",
+      body: fen ? JSON.stringify({ fen }) : undefined,
+      headers: fen ? { "Content-Type": "application/json" } : undefined,
     });
 
     if (!response.ok) {
@@ -16,13 +16,11 @@ const startNewGame = async (): Promise<Game> => {
     }
 
     const jsonData = await response.json();
-    console.log(jsonData)
     const res = GameSchema.parse(jsonData);
-    console.log(res)
 
-    return res
+    return res;
   } catch (err) {
-    console.log('in catch block: ', err)
+    console.error('Error starting new game:', err);
     throw err;
   }
 };
@@ -35,7 +33,7 @@ export function ChessApi() { // this should be under a pages directory.
   });
 
   useEffect(() => {
-    gameMutation.mutate();
+    gameMutation.mutate("rn1qk1nr/ppp2ppp/3p2b1/2b1p1B1/4P1P1/3P1N1P/PPP2P2/RN1QKB1R w KQkq - 0 1");
   }, [])
 
   if (gameMutation.isSuccess) {
