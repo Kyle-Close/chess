@@ -18,6 +18,13 @@ export function Board({ board }: BoardProps) {
         {board.squares.map((square, key) => {
           const isStart = selected.selectedIndex === key;
           const piece = square.piece ? square.piece : null;
+          let isTargetSquare = false;
+          let isValidSquare = false;
+
+          if (selected.selectedIndex === piece?.index) {
+            const validMoves = piece.validMoves;
+          }
+          piece?.validMoves
 
           return (
             <Square

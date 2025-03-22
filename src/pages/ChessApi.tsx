@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Board as BoardComponent } from 'base/features/game-board/components/Board';
 import { Game, GameSchema } from 'base/zod/GameSchema';
 import { useEffect } from 'react';
@@ -28,20 +28,18 @@ const startNewGame = async (): Promise<Game> => {
 };
 
 export function ChessApi() { // this should be under a pages directory.
+  const queryClient = useQueryClient()
   const gameMutation = useMutation({
-    mutationFn: startNewGame
+    mutationFn: startNewGame,
+    mutationKey: ["game"]
   });
 
   useEffect(() => {
     gameMutation.mutate();
   }, [])
 
-  if (gameMutation.isPending) {
-    console.log("Pending...")
-  }
-
   if (gameMutation.isSuccess) {
-    console.log("wooo")
+    queryClient.setQueryData(["game"], gameMutation.data)
   }
 
   if (gameMutation.isError) {

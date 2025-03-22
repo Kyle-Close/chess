@@ -24,7 +24,7 @@ export function buildBoardFromFen(fen: string) {
       if (!isNaN(num) && num > 0) {
         // If it's a number, add empty squares
         for (let k = 0; k < num; k++) {
-          squares[count] = { index: count, file: getSquareFile(count), rank: getSquareRank(count) }
+          squares[count] = { piece: null, index: count, file: getSquareFile(count), rank: getSquareRank(count) }
           count++;
         }
       } else {

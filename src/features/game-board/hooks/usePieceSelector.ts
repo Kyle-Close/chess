@@ -35,5 +35,9 @@ export function usePieceSelector() {
     };
   }, []);
 
+  useEffect(() => {
+    console.log(selectedIndex)
+  }, [selectedIndex])
+
   return { selectedIndex, clear, updateSelectedIndex }
 }
