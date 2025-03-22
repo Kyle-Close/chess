@@ -7,24 +7,29 @@ interface BoardProps {
 }
 
 export function Board({ board }: BoardProps) {
-  console.log("Rendering Board")
   const { handleSquareClicked, selected } = useBoard();
   if (!board) return
-  console.log(board)
+
+  const selectedPieceMoves = selected.selectedIndex ? board.squares[selected.selectedIndex].piece?.validMoves : null;
+  console.log(selectedPieceMoves)
 
   return (
     <div className={getBoardClasses()}>
       <div className="grid grid-cols-8 grid-rows-8 grow">
         {board.squares.map((square, key) => {
-          const isStart = selected.selectedIndex === key;
+          const isSelected = selected.selectedIndex === key;
           const piece = square.piece ? square.piece : null;
-          let isTargetSquare = false;
-          let isValidSquare = false;
 
-          if (selected.selectedIndex === piece?.index) {
-            const validMoves = piece.validMoves;
+          let isCapture = false;
+          let isValidMove = false;
+
+          if (selectedPieceMoves) {
+            const move = selectedPieceMoves.find(move => move.endIndex === key)
+            if (move) {
+              if (move.isCapture) isCapture = true;
+              else isValidMove = true;
+            }
           }
-          piece?.validMoves
 
           return (
             <Square
@@ -32,7 +37,9 @@ export function Board({ board }: BoardProps) {
               index={key}
               key={key}
               handleSquareClicked={handleSquareClicked}
-              isStartPos={isStart}
+              isStartPos={isSelected}
+              isCaptureSquare={isCapture}
+              isValidSquare={isValidMove}
             />
           );
         })}

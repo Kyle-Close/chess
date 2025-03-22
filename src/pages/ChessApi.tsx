@@ -40,6 +40,7 @@ export function ChessApi() { // this should be under a pages directory.
 
   if (gameMutation.isSuccess) {
     queryClient.setQueryData(["game"], gameMutation.data)
+    console.log(gameMutation.data)
   }
 
   if (gameMutation.isError) {

@@ -14,3 +14,24 @@ export function getSquareFile(index: number) {
 
   throw new Error("Invalid file index. Cannot determine BoardFile.");
 }
+
+export function getFileLetter(file: BoardFile) {
+  switch (file) {
+    case BoardFile.A:
+      return 'A';
+    case BoardFile.B:
+      return 'B'
+    case BoardFile.C:
+      return 'C'
+    case BoardFile.D:
+      return 'D'
+    case BoardFile.E:
+      return 'E'
+    case BoardFile.F:
+      return 'F'
+    case BoardFile.G:
+      return 'G'
+    case BoardFile.H:
+      return 'H'
+  }
+}
