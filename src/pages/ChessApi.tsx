@@ -36,7 +36,7 @@ export function ChessApi() { // this should be under a pages directory.
   });
 
   useEffect(() => {
-    gameMutation.mutate("rn1qk1nr/ppp2ppp/3p2b1/2b1p1B1/4P1P1/3P1N1P/PPP2P2/RN1QKB1R b KQkq - 0 1");
+    gameMutation.mutate("r3k2r/1pp1qppp/p1npbnb1/3Pp3/8/5B1N/PPP1PPPP/RNBQK2R w KQkq - 0 1");
   }, [])
 
   if (gameMutation.isError) {
