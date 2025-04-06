@@ -25,7 +25,7 @@ const startNewGame = async (fen?: string): Promise<Game> => {
   }
 };
 
-export function ChessApi() { // this should be under a pages directory.
+export function ChessApi() {
   const queryClient = useQueryClient()
   const gameMutation = useMutation({
     mutationFn: startNewGame,
@@ -36,7 +36,7 @@ export function ChessApi() { // this should be under a pages directory.
   });
 
   useEffect(() => {
-    gameMutation.mutate("r3k2r/1pp1qppp/p1npbnb1/3Pp3/8/5B1N/PPP1PPPP/RNBQK2R w KQkq - 0 1");
+    gameMutation.mutate("rnbq2nr/ppp2ppp/3p2b1/1k2p1B1/4P1P1/1K1P1N1P/PPP2P2/RN1Q1B1R w - - 0 1");
   }, [])
 
   if (gameMutation.isError) {
