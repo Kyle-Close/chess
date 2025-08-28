@@ -36,7 +36,7 @@ export function ChessApi() {
   });
 
   useEffect(() => {
-    gameMutation.mutate("rnbq2nr/ppp2ppp/3p2b1/1k2p1B1/4P1P1/1K1P1N1P/PPP2P2/RN1Q1B1R w - - 0 1");
+    gameMutation.mutate("rn1qk1n1/ppp3pp/3pbp2/8/1bBQP3/2N1rN2/PP3PPP/R1B1K2R w KQq - 0 1");
   }, [])
 
   if (gameMutation.isError) {

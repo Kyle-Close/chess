@@ -29,6 +29,8 @@ export function Square({
     handleSquareClicked
   );
 
+  const showIndexes = true;
+
   const rank = getSquareRank(index);
   const file = getSquareFile(index);
 
@@ -62,6 +64,9 @@ export function Square({
       {file === BoardFile.A && (
         <div className='absolute text-orange-600 top-0 left-0.5 text-xs'>{rank}</div>
       )}
+      {
+        showIndexes && (<div className='absolute text-black top-1 right-1.5 text-[10px]'>{index}</div>)
+      }
       <div className='flex p-2 max-w-1/2 max-h-1/2 relative z-10'>
         {currentPiece !== null && <PieceComponent piece={currentPiece} />}
 
