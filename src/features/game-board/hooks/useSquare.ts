@@ -1,6 +1,6 @@
-import { Piece } from "base/zod/PieceSchema";
+import { Piece } from "../../../zod/PieceSchema";
+import { Color } from "../../../zod/emums/Color";
 import { getSquareRank } from "../utils/board-utility/getSquareRank";
-import { Color } from "base/zod/emums/Color";
 
 
 export function useSquare(

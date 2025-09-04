@@ -1,5 +1,5 @@
-import { Piece } from "base/zod/PieceSchema";
-import { Color } from "base/zod/emums/Color";
+import { Piece } from "../../../zod/PieceSchema";
+import { Color } from "../../../zod/emums/Color";
 
 export function usePiece() {
 

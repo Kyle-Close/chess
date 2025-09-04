@@ -1,24 +1,19 @@
-import { Board as BoardLocal } from 'base/zod/BoardSchema';
 import { useBoard } from '../hooks/useBoard';
 import { Square } from './Square';
 
-interface BoardProps {
-  board: BoardLocal
-}
-
-export function Board({ board }: BoardProps) {
+export function Board() {
   const { handleSquareClicked, selected, gameData } = useBoard();
-  if (!board) return
+  if (!gameData) return
 
-  const selectedPiece = selected.selectedIndex ? board.squares[selected.selectedIndex].piece : null;
+  const selectedPiece = selected.selectedList.length === 1 ? gameData.board.squares[selected.selectedList[0]].piece : null;
   const selectedPieceMoves = selectedPiece ? selectedPiece.validMoves : null;
   const isSelectingActivePiece = selectedPiece ? selectedPiece.color === gameData?.activeColor : false;
 
   return (
     <div className={getBoardClasses()}>
       <div className="grid grid-cols-8 grid-rows-8 grow">
-        {board.squares.map((square, key) => {
-          const isSelected = selected.selectedIndex === key;
+        {gameData.board.squares.map((square, key) => {
+          const isSelected = selected.selectedList[0] === key;
           const piece = square.piece ? square.piece : null;
 
           let isCapture = false;

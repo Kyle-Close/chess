@@ -4,29 +4,28 @@
  *
  */
 
-import { useQueryClient } from "@tanstack/react-query";
-import { Game } from "base/zod/GameSchema";
 import { useEffect, useState } from "react";
+const MAX_LENGTH = 2;
 
 export function usePieceSelector() {
-  const queryClient = useQueryClient();
-  const game = queryClient.getQueryData<Game>(["game"]);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedList, setSelectedList] = useState<number[]>([]);
 
-  const clear = () => {
-    setSelectedIndex(null);
+  function clear() {
+    setSelectedList([]);
   }
 
-  const updateSelectedIndex = (index: number) => {
-    if (!game) return;
-    if (game.board.squares[index].piece !== null) {
-      setSelectedIndex(index);
+  function append(index: number) {
+    if (selectedList.length === MAX_LENGTH) { // Roll over (clear)
+      clear()
+    } else {
+      setSelectedList([...selectedList, index])
     }
   }
 
+  // Right click to clear the selected states
   useEffect(() => {
     const handleScreenClick = () => {
-      setSelectedIndex(null);
+      clear()
     };
 
     document.addEventListener('contextmenu', handleScreenClick);
@@ -35,5 +34,11 @@ export function usePieceSelector() {
     };
   }, []);
 
-  return { selectedIndex, clear, updateSelectedIndex }
+
+  // Temp testing:
+  useEffect(() => {
+    console.log(selectedList)
+  }, [selectedList])
+
+  return { selectedList, clear, append }
 }
