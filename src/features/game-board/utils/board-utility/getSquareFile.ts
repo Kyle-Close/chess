@@ -1,6 +1,6 @@
-import { BoardFile } from "base/zod/emums/BoardFile";
+import { BoardFile } from "../../../../zod/emums/BoardFile";
 
-export function getSquareFile(index: number) {
+export function getSquareFile(index: number): BoardFile {
 
 
   if (index % 8 == 0 || index == 0) return BoardFile.A;

@@ -1,6 +1,6 @@
-import { BoardRank } from "base/zod/emums/BoardRank";
+import { BoardRank } from "../../../../zod/emums/BoardRank";
 
-export function getSquareRank(index: number) {
+export function getSquareRank(index: number): BoardRank {
   if (index < 8) return BoardRank.EIGHT;
   else if (index >= 8 && index < 16) return BoardRank.SEVEN;
   else if (index >= 16 && index < 24) return BoardRank.SIX;

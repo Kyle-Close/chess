@@ -1,0 +1,59 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SubmitHandler, useForm } from "react-hook-form"
+import { Game, GameSchema } from "../../../zod/GameSchema";
+import { useEffect } from "react";
+
+type FormInputs = {
+  fen: string
+}
+
+export function useChessApi() {
+  const form = useForm<FormInputs>();
+  const onSubmit: SubmitHandler<FormInputs> = (data) => gameMutation.mutate(data.fen);
+
+  const queryClient = useQueryClient()
+  const gameMutation = useMutation({
+    mutationFn: startNewGame,
+    mutationKey: ["game"],
+    onSuccess: (gameData) => {
+      queryClient.setQueryData(["game"], gameData)
+    }
+  });
+
+  useEffect(() => {
+    gameMutation.mutate("8/8/8/2K1Q1k1/8/6p1/8/8 b - - 0 1");
+  }, [])
+
+  if (gameMutation.isError) {
+    console.log("Some error happened.")
+  }
+
+  return {
+    form,
+    onSubmit,
+    gameMutation
+  }
+}
+
+const startNewGame = async (fen?: string): Promise<Game> => {
+
+  try {
+    const response = await fetch("http://localhost:5165/chess-api/start-game", {
+      method: "POST",
+      body: fen ? JSON.stringify({ fen }) : undefined,
+      headers: fen ? { "Content-Type": "application/json" } : undefined,
+    });
+
+    if (!response.ok) {
+      throw new Error("Could not start new game.");
+    }
+
+    const jsonData = await response.json();
+    const res = GameSchema.parse(jsonData);
+
+    return res;
+  } catch (err) {
+    console.error('Error starting new game:', err);
+    throw err;
+  }
+};

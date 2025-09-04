@@ -1,3 +1,4 @@
+import { Box, Flex } from '@chakra-ui/react';
 import { Provider } from '../components/ui/provider.tsx'
 
 interface AppProps {
@@ -7,7 +8,7 @@ interface AppProps {
 function AppWrapper({ children }: AppProps) {
   return (
     <Provider>
-      <div className='flex flex-grow justify-center bg-gray-900 text-slate-50'>{children}</div>
+      <Flex bg='gray.900' justify='center' grow='1'>{children}</Flex>
     </Provider>);
 }
 

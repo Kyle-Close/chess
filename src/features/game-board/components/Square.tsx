@@ -2,8 +2,9 @@ import { Piece as PieceComponent } from './Piece';
 import { useSquare } from '../hooks/useSquare';
 import { getFileLetter, getSquareFile } from '../utils/board-utility/getSquareFile';
 import { getSquareRank } from '../utils/board-utility/getSquareRank';
-import { Piece } from 'base/zod/PieceSchema';
-import { BoardFile } from 'base/zod/emums/BoardFile';
+import { Piece } from '../../../zod/PieceSchema';
+import { BoardFile } from '../../../zod/emums/BoardFile';
+import { Box, Text } from '@chakra-ui/react';
 
 interface SquareProps {
   currentPiece: Piece | null;
@@ -29,7 +30,7 @@ export function Square({
     handleSquareClicked
   );
 
-  const showIndexes = true;
+  const showIndexes = false;
 
   const rank = getSquareRank(index);
   const file = getSquareFile(index);
@@ -57,23 +58,23 @@ export function Square({
   };
 
   return (
-    <div onClick={handleClick} className={classes.join(' ')}>
+    <Box onClick={handleClick} className={classes.join(' ')}>
       {rank === 1 && (
-        <div className='absolute text-orange-600 bottom-0 right-0.5 text-xs'>{getFileLetter(file).toLowerCase()}</div>
+        <Text position='absolute' textStyle='md' bottom='0' right='1' color='purple.400' fontWeight='bold'>{getFileLetter(file).toLowerCase()}</Text>
       )}
       {file === BoardFile.A && (
-        <div className='absolute text-orange-600 top-0 left-0.5 text-xs'>{rank}</div>
+        <Text position='absolute' textStyle='md' top='1' left='1' color='purple.400' fontWeight='bold'>{rank}</Text>
       )}
       {
-        showIndexes && (<div className='absolute text-black top-1 right-1.5 text-[10px]'>{index}</div>)
+        showIndexes && (<Text className='absolute text-black top-1 right-1.5 text-[10px]'>{index}</Text>)
       }
-      <div className='flex p-2 max-w-1/2 max-h-1/2 relative z-10'>
+      <Box className='flex p-2 max-w-1/2 max-h-1/2 relative z-10'>
         {currentPiece !== null && <PieceComponent piece={currentPiece} />}
 
-        {isCaptureSquare && <div className={buildCircleClasses()}></div>}
-        {isValidSquare && <div className={buildCircleClasses()}></div>}
-      </div>
-    </div>
+        {isCaptureSquare && <Box className={buildCircleClasses()}></Box>}
+        {isValidSquare && <Box className={buildCircleClasses()}></Box>}
+      </Box>
+    </Box>
   );
 }
 
