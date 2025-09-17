@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form"
 import { Game, GameSchema } from "../../../zod/GameSchema";
 import { useEffect } from "react";
@@ -8,6 +8,8 @@ type FormInputs = {
 }
 
 export function useChessApi() {
+
+
   const form = useForm<FormInputs>();
   const onSubmit: SubmitHandler<FormInputs> = (data) => gameMutation.mutate(data.fen);
 
@@ -20,8 +22,21 @@ export function useChessApi() {
     }
   });
 
+
+  const gameData = useQuery<Game>({
+    queryKey: ['game'],
+    queryFn: async () => {
+      const cached = queryClient.getQueryData<Game>(['game']);
+      if (!cached) throw new Error('No game in cache');
+      return cached;
+    },
+    initialData: () => queryClient.getQueryData<Game>(['game']),
+    enabled: true
+  }).data;
+
+
   useEffect(() => {
-    gameMutation.mutate("8/8/8/2K1Q1k1/8/6p1/8/8 b - - 0 1");
+    gameMutation.mutate("");
   }, [])
 
   if (gameMutation.isError) {
@@ -31,7 +46,8 @@ export function useChessApi() {
   return {
     form,
     onSubmit,
-    gameMutation
+    gameMutation,
+    gameData
   }
 }
 

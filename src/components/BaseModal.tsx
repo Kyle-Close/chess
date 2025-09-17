@@ -8,7 +8,7 @@ interface BaseModalProps {
 
 export function BaseModal({ isOpen, onClose, children }: BaseModalProps) {
   return (
-    <DialogRoot open={isOpen} onOpenChange={onClose}>
+    <DialogRoot onInteractOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()} open={isOpen} onOpenChange={onClose}>
       <DialogContent borderRadius='1rem' className='mx-4'>
         {children}
       </DialogContent>

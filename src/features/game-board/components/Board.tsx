@@ -1,8 +1,10 @@
 import { useBoard } from '../hooks/useBoard';
+import { PromotionModal } from './PromotionModal';
 import { Square } from './Square';
 
 export function Board() {
-  const { handleSquareClicked, selected, gameData } = useBoard();
+  const { handleSquareClicked, selected, gameData, isPromotionModalOpen, closePromotionModal
+  } = useBoard();
   if (!gameData) return
 
   const selectedPiece = selected.selectedList.length === 1 ? gameData.board.squares[selected.selectedList[0]].piece : null;
@@ -11,6 +13,7 @@ export function Board() {
 
   return (
     <div className={getBoardClasses()}>
+      {isPromotionModalOpen && <PromotionModal clearSelected={selected.clear} isOpen={isPromotionModalOpen} onClose={closePromotionModal} gameId={gameData.id} start={selected.selectedList[0]} end={selected.selectedList[1]} />}
       <div className="grid grid-cols-8 grid-rows-8 grow">
         {gameData.board.squares.map((square, key) => {
           const isSelected = selected.selectedList[0] === key;

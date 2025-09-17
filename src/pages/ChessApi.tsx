@@ -1,12 +1,11 @@
 import { useChessApi } from '../features/chess-api/hooks/useChessApi.ts';
 import { Button, Input, Flex, Field, Box, Heading, Text, Separator } from '@chakra-ui/react';
 import { Board } from '../features/game-board/components/Board.tsx'
-import { Game } from '../zod/GameSchema.ts';
 
 export function ChessApi() {
-  const { form, onSubmit, gameMutation } = useChessApi()
+  const { form, onSubmit, gameMutation, gameData } = useChessApi()
 
-  if (!gameMutation.data) return;
+  if (!gameMutation.data || !gameData) return;
 
   function buildGameInfoComponent(title: string, value: string) {
     return (
@@ -18,9 +17,14 @@ export function ChessApi() {
   }
 
   const gameInfoList = [
-    { title: 'Turn', value: gameMutation.data.activeColor.toString() },
-    { title: 'Half Moves', value: gameMutation.data.halfMoves.toString() },
-    { title: 'Full Moves', value: gameMutation.data.fullMoves.toString() },
+    { title: 'White Material', value: gameData.whiteMaterialValue.toString() },
+    { title: 'Black Material', value: gameData.blackMaterialValue.toString() },
+    { title: 'Turn', value: gameData.activeColor == 0 ? "White" : "Black" },
+    { title: 'Half Moves', value: gameData.halfMoves.toString() },
+    { title: 'Full Moves', value: gameData.fullMoves.toString() },
+    { title: 'Check', value: gameData.isCheck.toString() },
+    { title: 'Checkmate', value: gameData.isCheckmate.toString() },
+    { title: 'Stalemate', value: gameData.isStalemate.toString() },
     { title: 'Move History', value: 'TODO' },
     { title: 'Fen History', value: 'TODO' },
   ]
@@ -36,7 +40,7 @@ export function ChessApi() {
           <Button type='submit' p='2' variant='solid' bg='cyan.500'>Submit</Button>
         </Flex>
       </form>
-      <Board board={gameMutation.data.board} />
+      <Board />
       <Box position='absolute' right='-35%' bg='gray.700' p='4' rounded='md'>
         <Heading fontWeight='bold' fontSize='xl' size='xl'>Game Info</Heading>
         <Separator mb='1rem' variant='solid' size='lg' height='1px' bg='gray.300' />

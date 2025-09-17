@@ -3,15 +3,16 @@ import { usePieceSelector } from './usePieceSelector';
 import { Game, GameSchema } from '../../../zod/GameSchema';
 import { PieceType } from '../../../zod/emums/PieceType';
 import { sendPost } from '../../api-utils/sendPost';
+import { useState } from 'react';
 
-interface ExecuteMovePayload {
+export interface ExecuteMovePayload {
   gameId: string,
   start: number,
   end: number,
   promotionPiece?: PieceType
 }
 
-const executeMove = async (body: ExecuteMovePayload): Promise<Game> => {
+export const executeMove = async (body: ExecuteMovePayload): Promise<Game> => {
   try {
     return await sendPost('execute-move', body, GameSchema);
   } catch (err) {
@@ -23,6 +24,15 @@ const executeMove = async (body: ExecuteMovePayload): Promise<Game> => {
 export function useBoard() {
   const queryClient = useQueryClient();
   const selected = usePieceSelector();
+  const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
+
+  const openPromotionModal = () => {
+    setIsPromotionModalOpen(true);
+  }
+
+  const closePromotionModal = () => {
+    setIsPromotionModalOpen(false)
+  }
 
   const gameData = useQuery<Game>({
     queryKey: ['game'],
@@ -50,10 +60,14 @@ export function useBoard() {
     if (selected.selectedList.length === 0 && piece && (piece.color === gameData.activeColor)) {
       // No piece selected yet but now selecting a piece with the correct color
       selected.append(index);
-    } else if (selected.selectedList.length === 1) {
-      // Piece selected, attempting to execute move
-      executeMoveMutation.mutate({ start: selected.selectedList[0], end: index, gameId: gameData.id })
-      selected.clear();
+    } else if (selected.selectedList.length === 1) { // Piece selected, attempting to execute move
+      selected.append(index);
+      if (gameData.board.squares[selected.selectedList[0]].piece?.validMoves.find(move => move.startIndex == selected.selectedList[0] && move.endIndex == index && move.isPromotion)) {
+        openPromotionModal(); // Popup modal here and wait for user to select promotion piece
+      } else {
+        executeMoveMutation.mutate({ start: selected.selectedList[0], end: index, gameId: gameData.id })
+        selected.clear();
+      }
     }
   }
 
@@ -65,6 +79,9 @@ export function useBoard() {
     handleRightClickOnBoard,
     handleSquareClicked,
     selected,
-    gameData
+    gameData,
+    openPromotionModal,
+    closePromotionModal,
+    isPromotionModalOpen
   }
 }
