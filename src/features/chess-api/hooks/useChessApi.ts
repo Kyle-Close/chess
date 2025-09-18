@@ -8,8 +8,6 @@ type FormInputs = {
 }
 
 export function useChessApi() {
-
-
   const form = useForm<FormInputs>();
   const onSubmit: SubmitHandler<FormInputs> = (data) => gameMutation.mutate(data.fen);
 

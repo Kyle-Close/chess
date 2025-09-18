@@ -4,6 +4,7 @@ import { Game, GameSchema } from '../../../zod/GameSchema';
 import { PieceType } from '../../../zod/emums/PieceType';
 import { sendPost } from '../../api-utils/sendPost';
 import { useState } from 'react';
+import { GameStatus } from 'base/zod/emums/GameStatus';
 
 export interface ExecuteMovePayload {
   gameId: string,
@@ -25,6 +26,7 @@ export function useBoard() {
   const queryClient = useQueryClient();
   const selected = usePieceSelector();
   const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
+  const [isGameOverModalOpen, setIsGameOverModalOpen] = useState(false);
 
   const openPromotionModal = () => {
     setIsPromotionModalOpen(true);
@@ -32,6 +34,14 @@ export function useBoard() {
 
   const closePromotionModal = () => {
     setIsPromotionModalOpen(false)
+  }
+
+  const openGameOverModal = () => {
+    setIsGameOverModalOpen(true)
+  }
+
+  const closeGameOverModal = () => {
+    setIsGameOverModalOpen(false);
   }
 
   const gameData = useQuery<Game>({
@@ -49,6 +59,10 @@ export function useBoard() {
     mutationKey: ["game"],
     mutationFn: executeMove,
     onSuccess: (gameData) => {
+      // Check if game over/checkmate
+      if (gameData.status != GameStatus.ONGOING && gameData.status != GameStatus.IN_CHECK) {
+        openGameOverModal();
+      }
       queryClient.setQueryData(["game"], gameData)
     }
   })
@@ -82,6 +96,9 @@ export function useBoard() {
     gameData,
     openPromotionModal,
     closePromotionModal,
-    isPromotionModalOpen
+    isPromotionModalOpen,
+    isGameOverModalOpen,
+    openGameOverModal,
+    closeGameOverModal
   }
 }
