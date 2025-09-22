@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from '../components/AppWrapper.tsx';
 import { ChessApi } from "base/pages/ChessApi.tsx";
+import { Play } from "base/pages/Play.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,14 @@ export const router = createBrowserRouter([
     element: (
       <App>
         <ChessApi />
+      </App>
+    ),
+  },
+  {
+    path: '/play',
+    element: (
+      <App>
+        <Play />
       </App>
     ),
   },
