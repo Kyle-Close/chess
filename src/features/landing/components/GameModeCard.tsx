@@ -14,7 +14,7 @@ export function GameModeCard(props: GameModeCardProps) {
   const { icon: GameModeIcon } = props;
   return (
     <Card.Root bgColor='gray.800'>
-      <Card.Body alignItems='center' gap={2}>
+      <Card.Body justifyContent='space-between' alignItems='center' gap={2}>
         <Icon>
           <GameModeIcon size={48} />
         </Icon>
