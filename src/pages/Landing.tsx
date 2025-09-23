@@ -16,7 +16,7 @@ export function Landing() {
             </Icon>
             <Heading fontSize='5xl'>ChessPlay</Heading>
           </Flex>
-          <Text opacity='50%' maxW='1/2' fontSize='xl'>Master the royal game. Play locally with friends, challenge players worldwide, or test your skills against advanced AI.</Text>
+          <Text textAlign='center' opacity='50%' maxW='1/2' fontSize='xl'>Master the royal game. Play locally with friends, challenge players worldwide, or test your skills against advanced AI.</Text>
         </Flex>
 
         <Flex m='0 20%' gap={2}>
@@ -26,7 +26,7 @@ export function Landing() {
             description="Play with friends on the same device"
             extraDescription="Perfect for face-to-face games. Take turns on the same board and enjoy the classic chess experience."
             buttonText="Start Local Game"
-            handleClick={() => navigate('/chess-api')}
+            handleClick={() => navigate('/configure')}
           />
           <GameModeCard
             icon={Users}
