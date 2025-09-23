@@ -1,15 +1,22 @@
 import { Flex, RadioCard, HStack } from "@chakra-ui/react";
 import { FormBox } from "./formBox";
+import { UseFormReturn } from "react-hook-form";
+import { LocalConfigurationFormInputs } from "../hooks/useConfiguration";
+import { TimeControlType } from "base/zod/emums/TimeControl";
 
-export function TimeControl() {
+interface TimeControlProps {
+  localConfigurationForm: UseFormReturn<LocalConfigurationFormInputs>
+}
+
+export function TimeControl({ localConfigurationForm }: TimeControlProps) {
   return (
     <FormBox title="Time Control">
       <Flex mt={2} gap={6}>
-        <RadioCard.Root defaultValue="classical">
+        <RadioCard.Root defaultValue={TimeControlType.CLASSICAL.toString()}>
           <HStack mt={4} gap={6} align="stretch">
             {items.map((item) => (
-              <RadioCard.Item border='1px solid white' key={item.value} value={item.value}>
-                <RadioCard.ItemHiddenInput />
+              <RadioCard.Item border='1px solid white' key={item.value} value={item.value.toString()}>
+                <RadioCard.ItemHiddenInput {...localConfigurationForm.register("timeControl")} />
                 <RadioCard.ItemControl>
                   <RadioCard.ItemContent>
                     <RadioCard.ItemText>{item.title}</RadioCard.ItemText>
@@ -30,22 +37,22 @@ export function TimeControl() {
 
 const items = [
   {
-    value: "classical",
+    value: TimeControlType.CLASSICAL,
     title: "60+30",
     description: "Classical"
   },
   {
-    value: "rapid",
+    value: TimeControlType.RAPID,
     title: "10+10",
     description: "Rapid"
   },
   {
-    value: "blitz",
+    value: TimeControlType.BLITZ,
     title: "3+2",
     description: "Blitz"
   },
   {
-    value: "bullet",
+    value: TimeControlType.BULLET,
     title: "1+1",
     description: "Bullet"
   },

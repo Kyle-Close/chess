@@ -1,34 +1,37 @@
 import { Flex, IconButton, Text } from "@chakra-ui/react";
-import { Board } from "base/features/game-board/components/Board";
 import { Colors } from "base/features/game-configuration/components/Colors";
 import { Custom } from "base/features/game-configuration/components/Custom";
 import { Players } from "base/features/game-configuration/components/Players";
 import { TimeControl } from "base/features/game-configuration/components/TimeControl";
+import { useConfiguration } from "base/features/game-configuration/hooks/useConfiguration";
 import { Play, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Configuration() {
+  const navigate = useNavigate();
+  const { localConfigurationFormInputs, getRandomName, onSubmit } = useConfiguration()
+
   return (
     <Flex flexDir='column' m={6}>
-      <Flex flexDir='column'>
+      <Flex flexDir='column' as='form' onSubmit={localConfigurationFormInputs.handleSubmit(onSubmit)}>
         <Flex alignItems='end' justifyContent='space-between'>
           <Text>Configure Your Game Settings</Text>
           <Flex mt={2} gap={6} >
-            <IconButton border='1px solid rgba(255, 255, 255, 0.3)' p={4} >
+            <IconButton onClick={() => navigate("/")} border='1px solid rgba(255, 255, 255, 0.3)' p={4} >
               <X />
               Cancel
             </IconButton>
-            <IconButton p={4} bgColor='gray.100' color='black'>
+            <IconButton type="submit" p={4} bgColor='gray.100' color='black'>
               <Play />
               Start Game
             </IconButton>
           </Flex>
         </Flex>
-        <Players />
-        <Colors />
-        <TimeControl />
-        <Custom />
+        <Players localConfigurationForm={localConfigurationFormInputs} getRandomName={getRandomName} />
+        <Colors localConfigurationForm={localConfigurationFormInputs} />
+        <TimeControl localConfigurationForm={localConfigurationFormInputs} />
+        <Custom localConfigurationForm={localConfigurationFormInputs} />
       </Flex>
-      <Board />
     </Flex>
   )
 }
