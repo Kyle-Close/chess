@@ -9,7 +9,7 @@ interface MoveHistoryEntryProps {
 export function MoveHistoryEntry({ count, whiteMove, blackMove }: MoveHistoryEntryProps) {
   return (
     <Flex gap={4}>
-      <Text fontWeight='semibold'>{count.toString()}</Text>
+      <Text fontWeight='semibold'>{count.toString()}.</Text>
       <Text>{whiteMove}</Text>
       <Text>{blackMove}</Text>
     </Flex>

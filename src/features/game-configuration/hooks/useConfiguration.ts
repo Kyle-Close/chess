@@ -7,7 +7,7 @@ export type LocalConfigurationFormInputs = {
   player1Name: string,
   player2Name: string,
   player1Color: string,
-  timeControl: string,
+  timeControlType: string,
   fen?: string
 }
 
@@ -19,7 +19,7 @@ export function useConfiguration() {
   const onSubmit: SubmitHandler<LocalConfigurationFormInputs> = data => handleSubmit(data);
 
   const handleSubmit = (data: LocalConfigurationFormInputs) => {
-    newGameMutation.mutate({ timeControl: getTimeControlType(data.timeControl), fen: data.fen });
+    newGameMutation.mutate({ timeControlType: getTimeControlType(data.timeControlType), fen: data.fen });
   }
 
   return {

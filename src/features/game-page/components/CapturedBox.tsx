@@ -1,5 +1,5 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
-import { GiChessBishop, GiChessKnight, GiChessPawn, GiChessQueen, GiChessRook, GiPawn } from "react-icons/gi";
+import { GiChessBishop, GiChessKnight, GiChessPawn, GiChessQueen, GiChessRook } from "react-icons/gi";
 
 interface CapturedBoxProps {
   isWhite: boolean

@@ -21,12 +21,13 @@ export function useStartNewGame() {
 }
 
 interface StartNewGameParams {
-  timeControl: TimeControlType,
+  timeControlType: TimeControlType,
   fen?: string
 }
 
-async function startNewGame({ timeControl, fen }: StartNewGameParams): Promise<Game> {
-  const payload: any = { timeControl };
+async function startNewGame({ timeControlType, fen }: StartNewGameParams): Promise<Game> {
+  const payload: any = { timeControlType };
+
   if (fen && fen.trim() !== "") {
     payload.fen = fen;
   }

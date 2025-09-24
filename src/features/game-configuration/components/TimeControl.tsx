@@ -16,7 +16,7 @@ export function TimeControl({ localConfigurationForm }: TimeControlProps) {
           <HStack mt={4} gap={6} align="stretch">
             {items.map((item) => (
               <RadioCard.Item border='1px solid white' key={item.value} value={item.value.toString()}>
-                <RadioCard.ItemHiddenInput {...localConfigurationForm.register("timeControl")} />
+                <RadioCard.ItemHiddenInput {...localConfigurationForm.register("timeControlType")} />
                 <RadioCard.ItemControl>
                   <RadioCard.ItemContent>
                     <RadioCard.ItemText>{item.title}</RadioCard.ItemText>
