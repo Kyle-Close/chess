@@ -1,30 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { usePieceSelector } from './usePieceSelector';
-import { Game, GameSchema } from '../../../zod/GameSchema';
-import { PieceType } from '../../../zod/emums/PieceType';
-import { sendPost } from '../../api-utils/sendPost';
+import { Game } from '../../../zod/GameSchema';
 import { useCallback, useState } from 'react';
 import { GameStatus } from 'base/zod/emums/GameStatus';
+import { useExecuteMove } from 'base/features/api-utils/hooks/useExecuteMove';
 
-export interface ExecuteMovePayload {
-  gameId: string,
-  start: number,
-  end: number,
-  promotionPiece?: PieceType
-}
 
-export const executeMove = async (body: ExecuteMovePayload): Promise<Game> => {
-  try {
-    return await sendPost('execute-move', body, GameSchema);
-  } catch (err) {
-    console.error('Error starting new game:', err);
-    throw err;
-  }
-}
-
-export function useBoard() {
+export function useBoard(game: Game) {
   const queryClient = useQueryClient();
   const selected = usePieceSelector();
+
+  const executeMoveMutation = useExecuteMove();
+
   const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
   const [isGameOverModalOpen, setIsGameOverModalOpen] = useState(false);
 
@@ -49,43 +36,27 @@ export function useBoard() {
     setIsGameOverModalOpen(false);
   }
 
-  const gameData = useQuery<Game>({
-    queryKey: ['game'],
-    queryFn: async () => {
-      const cached = queryClient.getQueryData<Game>(['game']);
-      if (!cached) throw new Error('No game in cache');
-      return cached;
-    },
-    initialData: () => queryClient.getQueryData<Game>(['game']),
-    enabled: true
-  }).data;
-
-  const executeMoveMutation = useMutation<Game, Error, ExecuteMovePayload>({
-    mutationKey: ["game"],
-    mutationFn: executeMove,
-    onSuccess: (gameData) => {
-      // Check if game over/checkmate
-      if (gameData.status != GameStatus.ONGOING && gameData.status != GameStatus.IN_CHECK) {
-        openGameOverModal();
-      }
-      queryClient.setQueryData(["game"], gameData)
-      playSound()
-    }
-  })
-
   const handleSquareClicked = (index: number) => {
-    if (!gameData) return;
-    const piece = gameData?.board.squares[index].piece;
+    if (!game) return;
+    const piece = game.board.squares[index].piece;
 
-    if (selected.selectedList.length === 0 && piece && (piece.color === gameData.activeColor)) {
+    if (selected.selectedList.length === 0 && piece && (piece.color === game.activeColor)) {
       // No piece selected yet but now selecting a piece with the correct color
       selected.append(index);
     } else if (selected.selectedList.length === 1) { // Piece selected, attempting to execute move
       selected.append(index);
-      if (gameData.board.squares[selected.selectedList[0]].piece?.validMoves.find(move => move.startIndex == selected.selectedList[0] && move.endIndex == index && move.isPromotion)) {
+      if (game.board.squares[selected.selectedList[0]].piece?.validMoves.find(move => move.startIndex == selected.selectedList[0] && move.endIndex == index && move.isPromotion)) {
         openPromotionModal(); // Popup modal here and wait for user to select promotion piece
       } else {
-        executeMoveMutation.mutate({ start: selected.selectedList[0], end: index, gameId: gameData.id })
+        executeMoveMutation.mutate({ start: selected.selectedList[0], end: index, gameId: game.id })
+
+        if (executeMoveMutation.isSuccess) {
+          if (game.status != GameStatus.ONGOING && game.status != GameStatus.IN_CHECK) {
+            openGameOverModal();
+          }
+          queryClient.setQueryData(["game"], game)
+          playSound()
+        }
         selected.clear();
       }
     }
@@ -99,7 +70,6 @@ export function useBoard() {
     handleRightClickOnBoard,
     handleSquareClicked,
     selected,
-    gameData,
     openPromotionModal,
     closePromotionModal,
     isPromotionModalOpen,

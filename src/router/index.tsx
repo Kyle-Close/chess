@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/play',
+    path: '/play/:gameId',
     element: (
       <App>
         <Play />

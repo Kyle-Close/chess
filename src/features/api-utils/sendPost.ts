@@ -1,8 +1,7 @@
 import { z } from "zod";
+import { BASE_URL } from "./baseUrl";
 
-const BASE_URL = 'http://localhost:5165/chess-api'
 export async function sendPost<T>(path: string, body: unknown, schema: z.ZodSchema<T>) {
-
   try {
     const response = await fetch(`${BASE_URL}/${path}`, {
       method: "POST",

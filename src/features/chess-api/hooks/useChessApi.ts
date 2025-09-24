@@ -37,10 +37,6 @@ export function useChessApi() {
     gameMutation.mutate("");
   }, [])
 
-  if (gameMutation.isError) {
-    console.log("Some error happened.")
-  }
-
   return {
     form,
     onSubmit,

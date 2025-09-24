@@ -1,10 +1,8 @@
 import { BaseModal } from "base/components/BaseModal";
 import { Alert, Grid, GridItem, IconButton } from '@chakra-ui/react'
 import { GiChessQueen, GiChessKnight, GiChessBishop, GiChessRook } from "react-icons/gi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Game } from "base/zod/GameSchema";
-import { ExecuteMovePayload, executeMove } from "../hooks/useBoard";
 import { PieceType } from "base/zod/emums/PieceType";
+import { useExecuteMove } from "base/features/api-utils/hooks/useExecuteMove";
 
 interface PromotionModalProps {
   isOpen: boolean,
@@ -16,15 +14,7 @@ interface PromotionModalProps {
 }
 
 export function PromotionModal({ isOpen, onClose, gameId, start, end, clearSelected }: PromotionModalProps) {
-  const queryClient = useQueryClient();
-
-  const executeMoveMutation = useMutation<Game, Error, ExecuteMovePayload>({
-    mutationKey: ["game"],
-    mutationFn: executeMove,
-    onSuccess: (gameData) => {
-      queryClient.setQueryData(["game"], gameData)
-    }
-  })
+  const executeMoveMutation = useExecuteMove()
 
   const handleButtonClick = (promotionPiece: PieceType) => {
     executeMoveMutation.mutate({ gameId, start, end, promotionPiece });

@@ -10,21 +10,11 @@ export function CapturedBox({ isWhite }: CapturedBoxProps) {
     <Flex flexDir='column' gap={4}>
       <Text fontWeight='semibold' fontSize='sm'>{`Captured by ${isWhite ? 'white' : 'black'}`}</Text>
       <Flex>
-        <Icon>
-          <GiChessPawn />
-        </Icon>
-        <Icon>
-          <GiChessRook />
-        </Icon>
-        <Icon>
-          <GiChessKnight />
-        </Icon>
-        <Icon>
-          <GiChessQueen />
-        </Icon>
-        <Icon>
-          <GiChessBishop />
-        </Icon>
+        <Icon as={GiChessPawn} />
+        <Icon as={GiChessRook} />
+        <Icon as={GiChessKnight} />
+        <Icon as={GiChessQueen} />
+        <Icon as={GiChessBishop} />
       </Flex>
     </Flex>
   )

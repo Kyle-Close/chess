@@ -1,23 +1,28 @@
+import { Game } from 'base/zod/GameSchema';
 import { useBoard } from '../hooks/useBoard';
 import { GameOverModal } from './GameOverModal';
 import { PromotionModal } from './PromotionModal';
 import { Square } from './Square';
 
-export function Board() {
-  const { handleSquareClicked, selected, gameData, isPromotionModalOpen, closePromotionModal, isGameOverModalOpen, closeGameOverModal
-  } = useBoard();
-  if (!gameData) return
+interface BoardProps {
+  game: Game
+}
 
-  const selectedPiece = selected.selectedList.length === 1 ? gameData.board.squares[selected.selectedList[0]].piece : null;
+export function Board({ game }: BoardProps) {
+  const { handleSquareClicked, selected, isPromotionModalOpen, closePromotionModal, isGameOverModalOpen, closeGameOverModal
+  } = useBoard(game);
+  if (!game) return
+
+  const selectedPiece = selected.selectedList.length === 1 ? game.board.squares[selected.selectedList[0]].piece : null;
   const selectedPieceMoves = selectedPiece ? selectedPiece.validMoves : null;
-  const isSelectingActivePiece = selectedPiece ? selectedPiece.color === gameData?.activeColor : false;
+  const isSelectingActivePiece = selectedPiece ? selectedPiece.color === game?.activeColor : false;
 
   return (
     <div className={getBoardClasses()}>
-      {isPromotionModalOpen && <PromotionModal clearSelected={selected.clear} isOpen={isPromotionModalOpen} onClose={closePromotionModal} gameId={gameData.id} start={selected.selectedList[0]} end={selected.selectedList[1]} />}
-      {isGameOverModalOpen && <GameOverModal isOpen={isGameOverModalOpen} onClose={closeGameOverModal} game={gameData} />}
+      {isPromotionModalOpen && <PromotionModal clearSelected={selected.clear} isOpen={isPromotionModalOpen} onClose={closePromotionModal} gameId={game.id} start={selected.selectedList[0]} end={selected.selectedList[1]} />}
+      {isGameOverModalOpen && <GameOverModal isOpen={isGameOverModalOpen} onClose={closeGameOverModal} game={game} />}
       <div className="grid grid-cols-8 grid-rows-8 grow">
-        {gameData.board.squares.map((square, key) => {
+        {game.board.squares.map((square, key) => {
           const isSelected = selected.selectedList[0] === key;
           const piece = square.piece ? square.piece : null;
 

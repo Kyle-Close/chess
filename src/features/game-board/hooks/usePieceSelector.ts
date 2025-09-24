@@ -34,11 +34,5 @@ export function usePieceSelector() {
     };
   }, []);
 
-
-  // Temp testing:
-  useEffect(() => {
-    console.log(selectedList)
-  }, [selectedList])
-
   return { selectedList, clear, append }
 }
