@@ -20,11 +20,12 @@ export const GameSchema = z.object({
   board: BoardSchema,
   whiteMaterialValue: z.number(),
   blackMaterialValue: z.number(),
-  moveHistory: z.array(z.string().nullable()),
+  moveHistory: z.array(z.string()),
   startTime: z.string(),
   endTime: z.string().nullable(),
   whiteRemainingTime: z.number(),
-  blackRemainingTime: z.number()
+  blackRemainingTime: z.number(),
+  lastMoveTimeStamp: z.string()
 })
 
 export type Game = z.infer<typeof GameSchema>

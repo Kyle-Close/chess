@@ -1,26 +1,16 @@
 import { Flex, Icon, Text } from "@chakra-ui/react";
 import { Clock } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface PlayerBoxProps {
   isTurn: boolean
   materialDiff: number,
-  startTime: number
+  time: number
 }
 
-export function PlayerBox({ isTurn, materialDiff, startTime }: PlayerBoxProps) {
-  const [st, setSt] = useState(startTime);
+export function PlayerBox({ isTurn, materialDiff, time }: PlayerBoxProps) {
   const border = isTurn ? '2px solid white' : '1px solid rgba(255, 255, 255, 0.3)'
   const materialDiffColor = materialDiff < 0 ? 'red' : 'green'
   const materialDiffSymbol = materialDiff < 0 ? '' : '+'
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (isTurn)
-        setSt(prev => Math.max(0, prev - 1));
-    }, 1000);
-    return () => clearInterval(id);
-  }, [isTurn]);
 
   return (
     <Flex flexDir='column' gap={4} alignItems='start' border={border} alignSelf='start' p='4' borderRadius='lg' minWidth='12rem'>
@@ -32,7 +22,7 @@ export function PlayerBox({ isTurn, materialDiff, startTime }: PlayerBoxProps) {
         <Icon>
           <Clock />
         </Icon>
-        <Text fontSize='2xl' fontWeight='bold'>{convertSecondsToMinuteDisplay(st)}</Text>
+        <Text fontSize='2xl' fontWeight='bold'>{convertSecondsToMinuteDisplay(time)}</Text>
       </Flex>
     </Flex>
   )
