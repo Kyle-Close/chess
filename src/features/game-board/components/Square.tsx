@@ -30,7 +30,7 @@ export function Square({
     handleSquareClicked
   );
 
-  const showIndexes = true;
+  const showIndexes = false;
 
   const rank = getSquareRank(index);
   const file = getSquareFile(index);

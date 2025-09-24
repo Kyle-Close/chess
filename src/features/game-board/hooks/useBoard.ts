@@ -3,7 +3,7 @@ import { usePieceSelector } from './usePieceSelector';
 import { Game, GameSchema } from '../../../zod/GameSchema';
 import { PieceType } from '../../../zod/emums/PieceType';
 import { sendPost } from '../../api-utils/sendPost';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { GameStatus } from 'base/zod/emums/GameStatus';
 
 export interface ExecuteMovePayload {
@@ -27,6 +27,11 @@ export function useBoard() {
   const selected = usePieceSelector();
   const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
   const [isGameOverModalOpen, setIsGameOverModalOpen] = useState(false);
+
+  const playSound = useCallback(() => {
+    const audio = new Audio("standard-move.wav");
+    audio.play();
+  }, []);
 
   const openPromotionModal = () => {
     setIsPromotionModalOpen(true);
@@ -64,6 +69,7 @@ export function useBoard() {
         openGameOverModal();
       }
       queryClient.setQueryData(["game"], gameData)
+      playSound()
     }
   })
 

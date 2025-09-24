@@ -19,7 +19,7 @@ export function Landing() {
           <Text textAlign='center' opacity='50%' maxW='1/2' fontSize='xl'>Master the royal game. Play locally with friends, challenge players worldwide, or test your skills against advanced AI.</Text>
         </Flex>
 
-        <Flex m='0 20%' gap={2} justifyContent='space-between'>
+        <Flex m='0 20%' gap={2}>
           <GameModeCard
             icon={CircleUser}
             title="Local Play"
