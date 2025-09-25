@@ -1,97 +1,75 @@
-
+import { memo, useEffect, useRef, useState } from "react";
 import { Flex, IconButton } from "@chakra-ui/react";
-import { Board } from "base/features/game-board/components/Board";
+import { Board as BoardBase } from "base/features/game-board/components/Board";
 import { CapturedBox } from "base/features/game-page/components/CapturedBox";
 import { MoveHistoryBox } from "base/features/game-page/components/MoveHistoryBox";
 import { PlayerBox } from "base/features/game-page/components/PlayerBox";
 import { Flag, HandshakeIcon } from "lucide-react";
 import { useGetActiveGame } from "base/features/api-utils/hooks/useGetActiveGame";
 import { Color } from "base/zod/emums/Color";
-import { useEffect, useRef, useState } from "react";
+
+const Board = memo(BoardBase, (prev, next) => prev.game === next.game); // prevent timer ticks from re-rendering the board
 
 export function Play() {
   const game = useGetActiveGame();
+  if (!game.data) return null;
 
-  const [whiteTime, setWhiteTime] = useState(0);
-  const [blackTime, setBlackTime] = useState(0);
-
-  // anchor that survives interval closures
+  // anchor with bases computed from server snapshot + lastMoveTimeStamp
   const anchor = useRef<{
-    syncedAt: number;           // when we set these bases on the client
+    syncedAt: number;
     activeColorAtSync: Color;
-    whiteBaseSec: number;       // remaining sec at syncedAt
+    whiteBaseSec: number;
     blackBaseSec: number;
   } | null>(null);
 
-  // Parse .NET ISO with 7 fractional digits reliably
   const parseIsoMs = (s: string) => new Date(s.replace(/\.\d+/, "")).getTime();
 
-  // Whenever server data changes (new move, new game, or focus refetch),
-  // recompute the base remaining times from lastMoveTimeStamp.
+  // recompute bases whenever server data changes (new move/new game/refetch)
   useEffect(() => {
-    if (!game.data) return;
-
-    const {
-      whiteRemainingTime, // seconds (snapshot at server send)
-      blackRemainingTime,
-      activeColor,
-      lastMoveTimeStamp,
-    } = game.data;
-
-    const serverLastMoveMs = parseIsoMs(lastMoveTimeStamp); // when current turn started
+    const g = game.data!;
+    const lastMoveMs = parseIsoMs(g.lastMoveTimeStamp);
     const nowMs = Date.now();
-    const elapsedSinceLastMoveSec = Math.max(
-      0,
-      Math.floor((nowMs - serverLastMoveMs) / 1000)
-    );
+    const elapsed = Math.max(0, Math.floor((nowMs - lastMoveMs) / 1000));
 
-    // Adjust the side to move by elapsed since the last move
-    let whiteBaseSec = whiteRemainingTime;
-    let blackBaseSec = blackRemainingTime;
-    if (activeColor === Color.WHITE) {
-      whiteBaseSec = Math.max(0, whiteRemainingTime - elapsedSinceLastMoveSec);
-    } else {
-      blackBaseSec = Math.max(0, blackRemainingTime - elapsedSinceLastMoveSec);
-    }
+    let whiteBase = g.whiteRemainingTime;
+    let blackBase = g.blackRemainingTime;
+    if (g.activeColor === Color.WHITE) whiteBase = Math.max(0, whiteBase - elapsed);
+    else blackBase = Math.max(0, blackBase - elapsed);
 
     anchor.current = {
       syncedAt: nowMs,
-      activeColorAtSync: activeColor,
-      whiteBaseSec,
-      blackBaseSec,
+      activeColorAtSync: g.activeColor,
+      whiteBaseSec: whiteBase,
+      blackBaseSec: blackBase,
     };
-
-    // set immediate UI
-    setWhiteTime(whiteBaseSec);
-    setBlackTime(blackBaseSec);
   }, [
-    game.data?.id,                 // new game
-    game.data?.activeColor,        // turn changed
-    game.data?.lastMoveTimeStamp,  // new move
+    game.data?.id,
+    game.data?.activeColor,
+    game.data?.lastMoveTimeStamp,
     game.data?.whiteRemainingTime,
     game.data?.blackRemainingTime,
   ]);
 
-  // Local ticker derived from the anchor (no reliance on server snapshots)
+  // a single lightweight ticker; only this state updates every frame
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const id = setInterval(() => {
-      const a = anchor.current;
-      if (!a) return;
-
-      const elapsedSinceSyncSec = Math.floor((Date.now() - a.syncedAt) / 1000);
-
-      if (a.activeColorAtSync === Color.WHITE) {
-        setWhiteTime(Math.max(0, a.whiteBaseSec - elapsedSinceSyncSec));
-        setBlackTime(a.blackBaseSec); // frozen
-      } else {
-        setBlackTime(Math.max(0, a.blackBaseSec - elapsedSinceSyncSec));
-        setWhiteTime(a.whiteBaseSec); // frozen
-      }
-    }, 250);
+    const id = setInterval(() => setNow(Date.now()), 250);
     return () => clearInterval(id);
   }, []);
 
-  if (!game.data) return null;
+  // derive remaining times from anchor + now (no extra state updates)
+  let whiteTime = 0, blackTime = 0;
+  const a = anchor.current;
+  if (a) {
+    const elapsed = Math.floor((now - a.syncedAt) / 1000);
+    if (a.activeColorAtSync === Color.WHITE) {
+      whiteTime = Math.max(0, a.whiteBaseSec - elapsed);
+      blackTime = a.blackBaseSec;
+    } else {
+      blackTime = Math.max(0, a.blackBaseSec - elapsed);
+      whiteTime = a.whiteBaseSec;
+    }
+  }
 
   const matValues = calculatePlayerMaterialValues(
     game.data.whiteMaterialValue,
@@ -107,16 +85,18 @@ export function Play() {
             materialDiff={matValues.blackMaterialValue}
             time={blackTime}
           />
-          <CapturedBox isWhite={false} />
+          <CapturedBox isWhite={false} capturedPieces={game.data.blackCapturedPieces} />
         </Flex>
-        <Board game={game.data} />
+
+        <Board game={game.data} /> {/* memoized; won’t re-render on every tick */}
+
         <Flex flexDir="column" gap={4}>
           <PlayerBox
             isTurn={game.data.activeColor === Color.WHITE}
             materialDiff={matValues.whiteMaterialValue}
             time={whiteTime}
           />
-          <CapturedBox isWhite={true} />
+          <CapturedBox isWhite={true} capturedPieces={game.data.whiteCapturedPieces} />
           <MoveHistoryBox moveHistory={game.data.moveHistory} />
           <IconButton mt="auto" border="1px solid rgba(255, 255, 255, 0.3)">
             <HandshakeIcon />
@@ -134,9 +114,7 @@ export function Play() {
 
 function calculatePlayerMaterialValues(wMatVal: number, bMatVal: number) {
   const abs = Math.abs(wMatVal - bMatVal);
-  if (wMatVal > bMatVal) {
-    return { whiteMaterialValue: abs, blackMaterialValue: abs * -1 };
-  }
-  return { whiteMaterialValue: abs * -1, blackMaterialValue: abs };
+  if (wMatVal > bMatVal) return { whiteMaterialValue: abs, blackMaterialValue: -abs };
+  return { whiteMaterialValue: -abs, blackMaterialValue: abs };
 }
 

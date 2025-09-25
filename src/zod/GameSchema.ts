@@ -4,6 +4,7 @@ import { CastleRightsSchema } from "./CastleRights";
 import { BoardSchema } from "./BoardSchema";
 import { GameStatusSchema } from "./GameStatusSchema";
 import { GameTypeSchema } from "./GameTypeSchema";
+import { PieceTypeSchema } from "./PieceTypeSchema";
 
 export const GameSchema = z.object({
   id: z.string(),
@@ -25,7 +26,9 @@ export const GameSchema = z.object({
   endTime: z.string().nullable(),
   whiteRemainingTime: z.number(),
   blackRemainingTime: z.number(),
-  lastMoveTimeStamp: z.string()
+  lastMoveTimeStamp: z.string(),
+  whiteCapturedPieces: z.array(PieceTypeSchema),
+  blackCapturedPieces: z.array(PieceTypeSchema)
 })
 
 export type Game = z.infer<typeof GameSchema>
