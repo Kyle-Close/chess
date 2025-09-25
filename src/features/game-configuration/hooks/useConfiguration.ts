@@ -2,6 +2,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { usePlayers } from "./usePlayers";
 import { TimeControlType } from "base/zod/emums/TimeControl";
 import { useStartNewGame } from "base/features/api-utils/hooks/useStartNewGame";
+import { Color } from "base/zod/emums/Color";
 
 export type LocalConfigurationFormInputs = {
   player1Name: string,
@@ -20,6 +21,21 @@ export function useConfiguration() {
 
   const handleSubmit = (data: LocalConfigurationFormInputs) => {
     newGameMutation.mutate({ timeControlType: getTimeControlType(data.timeControlType), fen: data.fen });
+    if (data.player1Color === 'white') {
+      localStorage.setItem('whiteName', data.player1Name)
+      localStorage.setItem('blackName', data.player2Name)
+    } else if (data.player1Color === 'black') {
+      localStorage.setItem('whiteName', data.player2Name)
+      localStorage.setItem('blackName', data.player1Name)
+    } else {
+      if (Math.round(Math.random()) === 0) {
+        localStorage.setItem('whiteName', data.player1Name)
+        localStorage.setItem('blackName', data.player2Name)
+      } else {
+        localStorage.setItem('whiteName', data.player2Name)
+        localStorage.setItem('blackName', data.player1Name)
+      }
+    }
   }
 
   return {

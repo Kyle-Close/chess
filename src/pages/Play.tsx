@@ -14,6 +14,9 @@ export function Play() {
   const game = useGetActiveGame();
   if (!game.data) return null;
 
+  const whiteName = localStorage.getItem('whiteName')
+  const blackName = localStorage.getItem('blackName')
+
   // anchor with bases computed from server snapshot + lastMoveTimeStamp
   const anchor = useRef<{
     syncedAt: number;
@@ -84,6 +87,7 @@ export function Play() {
             isTurn={game.data.activeColor === Color.BLACK}
             materialDiff={matValues.blackMaterialValue}
             time={blackTime}
+            name={blackName ?? ""}
           />
           <CapturedBox isWhite={false} capturedPieces={game.data.blackCapturedPieces} />
         </Flex>
@@ -95,6 +99,7 @@ export function Play() {
             isTurn={game.data.activeColor === Color.WHITE}
             materialDiff={matValues.whiteMaterialValue}
             time={whiteTime}
+            name={whiteName ?? ""}
           />
           <CapturedBox isWhite={true} capturedPieces={game.data.whiteCapturedPieces} />
           <MoveHistoryBox moveHistory={game.data.moveHistory} />
