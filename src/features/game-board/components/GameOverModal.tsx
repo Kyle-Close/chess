@@ -4,6 +4,7 @@ import { Clock, Crown, Handshake, Target, Trophy, Zap } from 'lucide-react'
 import { Game } from "base/zod/GameSchema";
 import { GameStatus } from "base/zod/emums/GameStatus";
 import { GameType } from "base/zod/emums/GameType";
+import { useNavigate } from "react-router-dom";
 
 interface GameOverModalProps {
   isOpen: boolean,
@@ -12,6 +13,7 @@ interface GameOverModalProps {
 }
 
 export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
+  const navigate = useNavigate()
   function GetGameOverReason(status: GameStatus) {
     switch (status) {
       case GameStatus.CHECKMATE:
@@ -26,6 +28,10 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
         return 'Fifty move rule'
       case GameStatus.DRAW_THREE_FOLD_REPETITION:
         return 'Three-fold repetition'
+      case GameStatus.RESIGNATION:
+        return 'Resignation'
+      case GameStatus.TIMEOUT:
+        return 'Time'
     }
   }
 
@@ -120,7 +126,7 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
   }
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose}>
+    <BaseModal isOpen={isOpen} onClose={onClose} allowClose={true}>
       <Flex gap={2} p={8} flexDir='column' alignItems='center' pr={16} pl={16}>
         <Icon flexGrow={1}>
           {getIcon()}
@@ -155,7 +161,7 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
         <Separator w='100%' h='1px' bg='gray.500' />
         <Flex justifyContent='center' w='100%' mt={4} gap={2}>
           <Button disabled flexGrow={1} border='solid 1px gray' p={4} fontWeight='semibold'>Analyze Game</Button>
-          <Button flexGrow={1} bg='gray.100' p={4} color='black' fontWeight='bold'>New Game</Button>
+          <Button flexGrow={1} bg='gray.100' p={4} color='black' fontWeight='bold' onClick={() => navigate('/')}>New Game</Button>
         </Flex>
       </Flex>
     </BaseModal>

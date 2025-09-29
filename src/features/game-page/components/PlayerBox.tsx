@@ -13,7 +13,6 @@ export function PlayerBox({ isTurn, materialDiff, time, name }: PlayerBoxProps) 
   const materialDiffColor = materialDiff < 0 ? 'red' : 'green'
   const materialDiffSymbol = materialDiff < 0 ? '' : '+'
 
-
   return (
     <Flex flexDir='column' gap={4} alignItems='start' border={border} alignSelf='start' p='4' borderRadius='lg' minWidth='12rem'>
       <Flex width='100%' justifyContent='space-between'>

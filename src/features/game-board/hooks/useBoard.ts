@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { usePieceSelector } from './usePieceSelector';
 import { Game } from '../../../zod/GameSchema';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GameStatus } from 'base/zod/emums/GameStatus';
 import { useExecuteMove } from 'base/features/api-utils/hooks/useExecuteMove';
 
@@ -36,8 +36,20 @@ export function useBoard(game: Game) {
     setIsGameOverModalOpen(false);
   }
 
+  useEffect(() => {
+    console.log('game status updated')
+    if (game.status !== GameStatus.ONGOING && game.status !== GameStatus.IN_CHECK) {
+      setIsGameOverModalOpen(true)
+    }
+  }, [game.status])
+
+  const isGamePlaying = () => {
+    if (game.status === GameStatus.ONGOING || game.status === GameStatus.IN_CHECK) return true;
+    return false
+  }
+
   const handleSquareClicked = (index: number) => {
-    if (!game) return;
+    if (!isGamePlaying()) return;
     const piece = game.board.squares[index].piece;
 
     if (selected.selectedList.length === 0 && piece && (piece.color === game.activeColor)) {
