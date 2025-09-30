@@ -65,6 +65,7 @@ export function useBoard(game: Game) {
 
     // Second click: attempt a move
     if (selected.selectedList.length === 1) {
+      selected.selectedList.push(index)
       const start = selected.selectedList[0];
       const end = index;
 
