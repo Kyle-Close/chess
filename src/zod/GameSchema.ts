@@ -27,6 +27,7 @@ export const GameSchema = z.object({
   whiteRemainingTime: z.number(),
   blackRemainingTime: z.number(),
   lastMoveTimeStamp: z.string(),
+  lastSyncedClockTimeStamp: z.string(),
   whiteCapturedPieces: z.array(PieceTypeSchema),
   blackCapturedPieces: z.array(PieceTypeSchema)
 })
