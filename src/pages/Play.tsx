@@ -1,5 +1,5 @@
-import { memo, useEffect, useRef, useState } from "react";
-import { Flex, IconButton } from "@chakra-ui/react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { Flex, Spinner, IconButton } from "@chakra-ui/react";
 import { Board as BoardBase } from "base/features/game-board/components/Board";
 import { CapturedBox } from "base/features/game-page/components/CapturedBox";
 import { MoveHistoryBox } from "base/features/game-page/components/MoveHistoryBox";
@@ -11,49 +11,69 @@ import { DrawModal } from "base/features/game-page/components/DrawModal";
 import { GameStatus } from "base/zod/emums/GameStatus";
 import { ResignModal } from "base/features/game-page/components/ResignModal";
 
-const Board = memo(BoardBase, (prev, next) => prev.game === next.game); // prevent timer ticks from re-rendering the board
+const Board = memo(BoardBase, (prev, next) => prev.game === next.game);
+
+type Anchor = {
+  syncedAt: number;            // when we last synced from server
+  activeColorAtSync: Color;    // whose clock was running at sync
+  whiteBaseSec: number;        // remaining sec at sync
+  blackBaseSec: number;
+};
 
 export function Play() {
   const game = useGetActiveGame();
 
-  const [isDrawModalOpen, setIsDrawModalOpen] = useState(false)
-  const [isResignModalOpen, setIsResignModalOpen] = useState(false)
+  // UI state (always call hooks, never behind conditionals)
+  const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
+  const [isResignModalOpen, setIsResignModalOpen] = useState(false);
 
-  if (!game.data) return null;
+  // Names (read once)
+  const whiteName = useMemo(() => localStorage.getItem("whiteName") ?? "", []);
+  const blackName = useMemo(() => localStorage.getItem("blackName") ?? "", []);
 
-  const whiteName = localStorage.getItem('whiteName')
-  const blackName = localStorage.getItem('blackName')
-
-  // anchor with bases computed from server snapshot + lastMoveTimeStamp
-  const anchor = useRef<{
-    syncedAt: number;
-    activeColorAtSync: Color;
-    whiteBaseSec: number;
-    blackBaseSec: number;
-  } | null>(null);
+  // Anchor for time derivation
+  const anchor = useRef<Anchor | null>(null);
 
   const parseIsoMs = (s: string) => new Date(s.replace(/\.\d+/, "")).getTime();
 
-  const handleResignClick = () => {
-    if (!isResignModalOpen) setIsResignModalOpen(true)
-  }
-
-  const handleOfferDrawClick = () => {
-    if (!isDrawModalOpen) setIsDrawModalOpen(true)
-  }
-
-  // recompute bases whenever server data changes (new move/new game/refetch)
+  // Ticker: single state that updates on an interval
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    if (!isGamePlaying()) return;
+    const id = setInterval(() => setNow(Date.now()), 250);
+    return () => clearInterval(id);
+  }, []);
+
+  const hasData = !!game.data;
+
+  // Recompute bases whenever the server snapshot changes
+  useEffect(() => {
+    if (!hasData) return;
+
     const g = game.data!;
+    const isPlaying =
+      g.status === GameStatus.ONGOING || g.status === GameStatus.IN_CHECK;
+    if (!isPlaying) {
+      // stop clocks: anchor still useful, but we can just freeze bases as-is
+      anchor.current = {
+        syncedAt: Date.now(),
+        activeColorAtSync: g.activeColor,
+        whiteBaseSec: g.whiteRemainingTime,
+        blackBaseSec: g.blackRemainingTime,
+      };
+      return;
+    }
+
     const lastMoveMs = parseIsoMs(g.lastMoveTimeStamp);
     const nowMs = Date.now();
     const elapsed = Math.max(0, Math.floor((nowMs - lastMoveMs) / 1000));
 
     let whiteBase = g.whiteRemainingTime;
     let blackBase = g.blackRemainingTime;
-    if (g.activeColor === Color.WHITE) whiteBase = Math.max(0, whiteBase - elapsed);
-    else blackBase = Math.max(0, blackBase - elapsed);
+    if (g.activeColor === Color.WHITE) {
+      whiteBase = Math.max(0, whiteBase - elapsed);
+    } else {
+      blackBase = Math.max(0, blackBase - elapsed);
+    }
 
     anchor.current = {
       syncedAt: nowMs,
@@ -62,25 +82,21 @@ export function Play() {
       blackBaseSec: blackBase,
     };
   }, [
+    hasData,
     game.data?.id,
+    game.data?.status,
     game.data?.activeColor,
     game.data?.lastMoveTimeStamp,
     game.data?.whiteRemainingTime,
     game.data?.blackRemainingTime,
   ]);
 
-  // a single lightweight ticker; only this state updates every frame
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 250);
-    return () => clearInterval(id);
-  }, []);
-
-  // derive remaining times from anchor + now (no extra state updates)
-  let whiteTime = 0, blackTime = 0;
+  // Derive remaining times from anchor + now
+  let whiteTime = 0;
+  let blackTime = 0;
   const a = anchor.current;
   if (a) {
-    const elapsed = Math.floor((now - a.syncedAt) / 1000);
+    const elapsed = Math.max(0, Math.floor((now - a.syncedAt) / 1000));
     if (a.activeColorAtSync === Color.WHITE) {
       whiteTime = Math.max(0, a.whiteBaseSec - elapsed);
       blackTime = a.blackBaseSec;
@@ -90,48 +106,65 @@ export function Play() {
     }
   }
 
-  const matValues = calculatePlayerMaterialValues(
-    game.data.whiteMaterialValue,
-    game.data.blackMaterialValue
-  );
+  const matValues = hasData
+    ? calculatePlayerMaterialValues(
+      game.data!.whiteMaterialValue,
+      game.data!.blackMaterialValue
+    )
+    : { whiteMaterialValue: 0, blackMaterialValue: 0 };
 
-  const isGamePlaying = () => {
-    if (game.data.status === GameStatus.ONGOING || game.data.status === GameStatus.IN_CHECK) return true;
-    return false
+  const handleOfferDrawClick = () => setIsDrawModalOpen(true);
+  const handleResignClick = () => setIsResignModalOpen(true);
+
+  if (!hasData) {
+    return (
+      <Flex h="100%" align="center" justify="center" p={8}>
+        <Spinner mr={3} /> Loading game…
+      </Flex>
+    );
   }
+
+  const g = game.data!;
+  const isBlackTurn = g.activeColor === Color.BLACK;
+  const isWhiteTurn = g.activeColor === Color.WHITE;
 
   return (
     <Flex justifyContent="center" alignItems="center">
       <Flex gap={8}>
         <Flex flexDir="column" gap={4}>
           <PlayerBox
-            isTurn={game.data.activeColor === Color.BLACK}
+            isTurn={isBlackTurn}
             materialDiff={matValues.blackMaterialValue}
             time={blackTime}
-            name={blackName ?? ""}
+            name={blackName}
           />
-          <CapturedBox isWhite={false} capturedPieces={game.data.blackCapturedPieces} />
+          <CapturedBox isWhite={false} capturedPieces={g.blackCapturedPieces} />
         </Flex>
 
-        <Board game={game.data} /> {/* memoized; won’t re-render on every tick */}
+        <Board game={g} />
 
         <Flex flexDir="column" gap={4}>
           <PlayerBox
-            isTurn={game.data.activeColor === Color.WHITE}
+            isTurn={isWhiteTurn}
             materialDiff={matValues.whiteMaterialValue}
             time={whiteTime}
-            name={whiteName ?? ""}
+            name={whiteName}
           />
-          <CapturedBox isWhite={true} capturedPieces={game.data.whiteCapturedPieces} />
-          <MoveHistoryBox moveHistory={game.data.moveHistory} />
+          <CapturedBox isWhite={true} capturedPieces={g.whiteCapturedPieces} />
+          <MoveHistoryBox moveHistory={g.moveHistory} />
 
-          {isDrawModalOpen && <DrawModal gameId={game.data.id} close={() => setIsDrawModalOpen(false)} />}
-          <IconButton onClick={handleOfferDrawClick} mt="auto" border="1px solid rgba(255, 255, 255, 0.3)">
-            <HandshakeIcon />
-            Offer Draw
-          </IconButton>
+          {isDrawModalOpen && (
+            <DrawModal gameId={g.id} close={() => setIsDrawModalOpen(false)} />
+          )}
+          <IconButton onClick={handleOfferDrawClick} mt="auto" border="1px solid rgba(255, 255, 255, 0.3)"> <HandshakeIcon /> Offer Draw </IconButton>
 
-          {isResignModalOpen && <ResignModal gameId={game.data.id} resigningColor={game.data.activeColor} close={() => setIsResignModalOpen(false)} />}
+          {isResignModalOpen && (
+            <ResignModal
+              gameId={g.id}
+              resigningColor={g.activeColor}
+              close={() => setIsResignModalOpen(false)}
+            />
+          )}
           <IconButton onClick={handleResignClick} bgColor="red.700">
             <Flag />
             Resign

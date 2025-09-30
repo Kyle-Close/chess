@@ -68,6 +68,7 @@ export function useBoard(game: Game) {
           }
           queryClient.setQueryData(["game"], game)
           playSound()
+          console.log('sound played')
         }
         selected.clear();
       }
