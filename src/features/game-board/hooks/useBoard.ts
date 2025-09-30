@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { GameStatus } from 'base/zod/emums/GameStatus';
 import { useExecuteMove } from 'base/features/api-utils/hooks/useExecuteMove';
 
+import moveSfx from "../../../assets/audio/standard-move.wav";
+import captureSfx from "../../../assets/audio/capture.mp3";
 
 export function useBoard(game: Game) {
   const queryClient = useQueryClient();
@@ -15,8 +17,10 @@ export function useBoard(game: Game) {
   const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
   const [isGameOverModalOpen, setIsGameOverModalOpen] = useState(false);
 
-  const playSound = useCallback(() => {
-    const audio = new Audio("standard-move.wav");
+  const playSound = useCallback((isCapture = false) => {
+    let audio = new Audio(moveSfx)
+    if (isCapture)
+      audio = new Audio(captureSfx);
     audio.play();
   }, []);
 
@@ -37,7 +41,6 @@ export function useBoard(game: Game) {
   }
 
   useEffect(() => {
-    console.log('game status updated')
     if (game.status !== GameStatus.ONGOING && game.status !== GameStatus.IN_CHECK) {
       setIsGameOverModalOpen(true)
     }
@@ -48,32 +51,60 @@ export function useBoard(game: Game) {
     return false
   }
 
-  const handleSquareClicked = (index: number) => {
+
+  const handleSquareClicked = async (index: number) => {
     if (!isGamePlaying()) return;
-    const piece = game.board.squares[index].piece;
 
-    if (selected.selectedList.length === 0 && piece && (piece.color === game.activeColor)) {
-      // No piece selected yet but now selecting a piece with the correct color
-      selected.append(index);
-    } else if (selected.selectedList.length === 1) { // Piece selected, attempting to execute move
-      selected.append(index);
-      if (game.board.squares[selected.selectedList[0]].piece?.validMoves.find(move => move.startIndex == selected.selectedList[0] && move.endIndex == index && move.isPromotion)) {
-        openPromotionModal(); // Popup modal here and wait for user to select promotion piece
-      } else {
-        executeMoveMutation.mutate({ start: selected.selectedList[0], end: index, gameId: game.id })
+    const targetPiece = game.board.squares[index].piece;
 
-        if (executeMoveMutation.isSuccess) {
-          if (game.status != GameStatus.ONGOING && game.status != GameStatus.IN_CHECK) {
-            openGameOverModal();
-          }
-          queryClient.setQueryData(["game"], game)
-          playSound()
-          console.log('sound played')
+    // First click: select a piece of the active color
+    if (selected.selectedList.length === 0 && targetPiece && targetPiece.color === game.activeColor) {
+      selected.append(index);
+      return;
+    }
+
+    // Second click: attempt a move
+    if (selected.selectedList.length === 1) {
+      const start = selected.selectedList[0];
+      const end = index;
+
+      const movingPiece = game.board.squares[start].piece;
+      const planned = movingPiece?.validMoves.find(m => m.startIndex === start && m.endIndex === end);
+
+      // Promotion path -> open modal and bail
+      if (planned?.isPromotion) {
+        openPromotionModal();
+        return;
+      }
+
+      // Decide capture BEFORE the request (fallback to piece on target)
+      const wasCapture = (planned as any)?.isCapture ?? Boolean(game.board.squares[end].piece);
+
+      try {
+        const updatedGame = await executeMoveMutation.mutateAsync({ start, end, gameId: game.id });
+
+        // Play correct sound after a real success
+        playSound(wasCapture);
+
+        // Write fresh server snapshot to cache
+        queryClient.setQueryData(["game"], updatedGame);
+
+        // Game over?
+        if (
+          updatedGame.status !== GameStatus.ONGOING &&
+          updatedGame.status !== GameStatus.IN_CHECK
+        ) {
+          openGameOverModal();
         }
+      } catch (err) {
+        console.error("executeMove failed", err);
+      } finally {
+        // Always clear the selection
         selected.clear();
       }
     }
-  }
+  };
+
 
   const handleRightClickOnBoard = () => {
     selected.clear();
