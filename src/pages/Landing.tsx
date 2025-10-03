@@ -27,13 +27,13 @@ export function Landing() {
             extraDescription="Perfect for face-to-face games. Take turns on the same board and enjoy the classic chess experience."
             buttonText="Start Local Game"
             disableBtn={false}
-            handleClick={() => navigate('/configure')}
+            handleClick={() => navigate('/configure/local')}
           />
           <GameModeCard
             icon={Users}
             title="Online Play"
             description="Challenge players from around the world"
-            extraDescription="Join the global chess community. Find opponents, track your rating, and climb the leaderboards."
+            extraDescription="Join the global chess community. Find opponents, track your rating, and climb the leaderboards. *Coming soon*"
             buttonText="Play Online"
             disableBtn={true}
             handleClick={() => navigate('/chess-api')}

@@ -3,7 +3,8 @@ import App from '../components/AppWrapper.tsx';
 import { ChessApi } from "base/pages/ChessApi.tsx";
 import { Play } from "base/pages/Play.tsx";
 import { Landing } from "base/pages/Landing.tsx";
-import { Configuration } from "base/pages/Configuration.tsx";
+import { LocalConfiguration } from "base/pages/LocalConfiguration.tsx";
+import { StockfishConfiguration } from "base/pages/StockfishConfiguration.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -14,12 +15,20 @@ export const router = createBrowserRouter([
       </App>),
   },
   {
-    path: '/configure',
+    path: '/configure/local',
     element: (
       <App>
-        <Configuration />
+        <LocalConfiguration />
       </App>),
   },
+  {
+    path: '/configure/stockfish',
+    element: (
+      <App>
+        <StockfishConfiguration />
+      </App>),
+  },
+
   {
     path: '/chess-api',
     element: (

@@ -1,7 +1,7 @@
 import { Flex, RadioCard, HStack } from "@chakra-ui/react";
 import { FormBox } from "./formBox";
 import { UseFormReturn } from "react-hook-form";
-import { LocalConfigurationFormInputs } from "../hooks/useConfiguration";
+import { LocalConfigurationFormInputs } from "../hooks/useLocalConfiguration";
 import { TimeControlType } from "base/zod/emums/TimeControl";
 
 interface TimeControlProps {
@@ -38,22 +38,22 @@ export function TimeControl({ localConfigurationForm }: TimeControlProps) {
 const items = [
   {
     value: TimeControlType.CLASSICAL,
-    title: "60+30",
+    title: "60m",
     description: "Classical"
   },
   {
     value: TimeControlType.RAPID,
-    title: "10+10",
+    title: "10m",
     description: "Rapid"
   },
   {
     value: TimeControlType.BLITZ,
-    title: "3+2",
+    title: "3m",
     description: "Blitz"
   },
   {
     value: TimeControlType.BULLET,
-    title: "1+1",
+    title: "1m",
     description: "Bullet"
   },
 ]

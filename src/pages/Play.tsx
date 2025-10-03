@@ -221,12 +221,14 @@ export function Play() {
       <Flex gap={8}>
         {/* Black side */}
         <Flex flexDir="column" gap={4}>
-          <PlayerBox
+
+          {g.stockfishInfo === null && <PlayerBox
             isTurn={isBlackTurn}
             materialDiff={matValues.blackMaterialValue}
             time={blackTimeSec}
             name={blackName}
-          />
+          />}
+
           <CapturedBox isWhite={false} capturedPieces={g.blackCapturedPieces} />
         </Flex>
 
@@ -234,25 +236,27 @@ export function Play() {
 
         {/* White side */}
         <Flex flexDir="column" gap={4}>
-          <PlayerBox
+          {g.stockfishInfo === null && <PlayerBox
             isTurn={isWhiteTurn}
             materialDiff={matValues.whiteMaterialValue}
             time={whiteTimeSec}
             name={whiteName}
-          />
+          />}
+
           <CapturedBox isWhite={true} capturedPieces={g.whiteCapturedPieces} />
           <MoveHistoryBox moveHistory={g.moveHistory} />
 
           {isDrawModalOpen && (
             <DrawModal gameId={g.id} close={() => setIsDrawModalOpen(false)} />
           )}
-          <IconButton
+          {g.stockfishInfo === null && <IconButton
             onClick={handleOfferDrawClick}
             mt="auto"
             border="1px solid rgba(255, 255, 255, 0.3)"
           >
             <HandshakeIcon /> Offer Draw
           </IconButton>
+          }
 
           {isResignModalOpen && (
             <ResignModal
@@ -261,7 +265,7 @@ export function Play() {
               close={() => setIsResignModalOpen(false)}
             />
           )}
-          <IconButton onClick={handleResignClick} bgColor="red.700">
+          <IconButton mt='auto' onClick={handleResignClick} bgColor="red.700">
             <Flag />
             Resign
           </IconButton>

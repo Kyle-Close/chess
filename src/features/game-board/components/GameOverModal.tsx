@@ -135,7 +135,7 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
         <Text>{getTextUnderHeading()}</Text>
         {getBadge()}
         <Separator w='100%' h='1px' bg='gray.500' mt={2} />
-        <Flex justifyContent='space-around' w='100%' m={2}>
+        <Flex gap={12} justifyContent='center' w='100%' m={2}>
           <Flex flexDir='column' alignItems='center'>
             <Icon>
               <Clock />
@@ -149,13 +149,6 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
             </Icon>
             <Text fontWeight='bold' mt={1}>{game.fullMoves}</Text>
             <Text>Moves</Text>
-          </Flex>
-          <Flex flexDir='column' alignItems='center' >
-            <Icon>
-              <Zap />
-            </Icon>
-            <Text fontWeight='bold' mt={1}>Coming*</Text>
-            <Text>Accuracy</Text>
           </Flex>
         </Flex>
         <Separator w='100%' h='1px' bg='gray.500' />

@@ -1,6 +1,6 @@
 import { Field, Flex, Input, Text } from "@chakra-ui/react";
 import { UseFormReturn } from "react-hook-form";
-import { LocalConfigurationFormInputs } from "../hooks/useConfiguration";
+import { LocalConfigurationFormInputs } from "../hooks/useLocalConfiguration";
 
 interface CustomProps {
   localConfigurationForm: UseFormReturn<LocalConfigurationFormInputs>

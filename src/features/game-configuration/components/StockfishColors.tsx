@@ -1,23 +1,24 @@
+
 import { Flex, RadioCard, HStack, Icon } from "@chakra-ui/react";
 import { FormBox } from "./formBox";
 import { PaintBucket, Shuffle } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { LocalConfigurationFormInputs } from "../hooks/useLocalConfiguration";
+import { StockfishConfigurationFormInputs } from "../hooks/useStockfishConfiguration";
 
-interface ColorsProps {
-  localConfigurationForm: UseFormReturn<LocalConfigurationFormInputs>,
+interface StockfishColorsProps {
+  stockfishConfigurationForm: UseFormReturn<StockfishConfigurationFormInputs>,
 }
 
-export function Colors({ localConfigurationForm }: ColorsProps) {
+export function StockfishColors({ stockfishConfigurationForm }: StockfishColorsProps) {
   return (
     <FormBox title="Colors">
       <Flex mt={2} gap={6}>
         <RadioCard.Root defaultValue="white">
-          <RadioCard.Label>Select Player 1's Color</RadioCard.Label>
+          <RadioCard.Label>Select the color you want to play as</RadioCard.Label>
           <HStack mt={4} gap={6} align="stretch">
             {items.map((item) => (
               <RadioCard.Item flex='1 1 0' minWidth={0} border='1px solid white' key={item.value} value={item.value} >
-                <RadioCard.ItemHiddenInput {...localConfigurationForm.register("player1Color")} />
+                <RadioCard.ItemHiddenInput {...stockfishConfigurationForm.register("playingAs")} />
                 <RadioCard.ItemControl>
                   <RadioCard.ItemContent>
                     <Icon size="xl" color="fg.muted" mb="2">
@@ -30,7 +31,8 @@ export function Colors({ localConfigurationForm }: ColorsProps) {
               </RadioCard.Item>
             ))}
           </HStack>
-        </RadioCard.Root>      </Flex>
+        </RadioCard.Root>
+      </Flex>
     </FormBox>
   )
 }

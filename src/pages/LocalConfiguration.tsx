@@ -3,13 +3,13 @@ import { Colors } from "base/features/game-configuration/components/Colors";
 import { Custom } from "base/features/game-configuration/components/Custom";
 import { Players } from "base/features/game-configuration/components/Players";
 import { TimeControl } from "base/features/game-configuration/components/TimeControl";
-import { useConfiguration } from "base/features/game-configuration/hooks/useConfiguration";
+import { useLocalConfiguration } from "base/features/game-configuration/hooks/useLocalConfiguration";
 import { Play, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export function Configuration() {
+export function LocalConfiguration() {
   const navigate = useNavigate();
-  const { localConfigurationFormInputs, getRandomName, onSubmit } = useConfiguration()
+  const { localConfigurationFormInputs, getRandomName, onSubmit } = useLocalConfiguration()
 
   return (
     <Flex flexDir='column' m={6}>

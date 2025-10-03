@@ -2,7 +2,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { usePlayers } from "./usePlayers";
 import { TimeControlType } from "base/zod/emums/TimeControl";
 import { useStartNewGame } from "base/features/api-utils/hooks/useStartNewGame";
-import { Color } from "base/zod/emums/Color";
 
 export type LocalConfigurationFormInputs = {
   player1Name: string,
@@ -13,7 +12,7 @@ export type LocalConfigurationFormInputs = {
 }
 
 
-export function useConfiguration() {
+export function useLocalConfiguration() {
   const newGameMutation = useStartNewGame();
   const localConfigurationFormInputs = useForm<LocalConfigurationFormInputs>();
   const { getRandomName } = usePlayers();

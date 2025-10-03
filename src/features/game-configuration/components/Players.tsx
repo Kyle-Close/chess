@@ -2,7 +2,7 @@ import { Field, Flex, Input, IconButton, Text } from "@chakra-ui/react";
 import { FormBox } from "./formBox";
 import { Shuffle } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import { LocalConfigurationFormInputs } from "../hooks/useConfiguration";
+import { LocalConfigurationFormInputs } from "../hooks/useLocalConfiguration";
 
 interface PlayersProps {
   localConfigurationForm: UseFormReturn<LocalConfigurationFormInputs>,

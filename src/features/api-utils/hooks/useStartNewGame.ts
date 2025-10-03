@@ -14,7 +14,10 @@ export function useStartNewGame() {
       localStorage.setItem('gameId', gameData.id);
       queryClient.setQueryData(["game", gameData.id], gameData)
       navigate(`/play/${gameData.id}`)
-    }
+    },
+    onError: (err) => {
+      console.error("startNewGame failed:", err);
+    },
   });
 
   return gameMutation;
@@ -22,14 +25,25 @@ export function useStartNewGame() {
 
 interface StartNewGameParams {
   timeControlType: TimeControlType,
-  fen?: string
+  fen?: string,
+  stockfishStrength?: number,
+  stockfishColor?: number
 }
 
-async function startNewGame({ timeControlType, fen }: StartNewGameParams): Promise<Game> {
-  const payload: any = { timeControlType };
+async function startNewGame({ timeControlType, fen, stockfishStrength, stockfishColor }: StartNewGameParams): Promise<Game> {
+  const payload: StartNewGameParams = { timeControlType };
 
   if (fen && fen.trim() !== "") {
     payload.fen = fen;
+  }
+
+  if (stockfishStrength !== null) {
+
+    payload.stockfishStrength = stockfishStrength;
+  }
+
+  if (stockfishColor !== null) {
+    payload.stockfishColor = stockfishColor;
   }
 
   const response = await fetch("http://localhost:5165/chess-api/start-game", {
