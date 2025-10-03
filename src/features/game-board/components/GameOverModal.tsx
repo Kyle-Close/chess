@@ -154,7 +154,7 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
             <Icon>
               <Zap />
             </Icon>
-            <Text fontWeight='bold' mt={1}>TODO</Text>
+            <Text fontWeight='bold' mt={1}>Coming*</Text>
             <Text>Accuracy</Text>
           </Flex>
         </Flex>

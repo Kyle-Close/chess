@@ -7,6 +7,7 @@ interface GameModeCardProps {
   description: string,
   extraDescription: string,
   buttonText: string,
+  disableBtn: boolean,
   handleClick: () => void;
 }
 
@@ -23,7 +24,7 @@ export function GameModeCard(props: GameModeCardProps) {
         <Card.Description mt={4} textAlign='center'>
           {props.extraDescription}
         </Card.Description>
-        <Button onClick={props.handleClick} mt={4} border='1px solid white' p={4}>{props.buttonText}</Button>
+        <Button disabled={props.disableBtn} onClick={props.handleClick} mt={4} border='1px solid white' p={4}>{props.buttonText}</Button>
       </Card.Body>
     </Card.Root>
 

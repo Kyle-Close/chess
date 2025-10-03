@@ -26,6 +26,7 @@ export function Landing() {
             description="Play with friends on the same device"
             extraDescription="Perfect for face-to-face games. Take turns on the same board and enjoy the classic chess experience."
             buttonText="Start Local Game"
+            disableBtn={false}
             handleClick={() => navigate('/configure')}
           />
           <GameModeCard
@@ -34,6 +35,7 @@ export function Landing() {
             description="Challenge players from around the world"
             extraDescription="Join the global chess community. Find opponents, track your rating, and climb the leaderboards."
             buttonText="Play Online"
+            disableBtn={true}
             handleClick={() => navigate('/chess-api')}
           />
           <GameModeCard
@@ -42,6 +44,7 @@ export function Landing() {
             description="Train against intelligent computer players"
             extraDescription="Practice your skills with adjustable difficulty levels. Learn from mistakes and improve your game."
             buttonText="Challenge AI"
+            disableBtn={true}
             handleClick={() => navigate('/chess-api')}
           />
         </Flex>
