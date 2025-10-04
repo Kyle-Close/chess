@@ -2,10 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Game, GameSchema } from "base/zod/GameSchema";
 import { TimeControlType } from "base/zod/emums/TimeControl";
 import { useNavigate } from "react-router-dom";
+import { useExecuteStockfishMove } from "./useExecuteStockfishMove";
 
 export function useStartNewGame() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const executeStockfishMoveMutation = useExecuteStockfishMove();
 
   const gameMutation = useMutation({
     mutationFn: startNewGame,
@@ -14,6 +16,8 @@ export function useStartNewGame() {
       localStorage.setItem('gameId', gameData.id);
       queryClient.setQueryData(["game", gameData.id], gameData)
       navigate(`/play/${gameData.id}`)
+      if (!gameData.stockfishInfo) return;
+      executeStockfishMoveMutation.mutate({ gameId: gameData.id, strength: gameData.stockfishInfo.strength })
     },
     onError: (err) => {
       console.error("startNewGame failed:", err);

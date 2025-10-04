@@ -1,6 +1,6 @@
 import { BaseModal } from "base/components/BaseModal";
 import { Flex, Heading, Icon, Text, Badge, Separator, Button } from "@chakra-ui/react";
-import { Clock, Crown, Handshake, Target, Trophy, Zap } from 'lucide-react'
+import { Clock, Crown, Handshake, Target, Trophy } from 'lucide-react'
 import { Game } from "base/zod/GameSchema";
 import { GameStatus } from "base/zod/emums/GameStatus";
 import { GameType } from "base/zod/emums/GameType";
@@ -47,8 +47,9 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
       return 'Victory!'
     }
 
-    // TODO: Implement correct heading. Need to check what color player is and compare to game.winner
-    return 'Defeat';
+    if (game.winner === game.stockfishInfo?.playingAs) {
+      return 'Defeat';
+    } else return 'Victory'
   }
 
   function getTextUnderHeading() {
@@ -63,8 +64,11 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
       return 'You defeated your opponent';
     }
 
-    // TODO: Implement correct text. Need to check what color player is and compare to game.winner
-    return 'Opponent defeated you';
+    if (game.winner === game.stockfishInfo?.playingAs) {
+      return 'Opponent defeated you';
+    }
+
+    return 'You defeated your opponent';
   }
 
   function getIcon() {
@@ -79,8 +83,11 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
       return <Trophy color="gold" size={48} />
     }
 
-    // TODO: Implement correct Icon. Need to check what color player is and compare to game.winner
-    return <Crown color="red" size={48} />;
+    if (game.winner === game.stockfishInfo?.playingAs) {
+      return <Crown color="red" size={48} />;
+    }
+
+    return <Trophy color="gold" size={48} />
   }
 
   function getBadge() {
@@ -97,7 +104,11 @@ export function GameOverModal({ isOpen, onClose, game }: GameOverModalProps) {
     }
 
     // TODO: Implement correct Icon. Need to check what color player is and compare to game.winner
-    return <Badge size='lg' colorPalette='red'>{GetGameOverReason(game.status)}</Badge>
+    if (game.winner === game.stockfishInfo?.playingAs) {
+      return <Badge size='lg' colorPalette='red'>{GetGameOverReason(game.status)}</Badge>
+    }
+
+    return <Badge size='lg' colorPalette='blue'>{GetGameOverReason(game.status)}</Badge>
   }
 
   function calculateGameTime() {

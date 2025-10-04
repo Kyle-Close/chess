@@ -44,8 +44,8 @@ export function Landing() {
             description="Train against intelligent computer players"
             extraDescription="Practice your skills with adjustable difficulty levels. Learn from mistakes and improve your game."
             buttonText="Challenge AI"
-            disableBtn={true}
-            handleClick={() => navigate('/chess-api')}
+            disableBtn={false}
+            handleClick={() => navigate('/configure/stockfish')}
           />
         </Flex>
       </Flex>

@@ -50,7 +50,7 @@ export function Play() {
 
   // ---------- Initialize/refresh local clocks from server snapshot ----------
   useEffect(() => {
-    if (!hasData) return;
+    if (!hasData || game.data.stockfishInfo !== null) return;
 
     const g = game.data!;
     runningColorRef.current = g.activeColor;
@@ -100,7 +100,7 @@ export function Play() {
 
   // ---------- Lightweight ticker: single interval, mounted once ----------
   useEffect(() => {
-    if (tickIntervalRef.current !== null) return; // already running
+    if (tickIntervalRef.current !== null || game.data?.stockfishInfo !== null) return; // already running
 
     tickIntervalRef.current = window.setInterval(() => {
       // Skip ticking if the tab is hidden to reduce work (we'll catch up next tick)
@@ -151,7 +151,7 @@ export function Play() {
 
   // ---------- When our rendered clock state changes, check for timeout & sync ----------
   useEffect(() => {
-    if (!hasData || !game.data) return;
+    if (!hasData || !game.data || game.data.stockfishInfo !== null) return;
 
     const g = game.data;
     const isPlaying =
