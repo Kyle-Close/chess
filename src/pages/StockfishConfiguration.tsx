@@ -12,7 +12,7 @@ export function StockfishConfiguration() {
   const { stockfishConfigurationFormInputs, onSubmit } = useStockfishConfiguration();
   const { handleSubmit, control, watch } = stockfishConfigurationFormInputs;
 
-  const strength = watch("strength", 10); // read current value for display
+  watch("strength", 10); // read current value for display
 
   return (
     <Flex flexDir="column" m={6}>

@@ -1,14 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import * as path from "path"; // ✅ Works in both CommonJS and ESM
+import * as path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  // this has to map 1:1 with ts-config aliases
+  base: '/chess/', // <- REQUIRED for GitHub Pages project sites
   resolve: {
     alias: {
-      "base": path.resolve(__dirname, './src')
+      base: path.resolve(__dirname, './src'),
     },
   },
   plugins: [react()],
 })
+
