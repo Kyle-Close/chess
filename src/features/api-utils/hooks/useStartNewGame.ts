@@ -3,6 +3,7 @@ import { Game, GameSchema } from "base/zod/GameSchema";
 import { TimeControlType } from "base/zod/emums/TimeControl";
 import { useNavigate } from "react-router-dom";
 import { useExecuteStockfishMove } from "./useExecuteStockfishMove";
+import { BASE_URL } from "../baseUrl";
 
 export function useStartNewGame() {
   const navigate = useNavigate()
@@ -50,7 +51,7 @@ async function startNewGame({ timeControlType, fen, stockfishStrength, stockfish
     payload.stockfishColor = stockfishColor;
   }
 
-  const response = await fetch("http://localhost:5165/chess-api/start-game", {
+  const response = await fetch(`${BASE_URL}/start-game`, {
     method: "POST",
     headers: { "Content-Type": "application/json" }, // ← always set
     body: JSON.stringify(payload),
