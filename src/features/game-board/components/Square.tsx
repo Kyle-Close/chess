@@ -13,6 +13,7 @@ interface SquareProps {
   isStartPos: boolean;
   isCaptureSquare: boolean,
   isValidSquare: boolean,
+  rotate: boolean
 }
 
 export function Square({
@@ -21,13 +22,15 @@ export function Square({
   handleSquareClicked,
   isStartPos,
   isCaptureSquare,
-  isValidSquare
+  isValidSquare,
+  rotate
 }: SquareProps) {
   const { handleClick, classes } = useSquare(
     index,
     currentPiece,
     isStartPos,
-    handleSquareClicked
+    handleSquareClicked,
+    rotate
   );
 
   const showIndexes = false;

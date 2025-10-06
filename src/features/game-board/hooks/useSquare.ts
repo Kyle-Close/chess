@@ -7,7 +7,8 @@ export function useSquare(
   index: number,
   currentPiece: Piece | null,
   isStartPos: boolean,
-  handleSquareClicked: (index: number) => void
+  handleSquareClicked: (index: number) => void,
+  rotate: boolean
 ) {
   const rankNumber = Number(getSquareRank(index));
   const remainderForBlueSquareFirst = rankNumber % 2 === 1 ? 0 : 1;
@@ -15,6 +16,7 @@ export function useSquare(
   if (isStartPos) bgColor = 'bg-green-600';
 
   const classes = ['flex', 'justify-center', 'items-center', 'relative', bgColor];
+  if (rotate) classes.push('rotate-180')
 
   if (currentPiece && currentPiece.color === Color.BLACK) classes.push('text-black');
 

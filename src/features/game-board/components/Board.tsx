@@ -3,6 +3,8 @@ import { useBoard } from '../hooks/useBoard';
 import { GameOverModal } from './GameOverModal';
 import { PromotionModal } from './PromotionModal';
 import { Square } from './Square';
+import { GameType } from 'base/zod/emums/GameType';
+import { Color } from 'base/zod/emums/Color';
 
 interface BoardProps {
   game: Game
@@ -16,9 +18,16 @@ export function Board({ game }: BoardProps) {
   const selectedPiece = selected.selectedList.length === 1 ? game.board.squares[selected.selectedList[0]].piece : null;
   const selectedPieceMoves = selectedPiece ? selectedPiece.validMoves : null;
   const isSelectingActivePiece = selectedPiece ? selectedPiece.color === game?.activeColor : false;
+  let rotateBoard = false;
+
+  if (game.type === GameType.LOCAL && game.activeColor === Color.BLACK)
+    rotateBoard = true;
+
+  if (game.type === GameType.STOCKFISH && game.stockfishInfo?.playingAs === Color.WHITE)
+    rotateBoard = true;
 
   return (
-    <div className={getBoardClasses()}>
+    <div className={getBoardClasses(rotateBoard)}>
       {isPromotionModalOpen && <PromotionModal clearSelected={selected.clear} isOpen={isPromotionModalOpen} onClose={closePromotionModal} gameId={game.id} start={selected.selectedList[0]} end={selected.selectedList[1]} />}
       {isGameOverModalOpen && <GameOverModal isOpen={isGameOverModalOpen} onClose={closeGameOverModal} game={game} />}
       <div className="grid grid-cols-8 grid-rows-8 grow">
@@ -46,6 +55,7 @@ export function Board({ game }: BoardProps) {
               isStartPos={isSelected}
               isCaptureSquare={isCapture}
               isValidSquare={isValidMove}
+              rotate={rotateBoard}
             />
           );
         })}
@@ -54,27 +64,16 @@ export function Board({ game }: BoardProps) {
   );
 }
 
-function getBoardClasses() {
+
+function getBoardClasses(rotate: boolean) {
   const core = ['flex', 'flex-grow'];
   const responsive = [
-    'min-w-80',
-    'xs:min-w-96',
-    'sm:min-w-128',
-    'lg:min-w-160',
-    'max-w-80',
-    'xs:max-w-96',
-    'sm:max-w-128',
-    'lg:max-w-160',
-    'min-h-80',
-    'xs:min-h-96',
-    'sm:min-h-128',
-    'lg:min-h-160',
-    'max-h-80',
-    'xs:max-h-96',
-    'sm:max-h-128',
-    'lg:max-h-160',
-  ];
-
+    'min-w-80', 'xs:min-w-96', 'sm:min-w-128', 'lg:min-w-160',
+    'max-w-80', 'xs:max-w-96', 'sm:max-w-128', 'lg:max-w-160',
+    'min-h-80', 'xs:min-h-96', 'sm:min-h-128', 'lg:min-h-160',
+    'max-h-80', 'xs:max-h-96', 'sm:max-h-128', 'lg:max-h-160',];
+  if (rotate) responsive.push('rotate-180')
   return [...core, ...responsive].join(' ');
 }
+
 
