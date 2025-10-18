@@ -53,7 +53,7 @@ export function useBoard(game: Game) {
 
 
   const handleSquareClicked = async (index: number) => {
-    if (!isGamePlaying()) return;
+    if (!isGamePlaying() || game.activeColor === game.stockfishInfo?.playingAs) return;
 
     const targetPiece = game.board.squares[index].piece;
 

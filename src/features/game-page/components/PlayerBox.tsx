@@ -3,12 +3,14 @@ import { Clock } from "lucide-react";
 
 interface PlayerBoxProps {
   isTurn: boolean
-  materialDiff: number,
-  time: number,
+  materialDiff: number
+  time: number
   name: string
+  isStockfishGame: boolean
+  showClock: boolean
 }
 
-export function PlayerBox({ isTurn, materialDiff, time, name }: PlayerBoxProps) {
+export function PlayerBox({ isTurn, materialDiff, time, name, showClock, isStockfishGame }: PlayerBoxProps) {
   const border = isTurn ? '2px solid white' : '1px solid rgba(255, 255, 255, 0.3)'
   const materialDiffColor = materialDiff < 0 ? 'red' : 'green'
   const materialDiffSymbol = materialDiff < 0 ? '' : '+'
@@ -19,12 +21,13 @@ export function PlayerBox({ isTurn, materialDiff, time, name }: PlayerBoxProps) 
         <Text fontSize='lg' fontWeight='semibold'>{name}</Text>
         {materialDiff != 0 && <Text fontSize='sm' fontWeight='semibold' color={materialDiffColor}>{`${materialDiffSymbol}${materialDiff.toString()}`}</Text>}
       </Flex>
-      <Flex gap={4} alignItems='center'>
-        <Icon>
-          <Clock />
-        </Icon>
-        <Text fontSize='2xl' fontWeight='bold'>{convertSecondsToMinuteDisplay(time)}</Text>
-      </Flex>
+      {showClock &&
+        <Flex gap={4} alignItems='center'>
+          <Icon>
+            <Clock />
+          </Icon>
+          <Text fontSize='2xl' fontWeight='bold'>{convertSecondsToMinuteDisplay(time)}</Text>
+        </Flex>}
     </Flex>
   )
 }

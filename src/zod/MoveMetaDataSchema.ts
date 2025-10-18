@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 export const MoveMetaDataSchema = z.object({
@@ -7,10 +8,7 @@ export const MoveMetaDataSchema = z.object({
   isEnPassantCapture: z.boolean(),
   isCastle: z.boolean(),
   isPromotion: z.boolean(),
-  causesCheck: z.boolean(),
-  notation: z.string()
+  causesCheck: z.boolean()
 })
 
 export type MoveMetaData = z.infer<typeof MoveMetaDataSchema>
-
-export const MoveMetaDataArraySchema = z.array(MoveMetaDataSchema);

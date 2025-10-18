@@ -10,7 +10,7 @@ export function MoveHistoryBox({ moveHistory }: MoveHistoryBoxProps) {
   const list = buildMoveList(moveHistory ?? []);
 
   return (
-    <Flex border='1px solid rgba(255, 255, 255, 0.3)' gap={4} flexDir='column' p={4} borderRadius='lg'>
+    <Flex border='1px solid rgba(255, 255, 255, 0.3)' gap={4} flexDir='column' p={4} borderRadius='lg' mt={6}>
       <Text fontWeight='semibold'>Move History</Text>
       <ScrollArea.Root>
         <ScrollArea.Viewport>

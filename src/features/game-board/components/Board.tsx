@@ -5,6 +5,7 @@ import { PromotionModal } from './PromotionModal';
 import { Square } from './Square';
 import { GameType } from 'base/zod/emums/GameType';
 import { Color } from 'base/zod/emums/Color';
+import { getSquareRank } from '../utils/board-utility/getSquareRank';
 
 interface BoardProps {
   game: Game
@@ -45,6 +46,16 @@ export function Board({ game }: BoardProps) {
               else isValidMove = true;
             }
           }
+          const rankNumber = Number(getSquareRank(key));
+          const isStartWithBlue = rankNumber % 2 === 1 ? 0 : 1;
+          let bgColor = key % 2 === isStartWithBlue ? 'bg-sky-800' : 'bg-gray-200';
+
+          // At least 1 move has been played. Highlight the last move piece start & end squares
+          if (game.lastMoveMetaData) {
+            if (key === game.lastMoveMetaData.startIndex || key === game.lastMoveMetaData.endIndex) {
+              bgColor = 'bg-highlightSquare'
+            }
+          }
 
           return (
             <Square
@@ -56,6 +67,7 @@ export function Board({ game }: BoardProps) {
               isCaptureSquare={isCapture}
               isValidSquare={isValidMove}
               rotate={rotateBoard}
+              bgColor={bgColor}
             />
           );
         })}
@@ -68,10 +80,10 @@ export function Board({ game }: BoardProps) {
 function getBoardClasses(rotate: boolean) {
   const core = ['flex', 'flex-grow'];
   const responsive = [
-    'min-w-80', 'xs:min-w-96', 'sm:min-w-128', 'lg:min-w-160',
-    'max-w-80', 'xs:max-w-96', 'sm:max-w-128', 'lg:max-w-160',
-    'min-h-80', 'xs:min-h-96', 'sm:min-h-128', 'lg:min-h-160',
-    'max-h-80', 'xs:max-h-96', 'sm:max-h-128', 'lg:max-h-160',];
+    'min-w-80', 'xs:min-w-96', 'sm:min-w-128', 'lg:min-w-200',
+    'max-w-80', 'xs:max-w-96', 'sm:max-w-128', 'lg:max-w-200',
+    'min-h-80', 'xs:min-h-96', 'sm:min-h-128', 'lg:min-h-200',
+    'max-h-80', 'xs:max-h-96', 'sm:max-h-128', 'lg:max-h-200',];
   if (rotate) responsive.push('rotate-180')
   return [...core, ...responsive].join(' ');
 }

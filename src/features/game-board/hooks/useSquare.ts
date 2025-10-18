@@ -1,6 +1,5 @@
 import { Piece } from "../../../zod/PieceSchema";
 import { Color } from "../../../zod/emums/Color";
-import { getSquareRank } from "../utils/board-utility/getSquareRank";
 
 
 export function useSquare(
@@ -8,11 +7,9 @@ export function useSquare(
   currentPiece: Piece | null,
   isStartPos: boolean,
   handleSquareClicked: (index: number) => void,
-  rotate: boolean
+  rotate: boolean,
+  bgColor: string
 ) {
-  const rankNumber = Number(getSquareRank(index));
-  const remainderForBlueSquareFirst = rankNumber % 2 === 1 ? 0 : 1;
-  let bgColor = index % 2 === remainderForBlueSquareFirst ? 'bg-sky-800' : 'bg-gray-200';
   if (isStartPos) bgColor = 'bg-green-600';
 
   const classes = ['flex', 'justify-center', 'items-center', 'relative', bgColor];

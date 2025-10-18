@@ -222,12 +222,14 @@ export function Play() {
         {/* Black side */}
         <Flex flexDir="column" gap={4}>
 
-          {g.stockfishInfo === null && <PlayerBox
+          <PlayerBox
             isTurn={isBlackTurn}
             materialDiff={matValues.blackMaterialValue}
             time={blackTimeSec}
-            name={blackName}
-          />}
+            name={game.data.stockfishInfo ? 'Stockfish' : blackName}
+            showClock={game.data.stockfishInfo === null}
+            isStockfishGame={game.data.stockfishInfo !== null}
+          />
 
           <CapturedBox isWhite={false} capturedPieces={g.blackCapturedPieces} />
         </Flex>
@@ -236,12 +238,14 @@ export function Play() {
 
         {/* White side */}
         <Flex flexDir="column" gap={4}>
-          {g.stockfishInfo === null && <PlayerBox
+          <PlayerBox
             isTurn={isWhiteTurn}
             materialDiff={matValues.whiteMaterialValue}
             time={whiteTimeSec}
-            name={whiteName}
-          />}
+            name={game.data.stockfishInfo ? 'Me' : whiteName}
+            showClock={game.data.stockfishInfo === null}
+            isStockfishGame={game.data.stockfishInfo !== null}
+          />
 
           <CapturedBox isWhite={true} capturedPieces={g.whiteCapturedPieces} />
           <MoveHistoryBox moveHistory={g.moveHistory} />
@@ -249,26 +253,28 @@ export function Play() {
           {isDrawModalOpen && (
             <DrawModal gameId={g.id} close={() => setIsDrawModalOpen(false)} />
           )}
-          {g.stockfishInfo === null && <IconButton
-            onClick={handleOfferDrawClick}
-            mt="auto"
-            border="1px solid rgba(255, 255, 255, 0.3)"
-          >
-            <HandshakeIcon /> Offer Draw
-          </IconButton>
-          }
 
-          {isResignModalOpen && (
-            <ResignModal
-              gameId={g.id}
-              resigningColor={g.activeColor}
-              close={() => setIsResignModalOpen(false)}
-            />
-          )}
-          <IconButton mt='auto' onClick={handleResignClick} bgColor="red.700">
-            <Flag />
-            Resign
-          </IconButton>
+          <Flex flexDir='column' mt='auto' gap={4}>
+            <IconButton
+              onClick={handleOfferDrawClick}
+              mt="auto"
+              border="1px solid rgba(255, 255, 255, 0.3)"
+            >
+              <HandshakeIcon /> Offer Draw
+            </IconButton>
+
+            {isResignModalOpen && (
+              <ResignModal
+                gameId={g.id}
+                resigningColor={g.activeColor}
+                close={() => setIsResignModalOpen(false)}
+              />
+            )}
+            <IconButton mt='auto' onClick={handleResignClick} bgColor="red.700">
+              <Flag />
+              Resign
+            </IconButton>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

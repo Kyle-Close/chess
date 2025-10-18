@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { PieceTypeSchema } from "./PieceTypeSchema";
 import { ColorSchema } from "./ColorSchema";
-import { MoveMetaDataSchema } from "./MoveMetaData";
+import { MoveMetaDataSchema } from "./MoveMetaDataSchema";
 
 export const PieceSchema = z.object({
   pieceType: PieceTypeSchema,
