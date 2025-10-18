@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8080/chess-api'
+export const BASE_URL = 'https://chess-api.fly.dev/chess-api'
 
 // HOSTED
 // ------
