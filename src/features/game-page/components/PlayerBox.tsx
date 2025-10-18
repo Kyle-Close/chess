@@ -10,7 +10,7 @@ interface PlayerBoxProps {
   showClock: boolean
 }
 
-export function PlayerBox({ isTurn, materialDiff, time, name, showClock, isStockfishGame }: PlayerBoxProps) {
+export function PlayerBox({ isTurn, materialDiff, time, name, showClock }: PlayerBoxProps) {
   const border = isTurn ? '2px solid white' : '1px solid rgba(255, 255, 255, 0.3)'
   const materialDiffColor = materialDiff < 0 ? 'red' : 'green'
   const materialDiffSymbol = materialDiff < 0 ? '' : '+'
