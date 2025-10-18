@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form"
 import { Game, GameSchema } from "../../../zod/GameSchema";
 import { useEffect } from "react";
+import { BASE_URL } from "base/features/api-utils/baseUrl";
 
 type FormInputs = {
   fen: string
@@ -48,7 +49,7 @@ export function useChessApi() {
 const startNewGame = async (fen?: string): Promise<Game> => {
 
   try {
-    const response = await fetch("http://localhost:5165/chess-api/start-game", {
+    const response = await fetch(`${BASE_URL}/chess-api/start-game`, {
       method: "POST",
       body: fen ? JSON.stringify({ fen }) : undefined,
       headers: fen ? { "Content-Type": "application/json" } : undefined,
