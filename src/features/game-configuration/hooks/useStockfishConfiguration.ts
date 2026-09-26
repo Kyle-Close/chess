@@ -12,12 +12,13 @@ export type StockfishConfigurationFormInputs = {
 
 export function useStockfishConfiguration() {
   const newGameMutation = useStartNewGame();
-  const stockfishConfigurationFormInputs = useForm<StockfishConfigurationFormInputs>();
+  const stockfishConfigurationFormInputs = useForm<StockfishConfigurationFormInputs>({
+    defaultValues: { playingAs: 'white', strength: 10, fen: '' }
+  });
 
   const onSubmit: SubmitHandler<StockfishConfigurationFormInputs> = data => handleSubmit(data);
 
   const handleSubmit = (data: StockfishConfigurationFormInputs) => {
-    console.log(data)
     let sfColor: Color;
     switch (data.playingAs) {
       case "white":
@@ -36,7 +37,7 @@ export function useStockfishConfiguration() {
     newGameMutation.mutate(
       {
         timeControlType: TimeControlType.NONE,
-        fen: data.fen,
+        fen: data.fen?.trim(),
         stockfishStrength: data.strength,
         stockfishColor: sfColor
       }
@@ -45,7 +46,8 @@ export function useStockfishConfiguration() {
 
   return {
     stockfishConfigurationFormInputs,
-    onSubmit
+    onSubmit,
+    newGameMutation
   }
 }
 

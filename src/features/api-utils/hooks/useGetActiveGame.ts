@@ -1,10 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Game, GameSchema } from "base/zod/GameSchema";
 import { BASE_URL } from "../baseUrl";
+import { useParams } from "react-router-dom";
 
 export function useGetActiveGame() {
   const queryClient = useQueryClient();
-  const gameId = localStorage.getItem("gameId");
+  // Prefer the id in the URL so reloading or sharing a /play link opens that game
+  const { gameId: routeGameId } = useParams();
+  const gameId = routeGameId ?? localStorage.getItem("gameId");
 
   const gameQuery = useQuery<Game>({
     queryKey: ['game', gameId],

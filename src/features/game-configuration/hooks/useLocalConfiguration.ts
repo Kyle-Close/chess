@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { usePlayers } from "./usePlayers";
 import { TimeControlType } from "base/zod/emums/TimeControl";
@@ -14,12 +15,18 @@ export type LocalConfigurationFormInputs = {
 
 export function useLocalConfiguration() {
   const newGameMutation = useStartNewGame();
-  const localConfigurationFormInputs = useForm<LocalConfigurationFormInputs>();
-  const { getRandomName } = usePlayers();
+  const { getRandomNames } = usePlayers();
+  // Pre-fill names so a game can be started in one click
+  const [defaultValues] = useState<LocalConfigurationFormInputs>(() => {
+    const [player1Name, player2Name] = getRandomNames();
+    return { player1Name, player2Name, player1Color: 'white', timeControlType: TimeControlType.CLASSICAL.toString(), fen: '' };
+  });
+  const localConfigurationFormInputs = useForm<LocalConfigurationFormInputs>({ defaultValues });
   const onSubmit: SubmitHandler<LocalConfigurationFormInputs> = data => handleSubmit(data);
 
   const handleSubmit = (data: LocalConfigurationFormInputs) => {
-    newGameMutation.mutate({ timeControlType: getTimeControlType(data.timeControlType), fen: data.fen });
+    newGameMutation.mutate({ timeControlType: getTimeControlType(data.timeControlType), fen: data.fen?.trim() });
+    localStorage.setItem('timeControl', data.timeControlType)
     if (data.player1Color === 'white') {
       localStorage.setItem('whiteName', data.player1Name)
       localStorage.setItem('blackName', data.player2Name)
@@ -40,7 +47,8 @@ export function useLocalConfiguration() {
   return {
     localConfigurationFormInputs,
     onSubmit,
-    getRandomName
+    getRandomNames,
+    newGameMutation
   }
 }
 

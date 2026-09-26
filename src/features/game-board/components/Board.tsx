@@ -1,91 +1,60 @@
+import { useEffect, useRef } from 'react';
 import { Game } from 'base/zod/GameSchema';
 import { useBoard } from '../hooks/useBoard';
 import { GameOverModal } from './GameOverModal';
-import { PromotionModal } from './PromotionModal';
-import { Square } from './Square';
-import { GameType } from 'base/zod/emums/GameType';
-import { Color } from 'base/zod/emums/Color';
-import { getSquareRank } from '../utils/board-utility/getSquareRank';
+import { PromotionPicker } from './PromotionPicker';
+import { BoardView } from './BoardView';
 
 interface BoardProps {
   game: Game
+  flipped: boolean
 }
 
-export function Board({ game }: BoardProps) {
-  const { handleSquareClicked, selected, isPromotionModalOpen, closePromotionModal, isGameOverModalOpen, closeGameOverModal
-  } = useBoard(game);
-  if (!game) return
+export function Board({ game, flipped }: BoardProps) {
+  const board = useBoard(game);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const selectedPiece = selected.selectedList.length === 1 ? game.board.squares[selected.selectedList[0]].piece : null;
-  const selectedPieceMoves = selectedPiece ? selectedPiece.validMoves : null;
-  const isSelectingActivePiece = selectedPiece ? selectedPiece.color === game?.activeColor : false;
-  let rotateBoard = false;
+  // Soften the orientation change when the board turns to face the other player
+  const isFirstOrientation = useRef(true);
+  useEffect(() => {
+    if (isFirstOrientation.current) {
+      isFirstOrientation.current = false;
+      return;
+    }
+    wrapperRef.current?.animate(
+      [{ opacity: 0.2, transform: 'scale(0.985)' }, { opacity: 1, transform: 'none' }],
+      { duration: 260, easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)' }
+    );
+  }, [flipped]);
 
-  if (game.type === GameType.LOCAL && game.activeColor === Color.BLACK)
-    rotateBoard = true;
-
-  if (game.type === GameType.STOCKFISH && game.stockfishInfo?.playingAs === Color.WHITE)
-    rotateBoard = true;
+  const lastMove = game.lastMoveMetaData
+    ? { from: game.lastMoveMetaData.startIndex, to: game.lastMoveMetaData.endIndex }
+    : null;
 
   return (
-    <div className={getBoardClasses(rotateBoard)}>
-      {isPromotionModalOpen && <PromotionModal clearSelected={selected.clear} isOpen={isPromotionModalOpen} onClose={closePromotionModal} gameId={game.id} start={selected.selectedList[0]} end={selected.selectedList[1]} />}
-      {isGameOverModalOpen && <GameOverModal isOpen={isGameOverModalOpen} onClose={closeGameOverModal} game={game} />}
-      <div className="grid grid-cols-8 grid-rows-8 grow">
-        {game.board.squares.map((square, key) => {
-          const isSelected = selected.selectedList[0] === key;
-          const piece = square.piece ? square.piece : null;
-
-          let isCapture = false;
-          let isValidMove = false;
-
-          if (selectedPieceMoves && isSelectingActivePiece) {
-            const move = selectedPieceMoves.find(move => move.endIndex === key)
-            if (move) {
-              if (move.isCapture) isCapture = true;
-              else isValidMove = true;
-            }
-          }
-          const rankNumber = Number(getSquareRank(key));
-          const isStartWithBlue = rankNumber % 2 === 1 ? 0 : 1;
-          let bgColor = key % 2 === isStartWithBlue ? 'bg-sky-800' : 'bg-gray-200';
-
-          // At least 1 move has been played. Highlight the last move piece start & end squares
-          if (game.lastMoveMetaData) {
-            if (key === game.lastMoveMetaData.startIndex || key === game.lastMoveMetaData.endIndex) {
-              bgColor = 'bg-highlightSquare'
-            }
-          }
-
-          return (
-            <Square
-              currentPiece={piece}
-              index={key}
-              key={key}
-              handleSquareClicked={handleSquareClicked}
-              isStartPos={isSelected}
-              isCaptureSquare={isCapture}
-              isValidSquare={isValidMove}
-              rotate={rotateBoard}
-              bgColor={bgColor}
-            />
-          );
-        })}
-      </div>
+    <div ref={wrapperRef}>
+      {board.isGameOverModalOpen && <GameOverModal isOpen onClose={board.closeGameOverModal} game={game} />}
+      <BoardView
+        pieces={game.board.squares.map((s) => s.piece)}
+        flipped={flipped}
+        lastMove={lastMove}
+        selected={board.selected}
+        targets={board.targets}
+        checkSquare={board.checkSquare}
+        draggableColor={board.canMove ? game.activeColor : null}
+        onSquareClick={board.handleSquareClicked}
+        onPieceDragStart={board.handleDragStart}
+        onSquareDrop={board.handleDrop}
+        overlay={board.promotion && (
+          <PromotionPicker
+            square={board.promotion.end}
+            color={game.activeColor}
+            flipped={flipped}
+            onSelect={board.choosePromotion}
+            onCancel={board.cancelPromotion}
+          />
+        )}
+      />
     </div>
   );
 }
-
-
-function getBoardClasses(rotate: boolean) {
-  const core = ['flex', 'flex-grow'];
-  const responsive = [
-    'min-w-80', 'xs:min-w-96', 'sm:min-w-128', 'lg:min-w-200',
-    'max-w-80', 'xs:max-w-96', 'sm:max-w-128', 'lg:max-w-200',
-    'min-h-80', 'xs:min-h-96', 'sm:min-h-128', 'lg:min-h-200',
-    'max-h-80', 'xs:max-h-96', 'sm:max-h-128', 'lg:max-h-200',];
-  if (rotate) responsive.push('rotate-180')
-  return [...core, ...responsive].join(' ');
-}
-
-
