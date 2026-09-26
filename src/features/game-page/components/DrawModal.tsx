@@ -1,40 +1,36 @@
-import { Alert, Flex, IconButton } from "@chakra-ui/react";
-import { BaseModal } from "base/components/BaseModal";
 import { useDrawByAgreement } from "base/features/api-utils/hooks/useDrawByAgreement";
-import { CircleX, Handshake } from "lucide-react";
+import { Handshake } from "lucide-react";
+import { ConfirmModal } from "./ConfirmModal";
 
 interface DrawModalProps {
   gameId: string,
+  /** Player offering the draw, and the one who has to accept it (null against the engine) */
+  offeredBy: string,
+  offeredTo: string | null,
   close: () => void
 }
 
-export function DrawModal({ gameId, close }: DrawModalProps) {
+export function DrawModal({ gameId, offeredBy, offeredTo, close }: DrawModalProps) {
   const drawMutation = useDrawByAgreement()
 
-  const handleConfirmClick = () => {
-    close()
-    drawMutation.mutate({ gameId })
-  }
-
-  return (
-    <BaseModal isOpen={true} onClose={close} allowClose={true}>
-      <Flex p={6} flexDir='column' gap={6}>
-        <Alert.Root justifyContent='center'>
-          <Alert.Indicator />
-          <Alert.Title>Your opponent is offering a draw</Alert.Title>
-          <Alert.Indicator />
-        </Alert.Root>
-        <Flex gap={4} justifyContent='center'>
-          <IconButton fontWeight='bold' p={6} color='black' bg='gray.400' onClick={handleConfirmClick}>
-            <Handshake />
-            Agree to Draw
-          </IconButton>
-          <IconButton fontWeight='bold' p={6} color='black' bg='red.400' onClick={close}>
-            <CircleX />
-            Reject Draw
-          </IconButton>
-        </Flex>
-      </Flex>
-    </BaseModal>
+  return offeredTo ? (
+    <ConfirmModal
+      icon={Handshake}
+      title='Draw offered'
+      description={<><b>{offeredBy}</b> is offering a draw. <b>{offeredTo}</b>, do you accept?</>}
+      confirmLabel='Accept draw'
+      cancelLabel='Decline'
+      onConfirm={() => drawMutation.mutate({ gameId })}
+      close={close}
+    />
+  ) : (
+    <ConfirmModal
+      icon={Handshake}
+      title='Agree to a draw?'
+      description='The game will end immediately with a shared point.'
+      confirmLabel='Agree to draw'
+      onConfirm={() => drawMutation.mutate({ gameId })}
+      close={close}
+    />
   )
 }

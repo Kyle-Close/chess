@@ -1,98 +1,102 @@
-
-import { Badge, Field, Flex, IconButton, Input, Slider, Text } from "@chakra-ui/react";
+import { Box, chakra, Flex, Slider, Text } from "@chakra-ui/react";
 import { Controller } from "react-hook-form";
-import { StockfishColors } from "base/features/game-configuration/components/StockfishColors";
+import { ColorChoice } from "base/features/game-configuration/components/ColorChoice";
+import { ConfigLayout } from "base/features/game-configuration/components/ConfigLayout";
+import { FenField } from "base/features/game-configuration/components/FenField";
 import { FormBox } from "base/features/game-configuration/components/formBox";
 import { useStockfishConfiguration } from "base/features/game-configuration/hooks/useStockfishConfiguration";
-import { Play, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { getFenError, validateFen } from "base/features/game-configuration/utils/fen";
+import { getStrengthTier } from "base/features/game-page/utils/players";
+
+const TIERS = [
+  { label: 'Beginner', from: 0 },
+  { label: 'Intermediate', from: 4 },
+  { label: 'Advanced', from: 10 },
+  { label: 'Master', from: 17 },
+];
 
 export function StockfishConfiguration() {
-  const navigate = useNavigate();
-  const { stockfishConfigurationFormInputs, onSubmit } = useStockfishConfiguration();
-  const { handleSubmit, control, watch } = stockfishConfigurationFormInputs;
+  const { stockfishConfigurationFormInputs, onSubmit, newGameMutation } = useStockfishConfiguration();
+  const { handleSubmit, control, watch, register, formState } = stockfishConfigurationFormInputs;
 
-  watch("strength", 10); // read current value for display
+  const [playingAs, strength, fen] = watch(["playingAs", "strength", "fen"]);
+  const tier = getStrengthTier(strength ?? 10);
 
   return (
-    <Flex flexDir="column" m={6}>
-      <Flex as="form" flexDir="column" onSubmit={handleSubmit(onSubmit)}>
-        <Flex alignItems="end" justifyContent="space-between">
-          <Text fontWeight="semibold">Configure Your Game Settings</Text>
-        </Flex>
+    <ConfigLayout
+      eyebrow="vs Stockfish"
+      title="Challenge the engine"
+      description="Stockfish is one of the strongest chess engines ever built. Dial its strength down to learn, or up to see how long you can survive."
+      onSubmit={handleSubmit(onSubmit)}
+      fen={fen}
+      flipped={playingAs === "black"}
+      summary={[
+        { label: "You play", value: playingAs === "random" ? "Random color" : playingAs === "black" ? "Black" : "White" },
+        { label: "Engine", value: `Level ${strength} · ${tier.label}` },
+        { label: "Clock", value: "Untimed" },
+        { label: "Start", value: fen?.trim() ? "Custom position" : "Standard" },
+      ]}
+      isPending={newGameMutation.isPending}
+      error={newGameMutation.error}
+    >
+      <FormBox step={1} title="Your color" description="Choose which side you want to play.">
+        <ColorChoice control={control} name="playingAs" label="Your color" />
+      </FormBox>
 
-        <StockfishColors stockfishConfigurationForm={stockfishConfigurationFormInputs} />
-
-        <FormBox title="Engine Strength">
-          <Controller
-            name="strength"
-            control={control}
-            defaultValue={10}
-            render={({ field }) => (
-              <Slider.Root
-                min={0}
-                max={20}
-                step={1}
-                value={[field.value ?? 10]}                       // slider wants number[]
-                onValueChange={(details) => field.onChange(details.value[0])}
-              >
-                <Slider.Label mt={2}>
-                  Adjust the engine skill level from 0 (weakest) to 20 (strongest)
-                </Slider.Label>
-
-                <Flex mt={6} justifyContent="space-between">
-                  <Text fontWeight="semibold" mt={2} mb={2}>
-                    Engine Strength: {field.value ?? 10}
-                  </Text>
-                  {GetBadge(field.value ?? 10)}
+      <FormBox step={2} title="Engine strength" description="Skill level from 0 (gentle) to 20 (full strength).">
+        <Controller
+          name="strength"
+          control={control}
+          render={({ field }) => (
+            <Slider.Root
+              min={0}
+              max={20}
+              step={1}
+              colorPalette="gold"
+              value={[field.value ?? 10]}
+              onValueChange={(details) => field.onChange(details.value[0])}
+            >
+              <Flex align="end" justify="space-between" mb={5}>
+                <Flex align="baseline" gap={3}>
+                  <Slider.Label srOnly>Engine strength</Slider.Label>
+                  <Text className="tabular" fontSize="5xl" fontWeight="bold" lineHeight="1">{field.value}</Text>
+                  <Text fontSize="sm" color="fg.muted">/ 20</Text>
                 </Flex>
+                <Flex align="center" gap={2} px={3} py={1} borderRadius="full" fontSize="sm" fontWeight="semibold" style={{ color: tier.color, background: `${tier.color}1a`, border: `1px solid ${tier.color}40` }}>
+                  <Box w={2} h={2} borderRadius="full" style={{ background: tier.color }} />
+                  {tier.label}
+                </Flex>
+              </Flex>
 
-                <Slider.Control mt={1}>
-                  <Slider.Track>
-                    <Slider.Range />
-                  </Slider.Track>
-                  <Slider.Thumbs />
-                </Slider.Control>
-              </Slider.Root>
-            )}
-          />
-        </FormBox>
+              <Slider.Control>
+                <Slider.Track h="6px" bg="ink.700">
+                  <Slider.Range />
+                </Slider.Track>
+                <Slider.Thumbs boxSize={5} borderWidth="3px" borderColor="gold.400" bg="ink.950" />
+              </Slider.Control>
 
-        <Flex flexDir="column" mt={4}>
-          <Text fontSize="lg">Custom Starting Position</Text>
-          <Flex mt={1} gap={6}>
-            <Field.Root w="lg">
-              <Field.Label fontWeight="semibold">Enter FEN (optional)</Field.Label>
-              <Input
-                p={2}
-                bgColor="gray.700"
-                placeholder="Enter FEN string"
-                {...stockfishConfigurationFormInputs.register("fen")}
-              />
-            </Field.Root>
-          </Flex>
-        </Flex>
+              <Box position="relative" h={5} mt={3} fontSize="xs" color="fg.subtle">
+                {TIERS.map((t) => (
+                  <chakra.button
+                    key={t.label}
+                    type="button"
+                    position="absolute"
+                    style={{ left: `${(t.from / 20) * 100}%` }}
+                    transform={t.from === 0 ? undefined : "translateX(-50%)"}
+                    color={tier.label === t.label ? "fg" : undefined}
+                    _hover={{ color: "fg" }}
+                    onClick={() => field.onChange(t.from)}
+                  >
+                    {t.label}
+                  </chakra.button>
+                ))}
+              </Box>
+            </Slider.Root>
+          )}
+        />
+      </FormBox>
 
-        <Flex alignSelf="end" mt={6} gap={6}>
-          <IconButton onClick={() => navigate("/")} border="1px solid rgba(255, 255, 255, 0.3)" p={4}>
-            <X />
-            Cancel
-          </IconButton>
-          <IconButton type="submit" p={4} bgColor="gray.100" color="black">
-            <Play />
-            Start Game
-          </IconButton>
-        </Flex>
-      </Flex>
-    </Flex>
+      <FenField registration={register("fen", { validate: validateFen })} error={formState.errors.fen?.message ?? getFenError(fen)} />
+    </ConfigLayout>
   );
 }
-
-function GetBadge(value: number) {
-  if (value >= 0 && value < 4) return <Badge colorPalette="green">Beginner</Badge>;
-  if (value >= 4 && value < 10) return <Badge colorPalette="blue">Intermediate</Badge>;
-  if (value >= 10 && value < 17) return <Badge colorPalette="orange">Advanced</Badge>;
-  if (value >= 17 && value < 21) return <Badge colorPalette="red">Impossible</Badge>;
-  return null;
-}
-
