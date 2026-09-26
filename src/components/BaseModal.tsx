@@ -9,8 +9,24 @@ interface BaseModalProps {
 
 export function BaseModal({ isOpen, onClose, children, allowClose }: BaseModalProps) {
   return (
-    <DialogRoot onInteractOutside={(e) => { if (!allowClose) e.preventDefault() }} onEscapeKeyDown={(e) => e.preventDefault()} open={isOpen} onOpenChange={onClose}>
-      <DialogContent top='35%' borderRadius='1rem' className='mx-4'>
+    <DialogRoot
+      placement='center'
+      motionPreset='slide-in-bottom'
+      onInteractOutside={(e) => { if (!allowClose) e.preventDefault() }}
+      onEscapeKeyDown={(e) => { if (!allowClose) e.preventDefault() }}
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      <DialogContent
+        bg='ink.850'
+        border='1px solid'
+        borderColor='border.emphasized'
+        borderRadius='2xl'
+        mx={4}
+        maxW='sm'
+        overflow='hidden'
+        boxShadow='0 40px 90px -20px rgba(0, 0, 0, 0.85)'
+      >
         {children}
       </DialogContent>
     </DialogRoot>

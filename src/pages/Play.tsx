@@ -1,19 +1,25 @@
 
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { Flex, Spinner, IconButton } from "@chakra-ui/react";
+import { memo, useEffect, useRef, useState } from "react";
+import { Box, Button, Flex, IconButton, Spinner, Text } from "@chakra-ui/react";
 import { Board as BoardBase } from "base/features/game-board/components/Board";
-import { CapturedBox } from "base/features/game-page/components/CapturedBox";
 import { MoveHistoryBox } from "base/features/game-page/components/MoveHistoryBox";
-import { PlayerBox } from "base/features/game-page/components/PlayerBox";
-import { Flag, HandshakeIcon } from "lucide-react";
+import { PlayerStrip } from "base/features/game-page/components/PlayerStrip";
+import { Bot, Flag, Handshake, Home, Plus, RefreshCcw, Users, Volume2, VolumeX } from "lucide-react";
+import { Tooltip } from "base/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 import { useGetActiveGame } from "base/features/api-utils/hooks/useGetActiveGame";
 import { Color } from "base/zod/emums/Color";
 import { DrawModal } from "base/features/game-page/components/DrawModal";
 import { GameStatus } from "base/zod/emums/GameStatus";
 import { ResignModal } from "base/features/game-page/components/ResignModal";
 import { useSyncClock } from "base/features/api-utils/hooks/useSyncClock";
+import { Game } from "base/zod/GameSchema";
+import { GameType } from "base/zod/emums/GameType";
+import { getDefaultFlipped, getGameOverReason, getHumanColor, isDrawStatus, isGamePlaying, opposite } from "base/features/game-board/utils/gameState";
+import { getPlayerName, getStrengthTier, TIME_CONTROLS } from "base/features/game-page/utils/players";
+import { setSoundEnabled, useSoundEnabled } from "base/features/game-board/utils/sounds";
 
-const Board = memo(BoardBase, (prev, next) => prev.game === next.game);
+const Board = memo(BoardBase);
 
 // How often the lightweight ticker runs (we only commit state when a full second elapses)
 const TICK_MS = 250;
@@ -28,9 +34,9 @@ export function Play() {
   const [isDrawModalOpen, setIsDrawModalOpen] = useState(false);
   const [isResignModalOpen, setIsResignModalOpen] = useState(false);
 
-  // Names (read once)
-  const whiteName = useMemo(() => localStorage.getItem("whiteName") ?? "", []);
-  const blackName = useMemo(() => localStorage.getItem("blackName") ?? "", []);
+  const navigate = useNavigate();
+  const soundEnabled = useSoundEnabled();
+  const [userFlipped, setUserFlipped] = useState(false);
 
   // CLOCK STATE (in seconds) — this is what we render
   const [whiteTimeSec, setWhiteTimeSec] = useState(0);
@@ -201,82 +207,174 @@ export function Play() {
     )
     : { whiteMaterialValue: 0, blackMaterialValue: 0 };
 
-  const handleOfferDrawClick = () => setIsDrawModalOpen(true);
-  const handleResignClick = () => setIsResignModalOpen(true);
-
   if (!hasData) {
     return (
-      <Flex h="100%" align="center" justify="center" p={8}>
-        <Spinner mr={3} /> Loading game…
+      <Flex flex={1} align="center" justify="center" p={8}>
+        {game.isError || !game.isFetching ? (
+          <Flex direction="column" align="center" gap={4} textAlign="center" maxW="sm">
+            <Text fontFamily="heading" fontSize="2xl">This game couldn't be loaded</Text>
+            <Text color="fg.muted">It may have expired, or the server is unreachable right now.</Text>
+            <Button colorPalette="gold" onClick={() => navigate("/")}>Back to home</Button>
+          </Flex>
+        ) : (
+          <Flex align="center" gap={3} color="fg.muted"><Spinner size="sm" /> Loading game…</Flex>
+        )}
       </Flex>
     );
   }
 
   const g = game.data!;
-  const isBlackTurn = g.activeColor === Color.BLACK;
-  const isWhiteTurn = g.activeColor === Color.WHITE;
+  const isPlaying = isGamePlaying(g);
+  const humanColor = getHumanColor(g);
+  const flipped = getDefaultFlipped(g) !== userFlipped;
+  const bottomColor = flipped ? Color.BLACK : Color.WHITE;
+  const topColor = opposite(bottomColor);
+  const isEngineGame = g.type === GameType.STOCKFISH && !!g.stockfishInfo;
+
+  const stripProps = (color: Color) => {
+    const isEngine = isEngineGame && g.stockfishInfo!.playingAs === color;
+    return {
+      name: getPlayerName(g, color),
+      subtitle: isEngine ? `Level ${g.stockfishInfo!.strength}` : undefined,
+      color,
+      capturedPieces: color === Color.WHITE ? g.whiteCapturedPieces : g.blackCapturedPieces,
+      materialAdvantage: color === Color.WHITE ? matValues.whiteMaterialValue : matValues.blackMaterialValue,
+      isTurn: isPlaying && g.activeColor === color,
+      clock: isEngineGame ? null : color === Color.WHITE ? whiteTimeSec : blackTimeSec,
+      isThinking: isEngine && isPlaying && g.activeColor === color,
+    };
+  };
+
+  // Against the engine you always resign/offer as yourself; in pass-and-play it's whoever is to move
+  const actingColor = humanColor ?? g.activeColor;
+  const actingName = getPlayerName(g, actingColor);
 
   return (
-    <Flex justifyContent="center" alignItems="center">
-      <Flex gap={8}>
-        {/* Black side */}
-        <Flex flexDir="column" gap={4}>
-
-          <PlayerBox
-            isTurn={isBlackTurn}
-            materialDiff={matValues.blackMaterialValue}
-            time={blackTimeSec}
-            name={game.data.stockfishInfo ? 'Stockfish' : blackName}
-            showClock={game.data.stockfishInfo === null}
-            isStockfishGame={game.data.stockfishInfo !== null}
-          />
-
-          <CapturedBox isWhite={false} capturedPieces={g.blackCapturedPieces} />
+    <Flex className="play-layout" flex={1} justify="center" align={{ base: "stretch", lg: "center" }} px={{ base: 3, lg: 8 }} py={{ base: 3, lg: 6 }}>
+      <Flex direction={{ base: "column", lg: "row" }} gap={{ base: 4, lg: 7 }} align={{ base: "center", lg: "stretch" }}>
+        <Flex className="play-board-col" direction="column" gap={2}>
+          <PlayerStrip {...stripProps(topColor)} />
+          <Board game={g} flipped={flipped} />
+          <PlayerStrip {...stripProps(bottomColor)} />
         </Flex>
 
-        <Board game={g} />
-
-        {/* White side */}
-        <Flex flexDir="column" gap={4}>
-          <PlayerBox
-            isTurn={isWhiteTurn}
-            materialDiff={matValues.whiteMaterialValue}
-            time={whiteTimeSec}
-            name={game.data.stockfishInfo ? 'Me' : whiteName}
-            showClock={game.data.stockfishInfo === null}
-            isStockfishGame={game.data.stockfishInfo !== null}
-          />
-
-          <CapturedBox isWhite={true} capturedPieces={g.whiteCapturedPieces} />
+        <Flex
+          as="aside"
+          direction="column"
+          w={{ base: "var(--board-size)", lg: "340px" }}
+          maxH={{ lg: "calc(var(--board-size) + 120px)" }}
+          bg="ink.900"
+          border="1px solid"
+          borderColor="border"
+          borderRadius="2xl"
+          overflow="hidden"
+        >
+          <GameHeader game={g} />
           <MoveHistoryBox moveHistory={g.moveHistory} />
 
-          {isDrawModalOpen && (
-            <DrawModal gameId={g.id} close={() => setIsDrawModalOpen(false)} />
-          )}
-
-          <Flex flexDir='column' mt='auto' gap={4}>
-            <IconButton
-              onClick={handleOfferDrawClick}
-              mt="auto"
-              border="1px solid rgba(255, 255, 255, 0.3)"
-            >
-              <HandshakeIcon /> Offer Draw
-            </IconButton>
-
-            {isResignModalOpen && (
-              <ResignModal
-                gameId={g.id}
-                resigningColor={g.activeColor}
-                close={() => setIsResignModalOpen(false)}
-              />
-            )}
-            <IconButton mt='auto' onClick={handleResignClick} bgColor="red.700">
-              <Flag />
-              Resign
-            </IconButton>
+          <Flex direction="column" gap={3} p={4} borderTop="1px solid" borderColor="border" bg="ink.850">
+            <Flex gap={2}>
+              <Tooltip content="Flip board" openDelay={300}>
+                <IconButton aria-label="Flip board" variant="outline" borderColor="border.emphasized" onClick={() => setUserFlipped((f) => !f)}>
+                  <RefreshCcw />
+                </IconButton>
+              </Tooltip>
+              <Tooltip content={soundEnabled ? "Mute sounds" : "Unmute sounds"} openDelay={300}>
+                <IconButton aria-label={soundEnabled ? "Mute sounds" : "Unmute sounds"} variant="outline" borderColor="border.emphasized" onClick={() => setSoundEnabled(!soundEnabled)}>
+                  {soundEnabled ? <Volume2 /> : <VolumeX />}
+                </IconButton>
+              </Tooltip>
+              {isPlaying ? (
+                <>
+                  <Button flex={1} variant="outline" borderColor="border.emphasized" onClick={() => setIsDrawModalOpen(true)}>
+                    <Handshake /> Draw
+                  </Button>
+                  <Button flex={1} variant="outline" borderColor="rgba(229, 115, 107, 0.4)" color="#f0948c" _hover={{ bg: "rgba(229, 115, 107, 0.12)" }} onClick={() => setIsResignModalOpen(true)}>
+                    <Flag /> Resign
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <IconButton aria-label="Home" variant="outline" borderColor="border.emphasized" onClick={() => navigate("/")}>
+                    <Home />
+                  </IconButton>
+                  <Button flex={1} colorPalette="gold" fontWeight="semibold" onClick={() => navigate(isEngineGame ? "/configure/stockfish" : "/configure/local")}>
+                    <Plus /> New game
+                  </Button>
+                </>
+              )}
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
+
+      {isDrawModalOpen && (
+        <DrawModal
+          gameId={g.id}
+          offeredBy={actingName}
+          offeredTo={humanColor === null ? getPlayerName(g, opposite(actingColor)) : null}
+          close={() => setIsDrawModalOpen(false)}
+        />
+      )}
+      {isResignModalOpen && (
+        <ResignModal
+          gameId={g.id}
+          resigningColor={actingColor}
+          resigningName={actingName}
+          close={() => setIsResignModalOpen(false)}
+        />
+      )}
+    </Flex>
+  );
+}
+
+function GameHeader({ game }: { game: Game }) {
+  const isEngineGame = game.type === GameType.STOCKFISH && !!game.stockfishInfo;
+  const isPlaying = isGamePlaying(game);
+
+  let detail: string;
+  if (isEngineGame) {
+    detail = `Level ${game.stockfishInfo!.strength} · ${getStrengthTier(game.stockfishInfo!.strength).label}`;
+  } else {
+    const tc = TIME_CONTROLS.find((t) => t.value === localStorage.getItem("timeControl"));
+    detail = tc ? `${tc.name} · ${tc.minutes} min` : "Timed game";
+  }
+
+  let status: React.ReactNode;
+  if (isPlaying) {
+    const toMove = getPlayerName(game, game.activeColor);
+    const inCheck = game.status === GameStatus.IN_CHECK;
+    const text = isEngineGame
+      ? game.activeColor === game.stockfishInfo!.playingAs ? "Stockfish is thinking" : "Your move"
+      : `${toMove} to move`;
+    status = (
+      <Flex align="center" gap={2.5}>
+        <Box w="10px" h="10px" borderRadius="full" border="1px solid" borderColor="whiteAlpha.400" bg={game.activeColor === Color.WHITE ? "#ece6da" : "#15171b"} />
+        <Text fontWeight="semibold">{text}</Text>
+        {inCheck && <Text as="span" fontSize="xs" fontWeight="bold" color="#f0948c" bg="rgba(229, 115, 107, 0.14)" px={2} py={0.5} borderRadius="full">CHECK</Text>}
+      </Flex>
+    );
+  } else {
+    const result = isDrawStatus(game.status)
+      ? "Game drawn"
+      : game.winner !== null ? `${getPlayerName(game, game.winner)} ${getPlayerName(game, game.winner) === "You" ? "won" : "wins"}` : "Game over";
+    status = (
+      <Flex align="baseline" gap={2} wrap="wrap">
+        <Text fontWeight="semibold" color="gold.300">{result}</Text>
+        <Text fontSize="sm" color="fg.muted">· {getGameOverReason(game.status)}</Text>
+      </Flex>
+    );
+  }
+
+  return (
+    <Flex direction="column" gap={3} px={5} pt={5} pb={4} borderBottom="1px solid" borderColor="border">
+      <Flex align="center" gap={2} color="fg.muted" fontSize="sm">
+        {isEngineGame ? <Bot size={16} /> : <Users size={16} />}
+        <Text fontWeight="medium" color="fg">{isEngineGame ? "vs Stockfish" : "Pass & play"}</Text>
+        <Text>·</Text>
+        <Text>{detail}</Text>
+      </Flex>
+      {status}
     </Flex>
   );
 }
@@ -286,4 +384,3 @@ function calculatePlayerMaterialValues(wMatVal: number, bMatVal: number) {
   if (wMatVal > bMatVal) return { whiteMaterialValue: abs, blackMaterialValue: -abs };
   return { whiteMaterialValue: -abs, blackMaterialValue: abs };
 }
-

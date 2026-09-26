@@ -17,7 +17,8 @@ export function useStartNewGame() {
       localStorage.setItem('gameId', gameData.id);
       queryClient.setQueryData(["game", gameData.id], gameData)
       navigate(`/play/${gameData.id}`)
-      if (!gameData.stockfishInfo) return;
+      // Only ask the engine to move when it actually has the first move
+      if (!gameData.stockfishInfo || gameData.activeColor !== gameData.stockfishInfo.playingAs) return;
       executeStockfishMoveMutation.mutate({ gameId: gameData.id, strength: gameData.stockfishInfo.strength })
     },
     onError: (err) => {
@@ -57,7 +58,7 @@ async function startNewGame({ timeControlType, fen, stockfishStrength, stockfish
     body: JSON.stringify(payload),
   });
 
-  if (!response.ok) throw new Error("Could not start new game.");
+  if (!response.ok) throw new Error((await response.text()) || "Could not start new game.");
 
   const json = await response.json();
   return GameSchema.parse(json);

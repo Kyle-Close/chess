@@ -1,59 +1,29 @@
-import { Flex, RadioCard, HStack } from "@chakra-ui/react";
+import { Controller, UseFormReturn } from "react-hook-form";
+import { Flame, Hourglass, Timer, Zap } from "lucide-react";
 import { FormBox } from "./formBox";
-import { UseFormReturn } from "react-hook-form";
+import { ChoiceCards } from "./ChoiceCards";
 import { LocalConfigurationFormInputs } from "../hooks/useLocalConfiguration";
-import { TimeControlType } from "base/zod/emums/TimeControl";
+import { TIME_CONTROLS } from "base/features/game-page/utils/players";
 
 interface TimeControlProps {
   localConfigurationForm: UseFormReturn<LocalConfigurationFormInputs>
 }
 
+const ICONS = [Hourglass, Timer, Zap, Flame];
+
+const OPTIONS = TIME_CONTROLS.map((tc, i) => {
+  const Icon = ICONS[i];
+  return { value: tc.value, label: `${tc.minutes} min`, sublabel: tc.name, icon: <Icon size={24} strokeWidth={1.75} /> };
+});
+
 export function TimeControl({ localConfigurationForm }: TimeControlProps) {
   return (
-    <FormBox title="Time Control">
-      <Flex mt={2} gap={6}>
-        <RadioCard.Root defaultValue={TimeControlType.CLASSICAL.toString()}>
-          <HStack mt={4} gap={6} align="stretch">
-            {items.map((item) => (
-              <RadioCard.Item border='1px solid white' key={item.value} value={item.value.toString()}>
-                <RadioCard.ItemHiddenInput {...localConfigurationForm.register("timeControlType")} />
-                <RadioCard.ItemControl>
-                  <RadioCard.ItemContent>
-                    <RadioCard.ItemText>{item.title}</RadioCard.ItemText>
-                    <RadioCard.ItemDescription>
-                      {item.description}
-                    </RadioCard.ItemDescription>
-                  </RadioCard.ItemContent>
-                  <RadioCard.ItemIndicator />
-                </RadioCard.ItemControl>
-              </RadioCard.Item>
-            ))}
-          </HStack>
-        </RadioCard.Root>      </Flex>
+    <FormBox step={3} title="Time control" description="Each player gets this much time for the whole game.">
+      <Controller
+        control={localConfigurationForm.control}
+        name="timeControlType"
+        render={({ field }) => <ChoiceCards label="Time control" options={OPTIONS} value={field.value} onChange={field.onChange} columns={4} />}
+      />
     </FormBox>
-
   )
 }
-
-const items = [
-  {
-    value: TimeControlType.CLASSICAL,
-    title: "60m",
-    description: "Classical"
-  },
-  {
-    value: TimeControlType.RAPID,
-    title: "10m",
-    description: "Rapid"
-  },
-  {
-    value: TimeControlType.BLITZ,
-    title: "3m",
-    description: "Blitz"
-  },
-  {
-    value: TimeControlType.BULLET,
-    title: "1m",
-    description: "Bullet"
-  },
-]
