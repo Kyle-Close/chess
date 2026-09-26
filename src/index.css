@@ -10,8 +10,9 @@
   --coord-on-dark: #f3e6cd;
   --hl-last: rgba(236, 196, 70, 0.45);
   --hl-selected: rgba(236, 196, 70, 0.7);
-  --hl-hover: rgba(255, 255, 255, 0.22);
+  --hl-hover: rgba(236, 196, 70, 0.32);
   --move-hint: rgba(20, 16, 10, 0.24);
+  --move-hint-hover: rgba(20, 16, 10, 0.45);
 
   font-family: var(--font-body);
   line-height: 1.5;
@@ -105,8 +106,15 @@ body {
   background: radial-gradient(transparent 0%, transparent 76%, var(--move-hint) 77%);
 }
 
-.sq[data-target='true']:hover .sq__hint {
-  opacity: 0;
+/* Hovering (or dragging over) a legal square keeps the hint visible and makes it stronger */
+.sq[data-target='true']:hover .sq__hint,
+.sq[data-drop='true'] .sq__hint {
+  background: radial-gradient(var(--move-hint-hover) 25%, transparent 26%);
+}
+
+.sq[data-target='true']:hover .sq__hint--capture,
+.sq[data-drop='true'] .sq__hint--capture {
+  background: radial-gradient(transparent 0%, transparent 70%, var(--move-hint-hover) 71%);
 }
 
 .coord {
